@@ -515,6 +515,17 @@ namespace TestProject1
                                     new Privilege
                                     {
                                         ID = Guid.NewGuid().ToString(),
+                                        privilegeName = "角色表",
+                                        privilegeCode = "role",
+                                        needAuth = false,
+                                        isMenuEntry = false,
+                                        createdTime = DateTime.Now,
+                                        securityGrade = 1,
+                                        orderNO = 120
+                                    },
+                                    new Privilege
+                                    {
+                                        ID = Guid.NewGuid().ToString(),
                                         privilegeName = "模块功能树",
                                         privilegeCode = "moduleResourceTree",
                                         needAuth = false,
@@ -557,7 +568,7 @@ namespace TestProject1
                         }
                     },
                     new Module{
-                        ID = Guid.NewGuid().ToString(), moduleCode = "myOffice", moduleName = "个人办公",
+                        ID = Guid.NewGuid().ToString(), moduleCode = "Office", moduleName = "日常办公",
                         resources = new Resource[]{
                             new Resource{ ID = Guid.NewGuid().ToString(),resourceCode = "myOffice",resourceName = "个人办公", orderNO=100,
                                 privileges = new Privilege[] {
@@ -632,12 +643,7 @@ namespace TestProject1
                                         orderNO = 70
                                     }
                                 }
-                            }
-                        }
-                    },
-                    new Module{
-                        ID = Guid.NewGuid().ToString(), moduleCode = "orgOffice", moduleName = "部门办公",
-                        resources = new Resource[]{
+                            },
                             new Resource{ ID = Guid.NewGuid().ToString(),resourceCode = "orgOffice",resourceName = "部门办公", orderNO=150,
                                 privileges = new Privilege[] {
                                     new Privilege {
