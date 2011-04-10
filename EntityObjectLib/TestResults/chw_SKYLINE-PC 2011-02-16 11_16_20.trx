@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestRun id="25385967-6871-4fdc-9f7e-26074871bc65" name="chw@SKYLINE-PC 2011-02-16 11:16:20" runUser="Skyline-PC\chw" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <TestSettings name="Local" id="c8e5e8ef-4570-4b52-b8c9-76b728d8151e">
+    <Description>These are default test settings for a local test run.</Description>
+    <Deployment enabled="false" runDeploymentRoot="chw_SKYLINE-PC 2011-02-16 11_16_20">
+      <DeploymentItem filename="C:\FromCVS\MBDataSync\DataSyncEngine\ClassLibrary1\bin\Debug\EntityFramework.dll" />
+      <DeploymentItem filename="C:\FromCVS\MBDataSync\DataSyncEngine\ClassLibrary1\bin\Debug\ClassLibrary1.dll" />
+    </Deployment>
+    <Execution>
+      <TestTypeSpecific />
+      <AgentRule name="Execution Agents">
+      </AgentRule>
+    </Execution>
+  </TestSettings>
+  <Times creation="2011-02-16T11:16:20.6862176+08:00" queuing="2011-02-16T11:16:23.8711840+08:00" start="2011-02-16T11:16:24.3316528+08:00" finish="2011-02-16T11:16:42.5021392+08:00" />
+  <ResultSummary outcome="Failed">
+    <Counters total="1" executed="1" error="0" failed="1" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" passed="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+  <TestDefinitions>
+    <UnitTest name="TestMethod1" storage="c:\fromcvs\mbdatasync\datasyncengine\testproject1\bin\debug\testproject1.dll" id="59863143-3238-122e-4d8a-637b491cc755">
+      <Execution id="5e87c39e-8b29-4d58-bfbf-513454e3a794" />
+      <TestMethod codeBase="C:/FromCVS/MBDataSync/DataSyncEngine/TestProject1/bin/Debug/TestProject1.DLL" adapterTypeName="Microsoft.VisualStudio.TestTools.TestTypes.Unit.UnitTestAdapter, Microsoft.VisualStudio.QualityTools.Tips.UnitTest.Adapter, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" className="TestProject1.UnitTest1, TestProject1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" name="TestMethod1" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <TestEntries>
+    <TestEntry testId="59863143-3238-122e-4d8a-637b491cc755" executionId="5e87c39e-8b29-4d58-bfbf-513454e3a794" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <Results>
+    <UnitTestResult executionId="5e87c39e-8b29-4d58-bfbf-513454e3a794" testId="59863143-3238-122e-4d8a-637b491cc755" testName="TestMethod1" computerName="SKYLINE-PC" duration="00:00:14.0078124" startTime="2011-02-16T11:16:24.6064768+08:00" endTime="2011-02-16T11:16:41.0405824+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5e87c39e-8b29-4d58-bfbf-513454e3a794">
+      <Output>
+        <ErrorInfo>
+          <Message>Test method TestProject1.UnitTest1.TestMethod1 threw exception: 
+System.IndexOutOfRangeException: Index was outside the bounds of the array.</Message>
+          <StackTrace> 
+Server stack trace: 
+   at System.Data.Entity.ModelConfiguration.Conventions.Edm.PropertyMaxLengthConvention.System.Data.Entity.ModelConfiguration.Conventions.Edm.IEdmConvention&lt;System.Data.Edm.EdmAssociationType&gt;.Apply(EdmAssociationType associationType, EdmModel model)
+   at System.Data.Entity.ModelConfiguration.Configuration.ConventionsConfiguration.EdmConventionDispatcher.Dispatch[TEdmDataModelItem](TEdmDataModelItem item)
+   at System.Data.Entity.ModelConfiguration.Configuration.ConventionsConfiguration.EdmConventionDispatcher.VisitEdmAssociationType(EdmAssociationType item)
+   at System.Data.Entity.ModelConfiguration.Edm.Services.DataModelItemVisitor.VisitCollection[T](IEnumerable`1 collection, Action`1 visitMethod)
+   at System.Data.Entity.ModelConfiguration.Edm.Services.EdmModelVisitor.VisitAssociationTypes(EdmNamespace edmNamespace, IEnumerable`1 associationTypes)
+   at System.Data.Entity.ModelConfiguration.Edm.Services.EdmModelVisitor.VisitEdmNamespace(EdmNamespace item)
+   at System.Data.Entity.ModelConfiguration.Configuration.ConventionsConfiguration.EdmConventionDispatcher.VisitEdmNamespace(EdmNamespace item)
+   at System.Data.Entity.ModelConfiguration.Edm.Services.DataModelItemVisitor.VisitCollection[T](IEnumerable`1 collection, Action`1 visitMethod)
+   at System.Data.Entity.ModelConfiguration.Edm.Services.EdmModelVisitor.VisitNamespaces(EdmModel model, IEnumerable`1 namespaces)
+   at System.Data.Entity.ModelConfiguration.Edm.Services.EdmModelVisitor.VisitEdmModel(EdmModel item)
+   at System.Data.Entity.ModelConfiguration.Configuration.ConventionsConfiguration.EdmConventionDispatcher.VisitEdmModel(EdmModel item)
+   at System.Data.Entity.ModelConfiguration.Configuration.ConventionsConfiguration.EdmConventionDispatcher.Dispatch()
+   at System.Data.Entity.ModelConfiguration.Configuration.ConventionsConfiguration.ApplyModel(EdmModel model)
+   at System.Data.Entity.ModelConfiguration.ModelBuilder.Build(DbProviderManifest providerManifest, DbProviderInfo providerInfo, Boolean validateModel)
+   at System.Data.Entity.ModelConfiguration.ModelBuilder.Build(DbConnection providerConnection)
+   at System.Data.Entity.Internal.LazyInternalContext.CreateModel()
+   at System.Lazy`1.CreateValue()
+Exception rethrown at [0]: 
+   at System.Data.Entity.ModelConfiguration.Conventions.Edm.PropertyMaxLengthConvention.System.Data.Entity.ModelConfiguration.Conventions.Edm.IEdmConvention&lt;System.Data.Edm.EdmAssociationType&gt;.Apply(EdmAssociationType associationType, EdmModel model)
+   at System.Data.Entity.ModelConfiguration.Configuration.ConventionsConfiguration.EdmConventionDispatcher.Dispatch[TEdmDataModelItem](TEdmDataModelItem item)
+   at System.Data.Entity.ModelConfiguration.Configuration.ConventionsConfiguration.EdmConventionDispatcher.VisitEdmAssociationType(EdmAssociationType item)
+   at System.Data.Entity.ModelConfiguration.Edm.Services.DataModelItemVisitor.VisitCollection[T](IEnumerable`1 collection, Action`1 visitMethod)
+   at System.Data.Entity.ModelConfiguration.Edm.Services.EdmModelVisitor.VisitAssociationTypes(EdmNamespace edmNamespace, IEnumerable`1 associationTypes)
+   at System.Data.Entity.ModelConfiguration.Edm.Services.EdmModelVisitor.VisitEdmNamespace(EdmNamespace item)
+   at System.Data.Entity.ModelConfiguration.Configuration.ConventionsConfiguration.EdmConventionDispatcher.VisitEdmNamespace(EdmNamespace item)
+   at System.Data.Entity.ModelConfiguration.Edm.Services.DataModelItemVisitor.VisitCollection[T](IEnumerable`1 collection, Action`1 visitMethod)
+   at System.Data.Entity.ModelConfiguration.Edm.Services.EdmModelVisitor.VisitNamespaces(EdmModel model, IEnumerable`1 namespaces)
+   at System.Data.Entity.ModelConfiguration.Edm.Services.EdmModelVisitor.VisitEdmModel(EdmModel item)
+   at System.Data.Entity.ModelConfiguration.Configuration.ConventionsConfiguration.EdmConventionDispatcher.VisitEdmModel(EdmModel item)
+   at System.Data.Entity.ModelConfiguration.Configuration.ConventionsConfiguration.EdmConventionDispatcher.Dispatch()
+   at System.Data.Entity.ModelConfiguration.Configuration.ConventionsConfiguration.ApplyModel(EdmModel model)
+   at System.Data.Entity.ModelConfiguration.ModelBuilder.Build(DbProviderManifest providerManifest, DbProviderInfo providerInfo, Boolean validateModel)
+   at System.Data.Entity.ModelConfiguration.ModelBuilder.Build(DbConnection providerConnection)
+   at System.Data.Entity.Internal.LazyInternalContext.CreateModel()
+   at System.Lazy`1.CreateValue()
+   at System.Lazy`1.LazyInitValue()
+   at System.Lazy`1.get_Value()
+   at System.Data.Entity.Internal.LazyInternalContext.InitializeContext()
+   at System.Data.Entity.Internal.InternalContext.Initialize()
+   at System.Data.Entity.Internal.InternalContext.GetEntitySetAndBaseTypeForType(Type entityType)
+   at System.Data.Entity.Internal.Linq.InternalSet`1.Initialize()
+   at System.Data.Entity.Internal.Linq.InternalSet`1.get_Provider()
+   at System.Data.Entity.Infrastructure.DbQuery`1.System.Linq.IQueryable.get_Provider()
+   at System.Linq.Queryable.FirstOrDefault[TSource](IQueryable`1 source)
+   at TestProject1.UnitTest1.TestMethod1() in C:\FromCVS\MBDataSync\DataSyncEngine\TestProject1\UnitTest1.cs:line 19
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+</TestRun>

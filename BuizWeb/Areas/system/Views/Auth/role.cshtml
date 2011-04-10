@@ -1,0 +1,175 @@
+﻿@section header {
+
+    <script type="text/javascript">
+    /**
+    * chw 2011.4.7
+    * panel: 主面板
+    */
+    Ext.onReady(function () {
+        var panel = Ext.create('Ext.panel.Panel', {
+            region: 'center',
+            layout: {
+                type: 'hbox',
+                align: 'stretch'
+                //pack: 'start'
+            },
+            defaults: {
+                flex: 1 //子元素平均分配宽度
+            },
+            split: true,
+            autoScroll: true,
+            bodyPadding: 0,
+            padding: 0,
+            margin: 0,
+            tbar: [
+                          { xtype: 'button', iconCls:'iconNew',text: '',tooltip:'新建角色',tooltipType:'title', handler: function (source, e) { Ext.getCmp('grid001').view.refresh(); } },
+                          { xtype: 'button', iconCls:'iconDelete', text: '',tooltip:'删除角色',tooltipType:'title', handler: function (source, e) { Ext.getCmp('grid001').view.refresh(); } },
+                          {xtype: 'tbseparator'},
+                          {xtype: 'tbfill'},
+                          { xtype: 'button', iconCls:'iconRefresh', text: '',tooltip:'刷新',tooltipType:'title'}
+                        ]/*,
+                bbar: [
+                          { xtype: 'button', text: 'Button 1', handler: function (source, e) { openWindow(); } }
+                        ],
+                html: ''*/
+        });
+        new Ext.container.Viewport({
+            layout: 'border',
+            border: 0,
+            items: [
+                panel
+                ]
+        });
+
+        Ext.regModel('Privileges', {
+            //            fields: ['ID','privilegeName', 'resourceCode', 'privilegeCode']
+            fields: [
+            { name: 'ID', type: 'string' },
+            { name: 'privilegeName', type: 'string' },
+            { name: 'resourceName', type: 'string' },
+            { name: 'moduleName', type: 'string' },
+            { name: 'privilegeCode', type: 'string' },
+            { name: 'orderNO', type: 'int' }
+            ]
+        });
+
+        var roleGrid = new Ext.grid.GridPanel({
+            store: new Ext.data.Store({
+                model: 'Privileges',
+                sorters: ['resourceName','orderNO'],
+                groupField: 'moduleName',
+                proxy: {
+                    type: 'ajax',
+                    url: '/data/privilege',
+                    reader: {
+                        type: 'json',
+                        root: 'data'
+                    }
+                },
+                autoLoad: true
+            }),
+            margin: 6,
+            //width: 400,
+            height: 300,
+            flex: 3,
+            plugins: [new Ext.grid.CellEditing({clicksToEdit: 1})],
+            selModel: { selType: 'cellmodel' },
+            tbar: [
+                { xtype: 'button', text: '新增操作' },
+                { xtype: 'button',
+                    text: '删除操作',
+                    handler: function (source, e) { debugger; alert(grid.selModel.selected.length) }
+                }],
+            title: '角色列表',
+            frame: true,
+            features: [{
+                ftype: 'grouping',
+                groupHdTpl: '模块: {name}'
+            }],
+            columns: [{
+                text: 'ID',
+                flex: 1,
+                dataIndex: 'ID',
+                hidden: true
+            }, {
+                text: '操作编码',
+                dataIndex: 'privilegeCode',
+                width: 100,
+                field: { allowBlank: false }
+            }, {
+                text: '操作名称',
+                dataIndex: 'privilegeName',
+                flex: 1
+            }, {
+                text: '功能',
+                dataIndex: 'resourceName',
+                width: 100
+            }, {
+                text: '模块',
+                dataIndex: 'moduleName',
+                renderer: function (v) { return '<a href="#">'+v+'</a>'; },
+                width: 100,
+            }],
+            viewConfig: {
+//                listeners: {
+//                    itemdblclick: function (view, record, el, index, e) { /*alert(record.get("ID"))*/winMR.show(this) },
+//                    itemclick: function(view,record,el,index,e){
+//                        //debugger;
+//                        privilegeGrid.setTitle(record.data.ID);
+//                        //debugger;
+//                        roleGrid.store.getAt(0).set('privilegeName','ddddddddddddd');
+//                        //debugger;
+//                        //roleGrid.store.getAt(0).dirty = true;
+//                        //roleGrid.getView().refreshNode(0);
+//                        roleGrid.getView().refresh();
+////                        debugger;
+////                        roleGrid.store.load();
+//                    }
+//                }
+            }
+        }); // grid
+
+
+        var privilegeGrid = new Ext.grid.GridPanel({
+            title: '##角色 - 操作权限',
+            store: new Ext.data.ArrayStore({
+                fields: ['Privileges','allow'],
+                data:[['111','yes'],['2222','no']]
+            }),
+            margin: 6,
+            //width: 400,
+            height: 300,
+            flex: 1,
+            selModel: new Ext.selection.CheckboxModel({}),
+            tbar: [
+                { xtype: 'button', text: '新增操作' },
+                { xtype: 'button', text: '删除操作', handler: function (source, e) { debugger; alert(grid.selModel.selected.length) }}
+                ],
+            columns: [{
+                text: 'Privileges',
+                flex: 1,
+                dataIndex: 'Privileges',
+                hidden: true
+            }, {
+                text: 'Privileges',
+                dataIndex: 'Privileges',
+                width: 100
+            }, {
+                text: 'allow',
+                dataIndex: 'allow',
+                width: 100
+            }],
+            viewConfig: {
+                listeners: {
+                    itemdblclick: function (view, record, el, index, e) { /*alert(record.get("ID"))*/winMR.show(this) }
+                }
+            }
+        }); // grid
+        panel.add(roleGrid);
+        panel.add(privilegeGrid);
+
+    });// Ext.onReady
+
+            
+    </script>
+}

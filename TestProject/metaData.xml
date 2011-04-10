@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<metas>
+  <metaData>
+    <metaItem id="string" code="string" name="字符串" type="simple"/>
+    <metaItem id="decimal" code="decimal" name="数字" type="simple"/>
+    <metaItem id="int" code="int" name="整数" type="simple"/>
+    <metaItem id="date" code="date" name="日期" type="simple"/>
+    <metaItem id="dateTime" code="dateTime" name="时间" type="simple"/>
+    <metaItem id="e02-2101" code="Order" name="订单" type="BO">
+      <metaItem id="e02-3321" code="orderCode" name="订单编码" type="string" amount="1"/>
+      <metaItem id="e02-3321" code="remark" name="订单说明" type="string" amount="0..1"/>
+      …
+      <!-- 类型为其他业务对象，基数不大于1，自动创建customer_Id元数据 -->
+      <metaItem id="" code="customer" name="客户名称 " type="Customer" amount="1"/>
+      <metaItem id="" code="createdUser" name="订单创建人 " type="User" amount="1"/>
+      <metaItem id="" code="auditedUser" name="订单审核人 " type="User" amount="0..1"/>
+      <!-- 类型为其他业务对象，基数大于1，在被引用实体上创建order_Id元数据 -->
+      <metaItem id="" code="orderDetails" name="订单明细" type="orderDetail" amount="*"/>
+    </metaItem>
+    <metaItem id="e02-2104" code="Customer" name="客户" type="BO">
+      <!-- 不要定义向order的元数据 -->
+      <metaItem id="" code="code" name="客户编码" type="string"/>
+      <metaItem id="" code="name" name="客户名称" type="string"/>
+    </metaItem>
+    <metaItem id="e02-2101" code="orderDetail" name="订单" type="BO">
+      <!-- 不要定义向order的元数据 -->
+      <metaItem id="" code="name" name="品种" type="string"/>
+      <metaItem id="" code="model" name="规格" type="string"/>
+      <metaItem id="" code="price" name="单价" type="decimal"/>
+      <metaItem id="" code="amount" name="数量" type="decimal"/>
+    </metaItem>
+    <!-- 一次收的货可能是源于多个订单的 -->
+    <!--<metaItem id="e02-2111" code="receiveRecord" name="收货记录" type="BO">
+      <metaItem id="" code="orders" name="相关订单" type="order" amount="*"/>
+    </metaItem>-->
+    <metaItem id="e02-2113" code="User" name="系统用户" type="BO">
+      <metaItem id="" code="code" name="用户名" type="string" />
+      <metaItem id="" code="name" name="姓名" type="string" />
+    </metaItem>
+  </metaData>
+</metas>

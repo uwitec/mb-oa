@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "query";
+}
+<h2>
+    query</h2>
+<div>
+    sssssssssssssssssss</div>
+<script type="text/javascript">
+    function Init(containerId) {
+        this.CWId = containerId;
+        this.panel = new Ext.Panel({
+            title: "<h2>Auth.Privilege - " + this.CWId + "</h2>",
+            collapsible: true,
+            //html: '<input type="button" onclick="alert(this.)" value="关闭窗口" />',
+            renderTo: Ext.getCmp(this.CWId).body.dom.id,
+            padding: 6
+        });
+//        Init.prototype.renderPanel = function () {
+//            var panel = new Ext.Panel({
+//                title: "<h2>Auth.Privilege - " + this.CWId + "</h2>",
+//                collapsible: true,
+//                html: '<input type="button" onclick="alert(this.)" value="关闭窗口" />',
+//                renderTo: Ext.getCmp(this.CWId).body.dom.id,
+//                padding: 6
+//            });
+//            
+//        };
+
+        // 将自身消除
+        this.closeMe = function () {
+            this.test();
+            alert(this.panel.body.id);
+            Ext.getCmp(this.CWId).ownerCt.remove(this.CWId);
+        };
+        this.test = function () {
+            alert(this.CWId) 
+        };
+        this.panel.body.on("click", this.closeMe, this);
+//        this.renderPanel();
+    }; 
+</script>
