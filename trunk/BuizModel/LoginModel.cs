@@ -85,12 +85,13 @@ namespace BuizApp.Models
         {
             using (MyDB mydb = new MyDB())
             {
-                return mydb.Privileges
-                    .Where(p => p.isMenuEntry && p.Roles.Where(r => r.Users.Where(u => u.ID.Equals(userId)).Count() > 0).Count() > 0)
-                    .GroupBy(p => p.resource.ID)
-                    .OrderBy(r => mydb.Resources.FirstOrDefault(res => res.resourceName.Equals(r.Key)).orderNO)
+                return
+                    mydb.Users.FirstOrDefault(u => u.ID.Equals(userId))
+                    .Roles.SelectMany(r => r.Privileges).Where(p => p.isMenuEntry)
+                    .GroupBy(p => p.resource)
+                    .OrderBy(r => r.Key.orderNO)
                     .ToDictionary(
-                        p => p.Key
+                        p => p.Key.resourceName
                         , v => v.OrderBy(p => p.orderNO).Select(p => new string[] { 
                             p.privilegeName, 
                             p.privilegeCode, 
