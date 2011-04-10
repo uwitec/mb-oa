@@ -1,0 +1,36 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ output extension=".txt" #>
+
+<#@ assembly name="System.Xml" #>
+<#@ VolatileAssembly processor="T4Toolbox.VolatileAssemblyProcessor" 
+name="$(ProjectDir)bin\Debug\TestProject1.dll" #>
+
+<#
+	//#@ assembly name="$(SolutionDir)EntityObjectLib\bin\Debug\EntityObjectLib.dll" #
+	//##
+#>
+
+<#@ import namespace="System.Xml" #>
+<#@ import namespace="TestProject1" #>
+
+<#@ include file="test.txt" #>
+
+
+<# 
+	//System.Diagnostics.Debugger.Launch();
+	//System.Diagnostics.Debugger.Break();
+	//rrr r = new rrr();
+	//Write(r.x+"\r\n");
+	metaConfig mc = new metaConfig(@"C:\FromCVS\BuizApp\TestProject\metaData.xml");
+	Write(mc.getCSharpCode());
+	//Write(mc.getCSharpCode());
+	//Write(mc.getXml().InnerXml);
+	//User u = new User();
+	//u.Name = "chenhongwei";
+#>
+<#+
+	public class EEE
+	{
+		public string x="12";
+	}
+#>

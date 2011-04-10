@@ -1,0 +1,67 @@
+﻿@model BuizApp.Models.LoginModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>苏迈克斯协同办公系统－登录</title>
+    <link href='@Url.Content("~//Content/Site.css")' rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/ExtJS/resources/css/ext-all.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/Content/ExtJS/bootstrap.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+        Ext.onReady(function () {
+            var form = Ext.create('Ext.form.FormPanel', {
+                url: '/login',
+                bodyPadding: 10,
+                bodyBorder: 0,
+                //width: 200,
+                //layout: 'anchor',
+                defaults: {
+                    anchor: '100%',
+                    labelWidth:60
+                },
+                defaultType: 'textfield',
+                items: [
+                    { name: 'name' , fieldLabel: '用户名' ,value: '@Model.name' ,allowBlank: false},
+                    { name: 'pwd', fieldLabel: ' 口令' , value: '@Model.pwd'},
+                    { 
+                        xtype:'fieldcontainer', 
+                        //name: 'jym', 
+                        fieldLabel: ' 校验码' , 
+                        msgTarget: 'under',
+                        layout: 'hbox',
+                        defaults: {
+                                hideLabel: true
+                            },
+                        items: [
+                            {xtype: 'textfield',    fieldLabel: 'Phone 1', name: 'phone-1', width: 60, allowBlank: true},
+                            {xtype: 'displayfield', html: '<img src=\'@Url.Content("~/Content/images/imagecode.jpg")\' alt="ddd"/>', margin: '0 40 0 4',width: 50},
+                            {xtype: 'checkboxfield' , name: 'phone-1', boxLabel:"两周内自动登录"}
+                        ]
+                    }
+                ],
+                standardSubmit: true,
+                buttons: [
+                    { text: '登录', handler: function () { this.up('form').getForm().submit(); } },
+                    { text: '找回密码',margin: '0 4 0 10 ', handler: function () { this.up('form').getForm().submit(); } }
+                ]
+            });
+
+            var win = Ext.create('Ext.window.Window', {
+                title: '苏迈克斯协同办公系统－登录',
+                //renderTo: Ext.getBody(),
+                //height: 200,
+                width: 400,
+                closable: false,
+                layout: 'fit'
+            });
+            win.add(form);
+            form.show();
+            win.show();
+        });
+    </script>
+</head>
+<body style="background-color:#EEE">
+</body>
+</html>

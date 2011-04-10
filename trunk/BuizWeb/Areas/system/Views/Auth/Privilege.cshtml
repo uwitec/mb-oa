@@ -1,0 +1,307 @@
+﻿@section header {
+    <script type="text/javascript">
+    Ext.onReady(function () {
+        var panel,  //主面板
+            treep,  //模块功能树
+            grid,   //操作列表
+            winMR;
+
+        panel = Ext.create('Ext.panel.Panel', {
+            region: 'center',
+            layout: {
+                type: 'hbox',
+                align: 'stretch'
+                //pack: 'start'
+            },
+            defaults: {
+                flex: 1 //子元素平均分配宽度
+            },
+            split: true,
+            autoScroll: true,
+            bodyPadding: 0,
+            padding: 0,
+            margin: 0,
+            tbar: [
+                      { xtype: 'button', text: '刷新', handler: function (source, e) { Ext.getCmp('grid001').view.refresh(); } }
+                    ]/*,
+            bbar: [
+                      { xtype: 'button', text: 'Button 1', handler: function (source, e) { openWindow(); } }
+                    ],
+            html: ''*/
+        });
+
+        new Ext.container.Viewport({
+            layout: 'border',
+            border: 0,
+            items: [panel]
+        });
+
+        treep = new Ext.tree.TreePanel({
+            title: '模块功能树',
+            //selModel: new Ext.selection.CheckboxModel({}),
+            tbar: [{
+                xtype: 'button', text: '新增模块', handler: function (source, e) { alert(treep.selModel.selected.length) }
+            }, {
+                xtype: 'button', text: '新增功能', handler: function (source, e) { alert(treep.selModel.selected.length) }
+            }],
+            store: new Ext.data.TreeStore({
+                proxy: {
+                    type: 'ajax',
+                    url: '/data/Privilege/moduleResourceTree'
+                },
+                root: {
+                    text: '所有模块功能',
+                    expanded: true
+                },
+                folderSort: true,
+                sorters: [{
+                    property: 'text',
+                    direction: 'ASC'
+                }]
+            }),
+            margin: 6,
+        });
+
+        panel.add(treep); 
+
+        function openWindow() {
+            Ext.create('Ext.window.Window', {
+                title: 'Hello',
+                height: 200,
+                width: 400,
+                layout: 'fit',
+                modal: true,
+                html: "dsddddddddddd"
+            }).show();
+        }
+
+        Ext.regModel('Privileges', {
+            //            fields: ['ID','privilegeName', 'resourceCode', 'privilegeCode']
+            fields: [
+            { name: 'ID', type: 'string' },
+            { name: 'privilegeName', type: 'string' },
+            { name: 'resourceName', type: 'string' },
+            { name: 'moduleName', type: 'string' },
+            { name: 'privilegeCode', type: 'string' },
+            { name: 'orderNO', type: 'int' }
+            ]
+        });
+
+        grid = new Ext.grid.GridPanel({
+            id: 'grid001',
+            store: new Ext.data.Store({
+                model: 'Privileges',
+                sorters: ['resourceName','orderNO'],
+                groupField: 'moduleName',
+                proxy: {
+                    type: 'ajax',
+                    url: '@ViewData["dataUrl"].ToString()',
+                    reader: {
+                        type: 'json',
+                        root: 'data'
+                    }
+                },
+                autoLoad: true
+            }),
+            margin: 6,
+            //width: 400,
+            height: 300,
+            flex: 3,
+            selModel: new Ext.selection.CheckboxModel({}),
+            tbar: [
+                { xtype: 'button', text: '新增操作' },
+                { xtype: 'button',
+                    text: '删除操作',
+                    handler: function (source, e) { debugger; alert(grid.selModel.selected.length) }
+                }],
+            title: '操作表',
+            features: [{
+                ftype: 'grouping',
+                groupHdTpl: '模块: {name}'
+            }],
+            columns: [{
+                text: 'ID',
+                flex: 1,
+                dataIndex: 'ID',
+                hidden: true
+            }, {
+                text: '操作编码',
+                dataIndex: 'privilegeCode',
+                width: 100
+            }, {
+                text: '操作名称',
+                dataIndex: 'privilegeName',
+                flex: 1
+            }, {
+                text: '功能',
+                dataIndex: 'resourceName',
+                width: 100
+            }, {
+                text: '模块',
+                dataIndex: 'moduleName',
+                renderer: function (v) { return '<a href="#">'+v+'</a>'; },
+                width: 100,
+            }, {
+                text: '操作',
+                vtype: 'field',
+                dataIndex: 'moduleName',
+                renderer: function (v) { return '<input type="button" value="delete" onclick="alert(\''+v+'\')"/>' },
+                width: 50
+            }],
+            viewConfig: {
+                listeners: {
+                    itemdblclick: function (view, record, el, index, e) { /*alert(record.get("ID"))*/winMR.show(this) }
+                }
+            }
+        });
+
+        panel.add(grid);
+
+        //debugger;
+
+        winMR = Ext.create('Ext.window.Window', {
+            title: '模块信息',
+            closable: true,
+            closeAction: 'hide',
+            modal: true,
+            //animateTarget: this,
+            width: 600,
+            height: 350,
+            //layout: 'border',
+            bodyStyle: 'padding: 5px;',
+            layout: 'fit',
+            bodyPadding: 10,
+            items: [{
+                xtype: 'form',
+                layout: {
+                    type: 'vbox',
+                    align: 'stretch'
+                },
+                bodyBorder: 0,
+
+                fieldDefaults: {
+                    labelAlign: 'top',
+                    labelWidth: 100,
+                    labelStyle: 'font-weight:bold'
+                },
+                defaults: {
+                    margins: '0 0 10 0'
+                },
+
+                items: [{
+                    xtype: 'fieldcontainer',
+                    fieldLabel: '模块信息',
+                    labelStyle: 'font-weight:bold;padding:0',
+                    layout: 'hbox',
+                    defaultType: 'textfield',
+
+                    fieldDefaults: {
+                        labelAlign: 'top'
+                    },
+
+                    items: [{
+                        flex: 1,
+                        name: 'code',
+                        fieldLabel: '模块编码',
+                        allowBlank: false
+                    }, {
+                        flex: 1,
+                        //                        width: 100,
+                        name: 'name',
+                        fieldLabel: '模块名称',
+                        margins: '0 0 0 20',
+                        allowBlank: false
+                    }/*, {
+                        flex: 2,
+                        name: 'lastName',
+                        fieldLabel: 'Last',
+                        allowBlank: false,
+                        margins: '0 0 0 5'
+                    }*/]
+                }, {
+                    xtype: 'textfield',
+                    fieldLabel: 'Your Email Address',
+                    vtype: 'email',
+                    allowBlank: true
+                }, {
+                    xtype: 'textfield',
+                    fieldLabel: 'Subject',
+                    allowBlank: true
+                }, {
+                    xtype: 'textareafield',
+                    fieldLabel: 'Message',
+                    labelAlign: 'top',
+                    flex: 1,
+                    margins: '0',
+                    allowBlank: true
+                }],
+
+                buttons: [{
+                    text: '确定',
+                    handler: function () {
+                        if (this.up('form').getForm().isValid()) {
+                            this.up('form').getForm().reset();
+                            this.up('window').hide();
+                        }
+                    }
+                }, {
+                    text: '取消',
+                    margins: '0 0 0 20',
+                    handler: function () {
+                        this.up('form').getForm().reset();
+                        this.up('window').hide();
+                    }
+                }]
+            }
+            ]
+        });
+
+        treep.view.on({
+            itemclick: function (view, record, item, index, e) {
+//                //alert(record.get('id') + ' clicked!');
+//                //debugger;
+//                winMR.eData = record;
+//                winMR.show(this);
+            },
+            itemdbclick: function (view, record, item, index, e) {
+                //alert(record.get('id') + ' clicked!');
+                //debugger;
+                winMR.eData = record;
+                winMR.show(this);
+            },
+            itemcontextmenu: function (view, record, el, index, event) {// 声明菜单类型
+                event.preventDefault(); // 阻止浏览器默认右键菜单显示
+                //debugger;
+                var m = Ext.create("myctMenu");
+                //debugger;
+                m.selRecord = record;  //treep被选中的是treep.selModel.selected.items[0].get("id")
+                //debugger;
+                m.showAt(event.getXY()); // 取得鼠标点击坐标，展示菜单
+            },
+            scope: this
+        });
+
+        Ext.define("myctMenu", {
+            extend: "Ext.menu.Menu",
+            items: [{
+                id: 'rMenu1',
+                text: '添加节点',
+                handler: function () { alert('添加节点的实现！'); }
+            }, {
+                id: 'rMenu2',
+                text: '编辑节点',
+                handler: function (n,e) { debugger;alert('编辑节点:' + this.parentMenu.selRecord.get('id')); }
+            }, {
+                id: 'rMenu3',
+                text: '删除节点',
+                handler: function () { alert('删除节点:' + this.parentMenu.selRecord.get('id')); }
+            }],
+            initComponent: function () {
+                //Ext.apply(this, {})
+                this.callParent(arguments);
+//                myctMenu.superclass.initComponent.apply(this, arguments);
+            }
+        });
+   })
+    </script>
+}

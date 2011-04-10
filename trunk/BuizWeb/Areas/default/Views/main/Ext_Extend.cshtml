@@ -1,0 +1,63 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ext_Extend</title>
+    <link href="@Url.Content("~/Scripts/ExtJS/css/ext-all.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/Scripts/ExtJS/adapter/ext/ext-base.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/ExtJS/ext-all.js")" type="text/javascript"></script>
+</head>
+<body style="margin: 20px;">
+    <form action="">
+    <div>
+        <a href="http://wangyu.javaeye.com/blog/210849" target="_blank">ExtJs关于Ext.extend()的说明</a>
+        <br />
+        <a href="http://www.cnblogs.com/boolean/archive/2007/10/17/927949.html" target="_blank">阅读Ext 学习Javascript（二）Core/Ext.extend 从继承说起</a>
+        <br />
+        <textarea id="Code1" rows="16" cols="100">
+/*
+Ext.extend方法是用来实现类的继承。 
+extend(Object subclass,Object superclass,[Object overrides] : Object 
+第一个参数：子类 
+第二个参数：父类 
+第三个参数：要覆盖的属性。 
+这里需要强调一下，子类继承下来的是父类中通过superclass.prototype方式定义的属性（包括用此方法定义的函数）。 
+*/
+function S() {
+}
+S.prototype.s = "s";
+S.prototype.s1 = "s1";
+function C() {
+    this.c = "c";
+    this.c1 = "c1";
+}
+Ext.extend(C, S, { s1: "by c overload" });
+var c = new C();
+alert(c.s); //s
+alert(c.s1); //by c overload
+        </textarea>
+        <br />
+        <input type="button" onclick="eval(document.getElementById('Code1').innerHTML)" value="Run" />
+        <hr />
+        <textarea id="Code2" rows="16" cols="100">
+function S(){   
+    this.s = "s";   
+    this.s1 = "s1";   
+}   
+function C(){   
+    this.c = "c";   
+    this.c1 = "c1";   
+}   
+Ext.extend(C,S,{s1:"by c overload"});   
+var c = new C();   
+alert(c.s); //undefind   
+alert(c.s1); //by c overload   
+        </textarea>
+        <br />
+        <input type="button" onclick="eval(document.getElementById('Code2').innerHTML)" value="Run" />
+    </div>
+    </form>
+</body>
+</html>

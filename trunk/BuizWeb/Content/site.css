@@ -1,0 +1,18 @@
+﻿body
+{
+}
+
+.iconNew
+{
+    background: url(/content/images/add.gif) top left no-repeat !important;
+}
+
+.iconDelete
+{
+    background: url(/content/images/delete.gif) top left no-repeat !important;
+}
+
+.iconRefresh
+{
+    background: url(/content/images/table_refresh.png) top left no-repeat !important;
+}
