@@ -5,170 +5,188 @@
     * chw 2011.4.7
     * panel: 主面板
     */
-    Ext.onReady(function () {
-        var panel = Ext.create('Ext.panel.Panel', {
-            region: 'center',
-            layout: {
-                type: 'hbox',
-                align: 'stretch'
-                //pack: 'start'
-            },
-            defaults: {
-                flex: 1 //子元素平均分配宽度
-            },
-            split: true,
-            autoScroll: true,
-            bodyPadding: 0,
-            padding: 0,
-            margin: 0,
-            tbar: [
-                          { xtype: 'button', iconCls:'iconNew',text: '',tooltip:'新建角色',tooltipType:'title', handler: function (source, e) { Ext.getCmp('grid001').view.refresh(); } },
-                          { xtype: 'button', iconCls:'iconDelete', text: '',tooltip:'删除角色',tooltipType:'title', handler: function (source, e) { Ext.getCmp('grid001').view.refresh(); } },
-                          {xtype: 'tbseparator'},
-                          {xtype: 'tbfill'},
-                          { xtype: 'button', iconCls:'iconRefresh', text: '',tooltip:'刷新',tooltipType:'title'}
-                        ]/*,
+        Ext.onReady(function () {
+            var panel = Ext.create('Ext.panel.Panel', {
+                region: 'center',
+                layout: {
+                    type: 'hbox',
+                    align: 'stretch'
+                    //pack: 'start'
+                },
+                defaults: {
+                    flex: 1 //子元素平均分配宽度
+                },
+                split: true,
+                autoScroll: true,
+                bodyPadding: 0,
+                border:0,
+                padding: 0,
+                margin: 0,
+                tbar: [
+                          { xtype: 'label', text: '权限管理 -> 角色管理', cls: 'formNav' },
+                          { xtype: 'tbfill' },
+                          { xtype: 'button', iconCls: 'helpIcon', text: '', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }                   
+                          ]/*,
                 bbar: [
                           { xtype: 'button', text: 'Button 1', handler: function (source, e) { openWindow(); } }
                         ],
                 html: ''*/
-        });
-        new Ext.container.Viewport({
-            layout: 'border',
-            border: 0,
-            items: [
+            });
+            new Ext.container.Viewport({
+                layout: 'border',
+                border: 0,
+                items: [
                 panel
                 ]
-        });
+            });
 
-        Ext.regModel('Privileges', {
-            //            fields: ['ID','privilegeName', 'resourceCode', 'privilegeCode']
-            fields: [
+            Ext.regModel('role', {
+                //            fields: ['ID','privilegeName', 'resourceCode', 'privilegeCode']
+                fields: [
             { name: 'ID', type: 'string' },
-            { name: 'privilegeName', type: 'string' },
-            { name: 'resourceName', type: 'string' },
-            { name: 'moduleName', type: 'string' },
-            { name: 'privilegeCode', type: 'string' },
+            { name: 'Code', type: 'string' },
+            { name: 'Name', type: 'string' },
+            { name: 'Summary', type: 'string' },
             { name: 'orderNO', type: 'int' }
             ]
-        });
+            });
 
-        var roleGrid = new Ext.grid.GridPanel({
-            store: new Ext.data.Store({
-                model: 'Privileges',
-                sorters: ['resourceName','orderNO'],
-                groupField: 'moduleName',
-                proxy: {
-                    type: 'ajax',
-                    url: '/data/privilege',
-                    reader: {
-                        type: 'json',
-                        root: 'data'
-                    }
-                },
-                autoLoad: true
-            }),
-            margin: 6,
-            //width: 400,
-            height: 300,
-            flex: 3,
-            plugins: [new Ext.grid.CellEditing({clicksToEdit: 1})],
-            selModel: { selType: 'cellmodel' },
-            tbar: [
-                { xtype: 'button', text: '新增操作' },
-                { xtype: 'button',
-                    text: '删除操作',
-                    handler: function (source, e) { debugger; alert(grid.selModel.selected.length) }
+            var roleGrid = new Ext.grid.GridPanel({
+                store: new Ext.data.ArrayStore({
+                    model: 'role',
+                    sorters: ['orderNO'],
+                    data: [
+                    ['1', 'admin', '超级管理员', '超级管理员是系统管理员,拥有最高管理级别', 1],
+                    ['2', 'appAdmin', '应用管理员', '由超级管理员设置和分配管理范围', 2],
+                    ['3', 'deviceManager', '设备管理员', '允许管理设备', 2]
+                ]
+                }),
+                margin: 6,
+                //width: 400,
+                //height: 300,
+                autoScroll: true,
+                border: 0,
+                padding: 0,
+                bodyPadding: 0,
+                flex: 3,
+                stripeRows: true,
+                plugins: [new Ext.grid.CellEditing({ clicksToEdit: 2 })],
+                selModel: { selType: 'cellmodel' },
+                tbar: [
+                          { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '新建角色', tooltipType: 'title', handler: function (source, e) { Ext.getCmp('grid001').view.refresh(); } },
+                          { xtype: 'button', iconCls: 'iconEdit', text: '', tooltip: '编辑角色', tooltipType: 'title', handler: function (source, e) { Ext.getCmp('grid001').view.refresh(); } },
+                          { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除角色', tooltipType: 'title', handler: function (source, e) { Ext.getCmp('grid001').view.refresh(); } },
+                          { xtype: 'tbseparator' },
+                          { xtype: 'tbfill' },
+                          { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handle: function (source, e) { alert('刷新当前页签!') } }
+                        ],
+                title: '角色列表',
+                frame: true,
+                columns: [
+                new Ext.grid.RowNumberer(),
+                {
+                    text: 'ID',
+                    dataIndex: 'ID',
+                    width: 100,
+                    hidden: true
+                }, {
+                    text: '角色编码',
+                    dataIndex: 'Code',
+                    width: 100,
+                    field: { allowBlank: false }
+                }, {
+                    text: '角色名称',
+                    dataIndex: 'Name',
+                    width: 160,
+                    field: { allowBlank: false },
+                    renderer: function (v) { return '<a href="#">' + v + '</a>'; }
+                }, {
+                    text: '角色说明',
+                    dataIndex: 'Summary',
+                    flex: 1,
+                    field: { allowBlank: false }
+                }, {
+                    text: '顺序',
+                    dataIndex: 'orderNO',
+                    //renderer: function (v) { return '<a href="#">' + v + '</a>'; },
+                    width: 100,
+                    hidden: true
+                    //field: { allowBlank: false },
+                }, {
+                    text: '操作',
+                    //dataIndex: 'Summary',
+                    width: 50,
+                    align:'center',
+                    renderer: function (v) { return '<span class="iconEdit" style="width:20px;height:18px;" title="修改"></span><span class="iconDelete" style="width:20px;height:18px;" title="修改"></span>'; }
                 }],
-            title: '角色列表',
-            frame: true,
-            features: [{
-                ftype: 'grouping',
-                groupHdTpl: '模块: {name}'
-            }],
-            columns: [{
-                text: 'ID',
-                flex: 1,
-                dataIndex: 'ID',
-                hidden: true
-            }, {
-                text: '操作编码',
-                dataIndex: 'privilegeCode',
-                width: 100,
-                field: { allowBlank: false }
-            }, {
-                text: '操作名称',
-                dataIndex: 'privilegeName',
-                flex: 1
-            }, {
-                text: '功能',
-                dataIndex: 'resourceName',
-                width: 100
-            }, {
-                text: '模块',
-                dataIndex: 'moduleName',
-                renderer: function (v) { return '<a href="#">'+v+'</a>'; },
-                width: 100,
-            }],
-            viewConfig: {
-//                listeners: {
-//                    itemdblclick: function (view, record, el, index, e) { /*alert(record.get("ID"))*/winMR.show(this) },
-//                    itemclick: function(view,record,el,index,e){
-//                        //debugger;
-//                        privilegeGrid.setTitle(record.data.ID);
-//                        //debugger;
-//                        roleGrid.store.getAt(0).set('privilegeName','ddddddddddddd');
-//                        //debugger;
-//                        //roleGrid.store.getAt(0).dirty = true;
-//                        //roleGrid.getView().refreshNode(0);
-//                        roleGrid.getView().refresh();
-////                        debugger;
-////                        roleGrid.store.load();
-//                    }
-//                }
-            }
-        }); // grid
-
-
-        var privilegeGrid = new Ext.grid.GridPanel({
-            title: '##角色 - 操作权限',
-            store: new Ext.data.ArrayStore({
-                fields: ['Privileges','allow'],
-                data:[['111','yes'],['2222','no']]
-            }),
-            margin: 6,
-            //width: 400,
-            height: 300,
-            flex: 1,
-            selModel: new Ext.selection.CheckboxModel({}),
-            tbar: [
-                { xtype: 'button', text: '新增操作' },
-                { xtype: 'button', text: '删除操作', handler: function (source, e) { debugger; alert(grid.selModel.selected.length) }}
-                ],
-            columns: [{
-                text: 'Privileges',
-                flex: 1,
-                dataIndex: 'Privileges',
-                hidden: true
-            }, {
-                text: 'Privileges',
-                dataIndex: 'Privileges',
-                width: 100
-            }, {
-                text: 'allow',
-                dataIndex: 'allow',
-                width: 100
-            }],
-            viewConfig: {
-                listeners: {
-                    itemdblclick: function (view, record, el, index, e) { /*alert(record.get("ID"))*/winMR.show(this) }
+                viewConfig: {
+                    listeners: {
+                        //                    itemdblclick: function (view, record, el, index, e) { /*alert(record.get("ID"))*/winMR.show(this) },
+                        itemclick: function (view, record, el, index, e) {
+                            //debugger;
+                            privilegeGrid.setTitle(record.data.Name + ' - 操作权限');
+                            //debugger;
+                            roleGrid.store.getAt(0).set('privilegeName', 'ddddddddddddd');
+                            //debugger;
+                            //roleGrid.store.getAt(0).dirty = true;
+                            //roleGrid.getView().refreshNode(0);
+                            roleGrid.getView().refresh();
+                            //                        debugger;
+                            //                        roleGrid.store.load();
+                        }
+                    }
                 }
-            }
-        }); // grid
-        panel.add(roleGrid);
-        panel.add(privilegeGrid);
+            }); // grid
 
-    });// Ext.onReady
+            var privilegeGrid = new Ext.grid.GridPanel({
+                title: roleGrid.store.getAt(0).data.Name + ' - 操作权限',
+                store: new Ext.data.ArrayStore({
+                    fields: [{ name: 'Privilege', type: 'string' }, { name: 'allow', type: 'string'}],
+                    data: [['111', '允许'], ['2222', '禁止']]
+                }),
+                margin: 6,
+                frame: true,
+                height: 300,
+                flex: 1,
+                plugins: [new Ext.grid.CellEditing({ clicksToEdit: 2 })],
+                selModel: { selType: 'cellmodel' },
+//                tbar: [
+//                { xtype: 'button', text: '新增操作' },
+//                { xtype: 'button', text: '删除操作', handler: function (source, e) { debugger; alert(grid.selModel.selected.length) } }
+//                ],
+                columns: [
+                new Ext.grid.RowNumberer(),
+                {
+                    header: '权限',
+                    flex: 1,
+                    dataIndex: 'Privilege'
+                }, {
+                    header: 'allow',
+                    dataIndex: 'allow',
+                    width: 100,
+                    field: {
+                        xtype: 'combobox',
+                        typeAhead: true,
+                        triggerAction: 'all',
+                        store: [
+                            ['允许', '允许'],
+                            ['禁止', '禁止'],
+                            ['缺省', '缺省']
+                        ],
+                        lazyRender: true,
+                        listClass: 'x-combo-list-small'
+                    }
+                }],
+                viewConfig: {
+//                    listeners: {
+//                        itemdblclick: function (view, record, el, index, e) { /*alert(record.get("ID"))*/winMR.show(this) }
+//                    }
+                }
+            }); // grid
+            panel.add(roleGrid);
+            panel.add(privilegeGrid);
+
+        });    // Ext.onReady
 
             
     </script>

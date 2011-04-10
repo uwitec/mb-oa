@@ -45,11 +45,15 @@ namespace BuizApp
             //System.Web.Hosting.HostingEnvironment.RegisterVirtualPathProvider(new DbPathProvider());
         }
 
+        /// <summary>
+        /// 手工注册区域
+        /// </summary>
         private static void RegisterAllAreas()
         {
             RegisterArea<BuizApp.Areas.system.systemAreaqRegistration>(RouteTable.Routes, null);
             RegisterArea<BuizApp.Areas.test.testAreaRegistration>(RouteTable.Routes, null);
             RegisterArea<BuizApp.Areas.data.dataAreaRegistration>(RouteTable.Routes, null);
+            RegisterArea<BuizApp.Areas.office.officeAreaRegistration>(RouteTable.Routes, null);
             RegisterArea<defaultAreaRegistration>(RouteTable.Routes, null);
         }
 

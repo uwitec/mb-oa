@@ -64,6 +64,8 @@
   <ItemGroup>
     <Compile Include="App_Code\ActionFilters\TimerActionFilter.cs" />
     <Compile Include="Areas\data\dataAreaRegistration.cs" />
+    <Compile Include="Areas\office\Controllers\myOfficeController.cs" />
+    <Compile Include="Areas\office\officeAreaRegistration.cs" />
     <Compile Include="Areas\system\Controllers\logController.cs" />
     <Compile Include="Areas\system\systemAreaRegistration.cs" />
     <Compile Include="Areas\test\Controllers\t1Controller.cs" />
@@ -120,6 +122,8 @@
     <Folder Include="Areas\data\Models\" />
     <Folder Include="Areas\data\Views\Shared\" />
     <Folder Include="Areas\default\Models\" />
+    <Folder Include="Areas\office\Models\" />
+    <Folder Include="Areas\office\Views\Shared\" />
     <Folder Include="Areas\system\Models\" />
     <Folder Include="Areas\test\Models\" />
     <Folder Include="Content\ExtJS\" />
@@ -177,6 +181,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\system\Views\Auth\role.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\office\Views\Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\office\Views\myRemind.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

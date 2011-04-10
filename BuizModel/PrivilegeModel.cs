@@ -42,5 +42,19 @@ namespace BuizModel
                     ).ToArray();
             }
         }
+
+        public static object[] getRoles()
+        {
+            using (MyDB mydb = new MyDB())
+            {
+                return mydb.Roles.Select(
+                    r => new
+                    {
+                        r.ID,
+                        r.Name,
+                        privileges = r.Privileges.Select(p => new { p.ID, p.privilegeCode, p.privilegeName }).ToArray()
+                    }).ToArray();
+            }
+        }
     }
 }

@@ -7,12 +7,47 @@
     background: url(/content/images/add.gif) top left no-repeat !important;
 }
 
+.iconEdit
+{
+    background: url(/content/images/cog_edit.png) top left no-repeat !important;
+    display: inline-block;
+    cursor:pointer;
+    border:0;
+}
+
 .iconDelete
 {
     background: url(/content/images/delete.gif) top left no-repeat !important;
+    display:inline-block;
+    cursor:pointer;
+    border:0;
 }
 
 .iconRefresh
 {
     background: url(/content/images/table_refresh.png) top left no-repeat !important;
+}
+
+.logo
+{
+    background: url(/content/images/oaLogo.png) top left no-repeat !important;
+}
+
+.gridRow
+{
+    height: 30px;
+}
+
+.formNav
+{
+    /*font-weight: bold; */padding: 6px 10px; font-size:11px;
+}
+
+.helpIcon
+{
+    background: url(/content/images/help.png) top left no-repeat !important;
+}
+
+.x-grid-row .x-grid-cell{ 
+    line-height:18px;/*控制GRID单元格高度 */
 }

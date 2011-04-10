@@ -49,6 +49,11 @@ namespace BuizApp.Areas.data.Controllers
             return Json(PrivilegeModel.getModuleResourceTreeData(), JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult role()
+        {
+            return Json(PrivilegeModel.getRoles(), JsonRequestBehavior.AllowGet);
+        }
+
         #region 私有方法
         private JsonResult getResult(bool success, Array data)
         {
