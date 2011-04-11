@@ -25,7 +25,7 @@
                 tbar: [
                           { xtype: 'label', text: '权限管理 -> 角色管理', cls: 'formNav' },
                           { xtype: 'tbfill' },
-                          { xtype: 'button', iconCls: 'helpIcon', text: '', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }                   
+                          { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }                   
                           ]/*,
                 bbar: [
                           { xtype: 'button', text: 'Button 1', handler: function (source, e) { openWindow(); } }
@@ -62,13 +62,11 @@
                 ]
                 }),
                 margin: 6,
-                //width: 400,
-                //height: 300,
                 autoScroll: true,
                 border: 0,
                 padding: 0,
                 bodyPadding: 0,
-                flex: 3,
+                flex: 4,
                 stripeRows: true,
                 plugins: [new Ext.grid.CellEditing({ clicksToEdit: 2 })],
                 selModel: { selType: 'cellmodel' },

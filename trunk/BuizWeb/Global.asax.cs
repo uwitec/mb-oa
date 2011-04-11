@@ -46,7 +46,7 @@ namespace BuizApp
         }
 
         /// <summary>
-        /// 手工注册区域
+        /// 手工注册区域,如果新建一个区域,一定要在这里注册
         /// </summary>
         private static void RegisterAllAreas()
         {

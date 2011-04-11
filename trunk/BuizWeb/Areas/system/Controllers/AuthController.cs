@@ -34,5 +34,15 @@ namespace BuizApp.Areas.system.Controllers
         {
             return View();
         }
+
+        public ActionResult user()
+        {
+            return View();
+        }
+
+        public ActionResult query()
+        {
+            return View();
+        }
     }
 }
