@@ -7,7 +7,8 @@
             winMR;
 
         panel = Ext.create('Ext.panel.Panel', {
-            region: 'center',
+            //renderTo: Ext.getBody(),
+            //region: 'center',
             layout: {
                 type: 'hbox',
                 align: 'stretch'
@@ -22,16 +23,18 @@
             padding: 0,
             margin: 0,
             tbar: [
-                      { xtype: 'button', text: '刷新', handler: function (source, e) { Ext.getCmp('grid001').view.refresh(); } }
-                    ]/*,
+                          { xtype: 'label', text: '权限管理 -> 模块功能操作项', cls: 'formNav' },
+                          { xtype: 'tbfill' },
+                          { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }
+                          ]/*,
             bbar: [
                       { xtype: 'button', text: 'Button 1', handler: function (source, e) { openWindow(); } }
                     ],
             html: ''*/
         });
 
-        new Ext.container.Viewport({
-            layout: 'border',
+        Ext.create('Ext.container.Viewport', {
+            layout: 'fit',
             border: 0,
             items: [panel]
         });
@@ -39,11 +42,13 @@
         treep = new Ext.tree.TreePanel({
             title: '模块功能树',
             //selModel: new Ext.selection.CheckboxModel({}),
-            tbar: [{
-                xtype: 'button', text: '新增模块', handler: function (source, e) { alert(treep.selModel.selected.length) }
-            }, {
-                xtype: 'button', text: '新增功能', handler: function (source, e) { alert(treep.selModel.selected.length) }
-            }],
+            tbar: [
+                          { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '增加', tooltipType: 'title', handler: function (source, e) { alert('增加') } },
+                          { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { Ext.getCmp('grid001').view.refresh(); } },
+                          { xtype: 'tbseparator' },
+                          { xtype: 'tbfill' },
+                          { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { alert('刷新!') } }
+                        ],
             store: new Ext.data.TreeStore({
                 proxy: {
                     type: 'ajax',
@@ -109,11 +114,12 @@
             flex: 3,
             selModel: new Ext.selection.CheckboxModel({}),
             tbar: [
-                { xtype: 'button', text: '新增操作' },
-                { xtype: 'button',
-                    text: '删除操作',
-                    handler: function (source, e) { debugger; alert(grid.selModel.selected.length) }
-                }],
+                { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '增加', tooltipType: 'title', handler: function (source, e) { alert('增加') } },
+                { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { alert(grid.selModel.selected.length) }},
+                { xtype: 'tbseparator' },
+                { xtype: 'tbfill' },
+                { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { alert('刷新!') } }
+            ],
             title: '操作表',
             features: [{
                 ftype: 'grouping',
@@ -145,7 +151,7 @@
                 text: '操作',
                 vtype: 'field',
                 dataIndex: 'moduleName',
-                renderer: function (v) { return '<input type="button" value="delete" onclick="alert(\''+v+'\')"/>' },
+                renderer: function (v) { return '<span class="iconEdit" style="width:20px;height:18px;" title="修改"></span><span class="iconDelete" style="width:20px;height:18px;" title="删除"></span>'; },
                 width: 50
             }],
             viewConfig: {

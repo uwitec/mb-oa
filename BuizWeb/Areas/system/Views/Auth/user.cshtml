@@ -1,9 +1,9 @@
 ﻿@section header {
     <script type="text/javascript">
-        /**
-        * chw 2011.4.7
-        * panel: 主面板
-        */
+    /**
+    * chw 2011.4.7
+    * panel: 主面板
+    */
         Ext.onReady(function () {
             var panel = Ext.create('Ext.panel.Panel', {
                 region: 'center',
@@ -22,7 +22,7 @@
                 padding: 0,
                 margin: 0,
                 tbar: [
-                          { xtype: 'label', text: '权限管理 -> 分级权限', cls: 'formNav' },
+                          { xtype: 'label', text: '权限管理 -> 用户管理', cls: 'formNav' },
                           { xtype: 'tbfill' },
                           { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }
                           ]/*,
@@ -153,10 +153,9 @@
                         //                    itemdblclick: function (view, record, el, index, e) { /*alert(record.get("ID"))*/winMR.show(this) },
                         itemclick: function (view, record, el, index, e) {
                             //debugger;
-                            uGrid.setTitle(record.data.Name + ' - 分级管理用户');
-                            privilegeGrid.setTitle(record.data.Name + ' - 分级管理权限');
+                            privilegeGrid.setTitle(record.data.Name + ' - 角色');
                             //debugger;
-                            //roleGrid.store.getAt(0).set('privilegeName', 'ddddddddddddd');
+                            roleGrid.store.getAt(0).set('privilegeName', 'ddddddddddddd');
                             //debugger;
                             //roleGrid.store.getAt(0).dirty = true;
                             //roleGrid.getView().refreshNode(0);
@@ -168,29 +167,20 @@
                 }
             }); // grid
 
-            var cont = new Ext.container.Container({
-                layout: {
-                    type: 'vbox',
-                    align: 'stretch'
-                },
-                margin: 6,
-                flex: 1
-            });
-
-            var uGrid = new Ext.grid.GridPanel({
-                title: roleGrid.store.getAt(0).data.Name + ' - 分级管理用户',
+            var privilegeGrid = new Ext.grid.GridPanel({
+                title: roleGrid.store.getAt(0).data.Name + ' - 角色',
                 store: new Ext.data.ArrayStore({
                     fields: [{ name: 'code', type: 'string' }, { name: 'name', type: 'string'}],
-                    data: [['lilin', '李林'], ['zj', '张竞']]
+                    data: [['roleA', '角色A'], ['roleB', '角色B']]
                 }),
-                flex: 1,
-                align: 'stretch',
+                margin: 6,
                 frame: true,
-                //width: '100%',
+                height: 300,
+                flex: 1,
                 plugins: [new Ext.grid.CellEditing({ clicksToEdit: 2 })],
                 selModel: { selType: 'cellmodel' },
                 tbar: [
-                          { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '增加用户', tooltipType: 'title', handler: function (source, e) { alert('增加用户') } },
+                          { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '指派新角色', tooltipType: 'title', handler: function (source, e) { alert('为当前用户指派新角色') } },
                           { xtype: 'tbseparator' },
                           { xtype: 'tbfill' },
                           { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { alert('刷新!') } }
@@ -218,67 +208,20 @@
                 //                    }
             }
         }); // grid
+        panel.add(roleGrid);
+        panel.add(privilegeGrid);
 
-        var privilegeGrid = new Ext.grid.GridPanel({
-            title: roleGrid.store.getAt(0).data.Name + ' - 分级管理权限',
-            store: new Ext.data.ArrayStore({
-                fields: [{ name: 'code', type: 'string' }, { name: 'name', type: 'string'}],
-                data: [['devMaster', '设备主记录'], ['devManage', '设备管理']]
-            }),
-            margin: '6 0 0 0',
-            flex: 1,
-            frame: true,
-            width: '100%',
-            plugins: [new Ext.grid.CellEditing({ clicksToEdit: 2 })],
-            selModel: { selType: 'cellmodel' },
-            tbar: [
-                          { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '增加权限', tooltipType: 'title', handler: function (source, e) { alert('增加权限') } },
-                          { xtype: 'tbseparator' },
-                          { xtype: 'tbfill' },
-                          { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { alert('刷新!') } }
-                        ],
-            columns: [
-                new Ext.grid.RowNumberer(),
-                {
-                    header: '角色编码',
-                    flex: 1,
-                    dataIndex: 'code'
-                }, {
-                    header: '角色名称',
-                    flex: 1,
-                    dataIndex: 'name'
-                }, {
-                    text: '删除',
-                    //dataIndex: 'Summary',
-                    width: 40,
-                    align: 'center',
-                    renderer: function (v) { return '<span class="iconDelete" style="width:20px;height:18px;" title="删除" onclick="alert(\'取消当前指派!\')"></span>'; }
-                }],
-            viewConfig: {
-            //                    listeners: {
-            //                        itemdblclick: function (view, record, el, index, e) { /*alert(record.get("ID"))*/winMR.show(this) }
-            //                    }
-        }
-    }); // grid
-
-    panel.add(roleGrid);
-    panel.add(cont);
-    cont.add(uGrid);
-    cont.add(privilegeGrid);
-
-
-
-    var userNewWindow = Ext.create('widget.window', {
-        title: '权限管理->新建用户',
-        modal: true,
-        closable: true,
-        closeAction: 'hide',
-        //animateTarget: this,
-        width: 800,
-        height: 500,
-        layout: 'fit',
-        bodyStyle: 'padding: 5px;',
-        items: [
+        var userNewWindow = Ext.create('widget.window', {
+            title: '权限管理->新建用户',
+            modal: true,
+            closable: true,
+            closeAction: 'hide',
+            //animateTarget: this,
+            width: 800,
+            height: 500,
+            layout: 'fit',
+            bodyStyle: 'padding: 5px;',
+            items: [
             new Ext.form.FormPanel({
                 autoHeight: true,
                 autoScroll: true,
@@ -399,13 +342,13 @@
                 }]
             })
             ]
-    });
+        });
 
-    NewUser = function () {
-        userNewWindow.show();
-    }
+        NewUser = function () {
+            userNewWindow.show();
+        }
 
-});                              // Ext.onReady
+    });                            // Ext.onReady
 
             
     </script>

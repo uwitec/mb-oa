@@ -2,6 +2,12 @@
 {
 }
 
+.helpIcon
+{
+    /*background: url(ExtJS/resources/themes/images/default/tools/tools-sprites.gif) no-repeat -15px -300px !important;*/
+    background: url(/content/images/help.png) top left no-repeat !important;
+}
+
 .iconNew
 {
     background: url(/content/images/add.gif) top left no-repeat !important;
@@ -25,7 +31,7 @@
 
 .iconRefresh
 {
-    background: url(/content/images/table_refresh.png) top left no-repeat !important;
+    background: url(ExtJS/resources/themes/images/default/grid/refresh.gif) top left no-repeat !important;
 }
 
 .logo
@@ -43,10 +49,7 @@
     /*font-weight: bold; */padding: 6px 10px; font-size:11px;
 }
 
-.helpIcon
-{
-    background: url(/content/images/help.png) top left no-repeat !important;
-}
+
 
 .x-grid-row .x-grid-cell{ 
     line-height:18px;/*控制GRID单元格高度 */
