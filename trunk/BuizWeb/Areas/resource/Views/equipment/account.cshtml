@@ -1,0 +1,401 @@
+﻿@section header {
+    <script type="text/javascript">
+        /**
+        * chw 2011.4.7
+        * panel: 主面板
+        */
+        Ext.onReady(function () {
+            var panel = Ext.create('Ext.panel.Panel', {
+                region: 'center',
+                layout: {
+                    type: 'hbox',
+                    align: 'stretch'
+                    //pack: 'start'
+                },
+                defaults: {
+                    flex: 1 //子元素平均分配宽度
+                },
+                split: true,
+                autoScroll: true,
+                bodyPadding: 0,
+                border: 0,
+                padding: 0,
+                margin: 0,
+                tbar: [
+                          { xtype: 'label', text: '资源管理 -> 资源台帐', cls: 'formNav' },
+                          { xtype: 'tbfill' },
+                          { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }
+                          ]/*,
+                bbar: [
+                          { xtype: 'button', text: 'Button 1', handler: function (source, e) { openWindow(); } }
+                        ],
+                html: ''*/
+            });
+            new Ext.container.Viewport({
+                layout: 'border',
+                border: 0,
+                items: [
+                panel
+                ]
+            });
+
+            Ext.regModel('user', {
+                //            fields: ['ID','privilegeName', 'resourceCode', 'privilegeCode']
+                fields: [
+            { name: 'ID', type: 'int' },
+            { name: 'Code', type: 'string' },
+            { name: 'category', type: 'string' },
+            { name: 'Name', type: 'string' },
+            { name: 'model', type: 'string' },
+            { name: 'measureunit', type: 'string' },
+            { name: 'amount', type: 'int' },
+            { name: 'Org', type: 'string' },
+            { name: 'person', type: 'string' },
+            { name: 'Summary', type: 'string' }
+            ]
+            });
+
+            var roleGrid = new Ext.grid.GridPanel({
+                title: '资源台帐',
+                store: new Ext.data.ArrayStore({
+                    model: 'user',
+                    sorters: ['ID'],
+                    data: [
+                    ['1', 'res-1', '演播设备', '大型演播设备001', 'jspoo01', '台套', 3, '设备部', '陆伟', '含演播车,摄像机等等'],
+                    ['2', 'res-1', '演播设备', '大型演播设备002', 'jspoo02', '台套', 2, '设备部', '陆伟', '含演播车,摄像机等等'],
+                    ['3', 'res-1', '演播设备', '大型演播设备003', 'jspoo03', '台套', 3, '设备部', '陆伟', '含演播车,摄像机等等'],
+                    ['4', 'res-1', '车辆', '轿车', 'BM', '辆', 3, '用车中心', '陈宏伟', '含演播车,摄像机等等'],
+                    ['5', 'res-1', '演潘大厅', '场地', '', '块', 3, '演播中心', '万平', '含演播车,摄像机等等']
+                ]
+                }),
+                margin: 6,
+                autoScroll: true,
+                border: 0,
+                padding: 0,
+                bodyPadding: 0,
+                flex: 4,
+                stripeRows: true,
+                plugins: [new Ext.grid.CellEditing({ clicksToEdit: 2 })],
+                selModel: { selType: 'cellmodel' },
+                tbar: [
+                          { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '新建用户', tooltipType: 'title', handler: function (source, e) { NewUser(); } },
+                          { xtype: 'button', iconCls: 'iconEdit', text: '', tooltip: '编辑用户', tooltipType: 'title', handler: function (source, e) { Ext.getCmp('grid001').view.refresh(); } },
+                          { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除用户', tooltipType: 'title', handler: function (source, e) { Ext.getCmp('grid001').view.refresh(); } },
+                          { xtype: 'tbseparator' },
+                          { xtype: 'tbfill' },
+                          { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { alert('刷新!') } }
+                        ],
+                frame: true,
+                columns: [
+                new Ext.grid.RowNumberer(),
+                {
+                    text: 'ID',
+                    dataIndex: 'ID',
+                    width: 100,
+                    hidden: true
+                }, {
+                    text: '资源编码',
+                    dataIndex: 'Code',
+                    width: 80,
+                    field: { allowBlank: false }
+                }, {
+                    text: '资源名称',
+                    dataIndex: 'Name',
+                    width: 160,
+                    field: {
+                        xtype: 'combobox',
+                        typeAhead: true,
+                        triggerAction: 'all',
+                        store: [
+                            ['演播设备', '演播设备'],
+                            ['场地', '场地'],
+                            ['电子器材', '电子器材'],
+                            ['车辆', '车辆'],
+                            ['其他', '其他']
+                        ],
+                        lazyRender: true,
+                        listClass: 'x-combo-list-small'
+                    },
+                    renderer: function (v) { return '<a href="#">' + v + '</a>'; }
+                }, {
+                    text: '资源类别',
+                    dataIndex: 'category',
+                    width: 100,
+                    field: { allowBlank: false },
+                    renderer: function (v) { return '<a href="#">' + v + '</a>'; }
+                }, {
+                    text: '规格型号',
+                    dataIndex: 'model',
+                    flex: 1,
+                    field: { allowBlank: false }
+                }, {
+                    text: '单位',
+                    dataIndex: 'measureunit',
+                    width: 60,
+                    field: { allowBlank: false }
+                }, {
+                    text: '可用数量',
+                    dataIndex: 'amount',
+                    //renderer: function (v) { return '<a href="#">' + v + '</a>'; },
+                    width: 80
+                }, {
+                    text: '管辖部门',
+                    dataIndex: 'Org',
+                    //renderer: function (v) { return '<a href="#">' + v + '</a>'; },
+                    width: 80
+                    //field: { allowBlank: false },
+                }, {
+                    text: '管辖人',
+                    dataIndex: 'person',
+                    //renderer: function (v) { return '<a href="#">' + v + '</a>'; },
+                    width: 80
+                    //field: { allowBlank: false },
+                }, {
+                    text: '操作',
+                    //dataIndex: 'Summary',
+                    width: 50,
+                    align: 'center',
+                    renderer: function (v) { return '<span class="iconEdit" style="width:20px;height:18px;" title="修改"></span><span class="iconDelete" style="width:20px;height:18px;" title="删除"></span>'; }
+                }],
+                viewConfig: {
+                    listeners: {
+                        //                    itemdblclick: function (view, record, el, index, e) { /*alert(record.get("ID"))*/winMR.show(this) },
+                        itemclick: function (view, record, el, index, e) {
+                            //debugger;
+                            //                            uGrid.setTitle(record.data.Name + ' - 分级管理用户');
+                            //                            privilegeGrid.setTitle(record.data.Name + ' - 分级管理权限');
+                            //                            //debugger;
+                            //                            //roleGrid.store.getAt(0).set('privilegeName', 'ddddddddddddd');
+                            //                            //debugger;
+                            //                            //roleGrid.store.getAt(0).dirty = true;
+                            //                            //roleGrid.getView().refreshNode(0);
+                            //                            roleGrid.getView().refresh();
+                            //                        debugger;
+                            //                        roleGrid.store.load();
+                        }
+                    }
+                }
+            }); // grid
+
+            var cont = new Ext.container.Container({
+                layout: {
+                    type: 'vbox',
+                    align: 'stretch'
+                },
+                margin: 6,
+                flex: 1
+            });
+
+            var uGrid = new Ext.grid.GridPanel({
+                title: '最近新增资源',
+                store: new Ext.data.ArrayStore({
+                    fields: [{ name: 'code', type: 'string' }, { name: 'name', type: 'string' }, { name: 'amount', type: 'int'}],
+                    data: [['X-1', '设备名称1', 2], ['X-2', '设备名称1', 2]]
+                }),
+                flex: 1,
+                align: 'stretch',
+                frame: true,
+                //width: '100%',
+                plugins: [new Ext.grid.CellEditing({ clicksToEdit: 2 })],
+                selModel: { selType: 'cellmodel' },
+                tbar: [
+                //{ xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '增加用户', tooltipType: 'title', handler: function (source, e) { alert('增加用户') } },
+                          {xtype: 'tbseparator' },
+                          { xtype: 'tbfill' },
+                          { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { alert('刷新!') } }
+                        ],
+                columns: [
+                new Ext.grid.RowNumberer(),
+                {
+                    header: '资源编码',
+                    width: 60,
+                    dataIndex: 'code'
+                }, {
+                    header: '资源名称',
+                    flex: 1,
+                    dataIndex: 'name'
+                }, {
+                    header: '数量',
+                    width: 40,
+                    dataIndex: 'amount'
+                }],
+                viewConfig: {
+                //                    listeners: {
+                //                        itemdblclick: function (view, record, el, index, e) { /*alert(record.get("ID"))*/winMR.show(this) }
+                //                    }
+            }
+        }); // grid
+
+        var privilegeGrid = new Ext.grid.GridPanel({
+            title: '最近申请记录',
+            store: new Ext.data.ArrayStore({
+                fields: [{ name: 'name', type: 'string' }, { name: 'person', type: 'string' }, { name: 'amount', type: 'int'}],
+                data: [['设备1', '张平', 2], ['设备2', '张平', 1]]
+            }),
+            margin: '6 0 0 0',
+            flex: 1,
+            frame: true,
+            width: '100%',
+            plugins: [new Ext.grid.CellEditing({ clicksToEdit: 2 })],
+            selModel: { selType: 'cellmodel' },
+            tbar: [
+            //{ xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '增加权限', tooltipType: 'title', handler: function (source, e) { alert('增加权限') } },
+                          {xtype: 'tbseparator' },
+                          { xtype: 'tbfill' },
+                          { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { alert('刷新!') } }
+                        ],
+            columns: [
+                new Ext.grid.RowNumberer(),
+                {
+                    header: '设备名称',
+                    width: 60,
+                    dataIndex: 'name'
+                }, {
+                    header: '申请人',
+                    flex: 1,
+                    dataIndex: 'person'
+                }, {
+                    header: '数量',
+                    width: 40,
+                    dataIndex: 'amount'
+                }],
+            viewConfig: {
+            //                    listeners: {
+            //                        itemdblclick: function (view, record, el, index, e) { /*alert(record.get("ID"))*/winMR.show(this) }
+            //                    }
+        }
+    }); // grid
+
+    panel.add(roleGrid);
+    panel.add(cont);
+    cont.add(uGrid);
+    cont.add(privilegeGrid);
+
+
+
+    var userNewWindow = Ext.create('widget.window', {
+        title: '权限管理->新建用户',
+        modal: true,
+        closable: true,
+        closeAction: 'hide',
+        //animateTarget: this,
+        width: 800,
+        height: 500,
+        layout: 'fit',
+        bodyStyle: 'padding: 5px;',
+        items: [
+            new Ext.form.FormPanel({
+                autoHeight: true,
+                autoScroll: true,
+                bodyStyle: 'padding:5px 5px 0',
+                fieldDefaults: {
+                    labelAlign: 'top',
+                    msgTarget: 'side',
+                    width: '100%',
+                    margin: "4 10",
+                    anchor: '100%',
+                    columnWidth: .5
+                },
+                layout: 'column',
+                //                defaults: {
+                //                    border: false,
+                //                    layout: {
+                //                        type: 'column', 
+                //                        defaults: { width: '100%', }
+                //                        }
+                //                },
+                items: [
+                    {
+                        xtype: 'textfield',
+                        name: '资源编码',
+                        fieldLabel: '资源编码',
+                        allowBlank: false
+                    }, {
+                        xtype: 'textfield',
+                        name: '资源名称',
+                        fieldLabel: '资源名称',
+                        allowBlank: false
+                    }, {
+                        xtype: 'textfield',
+                        name: '资源类别',
+                        fieldLabel: '资源类别',
+                        allowBlank: false
+                    }, {
+                        xtype: 'textfield',
+                        name: '规格型号',
+                        fieldLabel: '规格型号',
+                        allowBlank: false
+                    }, {
+                        xtype: 'textfield',
+                        name: '计量单位',
+                        fieldLabel: '计量单位',
+                        columnWidth: .34,
+                        allowBlank: false
+                    }, {
+                        xtype: 'textfield',
+                        name: '可用数量',
+                        fieldLabel: '可用数量',
+                        columnWidth: .33,
+                        allowBlank: false
+                    }, {
+                        xtype: 'datefield',
+                        name: '到期时间',
+                        fieldLabel: '到期时间',
+                        columnWidth: .33,
+                        allowBlank: false
+                    }, {
+                        xtype: 'fieldset',
+                        title: '资源管辖',
+                        collapsible: true,
+                        columnWidth: 1,
+                        layout: 'column',
+                        margin: 10,
+                        items: [{
+                            xtype: 'textfield',
+                            name: '管辖部门',
+                            fieldLabel: '管辖部门',
+                            allowBlank: false
+                        }, {
+                            xtype: 'textfield',
+                            name: '管辖人',
+                            fieldLabel: '管辖人',
+                            allowBlank: false
+                        }, {
+                            xtype: 'textfield',
+                            name: '审核人',
+                            fieldLabel: '审核人',
+                            allowBlank: false
+                        }, {
+                            xtype: 'textfield',
+                            name: '联系电话',
+                            fieldLabel: '联系电话',
+                            allowBlank: false
+                        }]
+                    }, {
+                        xtype: 'htmleditor',
+                        name: '备注',
+                        columnWidth: 1,
+                        fieldLabel: '备注',
+                        allowBlank: false
+                    }
+                ],
+                buttons: [{
+                    text: '保存',
+                    handler: function () { alert('保存') }
+                }, {
+                    text: '取消',
+                    handler: function () { alert('取消') }
+                }]
+            })
+            ]
+    });
+
+    NewUser = function () {
+        userNewWindow.show();
+    }
+
+});                                // Ext.onReady
+
+            
+    </script>
+}

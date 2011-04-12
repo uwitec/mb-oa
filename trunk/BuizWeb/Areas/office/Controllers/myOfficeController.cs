@@ -25,5 +25,10 @@ namespace BuizApp.Areas.office.Controllers
         {
             return View();
         }
+
+        public ActionResult myMessage()
+        {
+            return View();
+        }
     }
 }

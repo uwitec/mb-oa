@@ -574,6 +574,16 @@ namespace TestProject1
                                 privileges = new Privilege[] {
                                     new Privilege {
                                         ID = Guid.NewGuid().ToString(),
+                                        privilegeName = "我的消息",
+                                        privilegeCode = "myMessage",
+                                        needAuth = true,
+                                        isMenuEntry = true,
+                                        createdTime = DateTime.Now,
+                                        securityGrade = 1,
+                                        orderNO = 1
+                                    },
+                                    new Privilege {
+                                        ID = Guid.NewGuid().ToString(),
                                         privilegeName = "我的文件柜",
                                         privilegeCode = "myDocument",
                                         needAuth = true,
@@ -644,7 +654,7 @@ namespace TestProject1
                                     }
                                 }
                             },
-                            new Resource{ ID = Guid.NewGuid().ToString(),resourceCode = "orgOffice",resourceName = "部门办公", orderNO=150,
+                            new Resource{ ID = Guid.NewGuid().ToString(),resourceCode = "orgOffice",resourceName = "行政办公", orderNO=150,
                                 privileges = new Privilege[] {
                                     new Privilege {
                                         ID = Guid.NewGuid().ToString(),
@@ -703,17 +713,17 @@ namespace TestProject1
                     new Module{
                         ID = Guid.NewGuid().ToString(), moduleCode = "resource", moduleName = "资源管理",
                         resources = new Resource[]{
-                            new Resource{ ID = Guid.NewGuid().ToString(),resourceCode = "equipment",resourceName = "设备管理",orderNO =160,
+                            new Resource{ ID = Guid.NewGuid().ToString(),resourceCode = "equipment",resourceName = "资源管理",orderNO =160,
                                 privileges = new Privilege[] {
                                     new Privilege {
                                         ID = Guid.NewGuid().ToString(),
-                                        privilegeName = "预约",
-                                        privilegeCode = "subscribe",
+                                        privilegeName = "资源台帐",
+                                        privilegeCode = "account",
                                         needAuth = true,
                                         isMenuEntry = true,
                                         createdTime = DateTime.Now,
                                         securityGrade = 1,
-                                        orderNO = 10
+                                        orderNO = 1
                                     },
                                     new Privilege {
                                         ID = Guid.NewGuid().ToString(),
@@ -786,7 +796,7 @@ namespace TestProject1
                                 privileges = new Privilege[] {
                                     new Privilege {
                                         ID = Guid.NewGuid().ToString(),
-                                        privilegeName = "设备占用情况",
+                                        privilegeName = "资源占用情况",
                                         privilegeCode = "query1",
                                         needAuth = true,
                                         isMenuEntry = true,
@@ -840,7 +850,7 @@ namespace TestProject1
                                     new Privilege {
                                         ID = Guid.NewGuid().ToString(),
                                         privilegeName = "流程定义",
-                                        privilegeCode = "query1",
+                                        privilegeCode = "define",
                                         needAuth = true,
                                         isMenuEntry = true,
                                         createdTime = DateTime.Now,
