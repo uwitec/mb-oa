@@ -15,6 +15,8 @@ namespace EntityObjectLib
         
         public string Password { get; set; }
 
+        public virtual Organization Organization { get; set; }
+
         public virtual ICollection<Role> Roles { get; set; }
 
         [NotMapped]

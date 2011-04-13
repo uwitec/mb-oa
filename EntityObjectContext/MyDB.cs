@@ -48,7 +48,7 @@ namespace EntityObjectContext
                 .HasRequired(p => p.resource) //必须在resourceID设置特性Required
                 .WithMany(res => res.privileges)
                 .Map(m => { m.MapKey("resourceID"); });// 在Privilege中不定义resourceID，用该语句建立关联，建议这样做
-                //.HasForeignKey(p => p.resourceID); // 如果在Privilege中定义了resourceID，可以用该语句建立关联，但建议不这样做
+            //.HasForeignKey(p => p.resourceID); // 如果在Privilege中定义了resourceID，可以用该语句建立关联，但建议不这样做
 
             modelBuilder.Entity<Role>()
                 .HasMany(p => p.Privileges)
@@ -73,6 +73,11 @@ namespace EntityObjectContext
                     //m.MapLeftKey(p => p.ID, "RoleID");  // CTP5,已淘汰
                     //m.MapRightKey(t => t.ID, "UserID");  // CTP5,已淘汰
                 });
+
+            modelBuilder.Entity<User>()
+                .HasOptional(u => u.Organization)
+                .WithMany(o => o.Users)
+                .Map(m => { m.MapKey("OrgID"); });
         }
     }
 }
