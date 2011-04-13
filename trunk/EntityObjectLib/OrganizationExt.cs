@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations; // 添加此引用后，才可以�
 
 namespace EntityObjectLib
 {
-    public class CategoryExt : Category
+    public class OrganizationExt : Organization
     {
         public string ExtName { get; set; }
     }
