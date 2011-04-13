@@ -11,9 +11,8 @@ namespace EntityObjectContext
 {
     public class MyDB : DbContext // MyDB是连接串的名称
     {
-        public DbSet<Movie> Movies { get; set; } //Movies是表名
-        public DbSet<Category> Categories { get; set; } //Categories是表名
-        public DbSet<CategoryExt> CategoriesExt { get; set; } //CategoriesExt是表名
+        public DbSet<Organization> Organizations { get; set; } //Categories是表名
+        public DbSet<OrganizationExt> OrganizationExts { get; set; } //CategoriesExt是表名
         public DbSet<Module> Modules { get; set; }
         public DbSet<Resource> Resources { get; set; }
         public DbSet<Privilege> Privileges { get; set; }
@@ -31,24 +30,12 @@ namespace EntityObjectContext
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             #region 测试
-            // TODO: Use Fluent API Here
-            modelBuilder.Entity<Movie>().HasKey(m => m.MPK); // 指明MPK为Movies的主键,等同于[Key]
+            modelBuilder.Entity<Organization>()
+                .HasOptional(c => c.ParentOrganization)
+                .WithMany(c => c.ChildOrganizations)
+                .Map(m => m.MapKey("ParentID"));
 
-            //modelBuilder.Entity<Category>().HasKey(c => c.Code); // 指明Code为Categories的主键,等同于[Key]
-
-            //modelBuilder.Entity<Movie>().Property(m => m.CategoryCode).IsRequired(); //等同于[Required(ErrorMessage = "")]
-            modelBuilder.Entity<Movie>() //指明Movie.CategoryCode为Category的外键
-                //.HasOptional(m => m.MCategory) //可以不指定CategoryCode为必需
-                .HasRequired(m => m.MCategory) //必须指定CategoryCode为必需
-                .WithMany(c => c.Movies)
-                .HasForeignKey(p => p.CategoryCode);
-
-            modelBuilder.Entity<Category>()
-                .HasOptional(c => c.ParentCategory)
-                .WithMany(c => c.ChildCategories)
-                .HasForeignKey(c => c.Parent);
-
-            modelBuilder.Entity<CategoryExt>().ToTable("CategoriesExt");
+            modelBuilder.Entity<OrganizationExt>().ToTable("OrganizationExts");//以多表方式实现继承
             #endregion
 
             // 以下用module的[Association("Resource_module", "moduleID", "ID", IsForeignKey = true)]，moduleID必须存在

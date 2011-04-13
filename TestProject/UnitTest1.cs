@@ -14,37 +14,11 @@ namespace TestProject1
     [TestClass]
     public class UnitTest1
     {
-        [TestMethod]
-        public void TestMethod1()
-        {
-            MyDB mydb = new MyDB();
-
-            Movie m = mydb.Movies.FirstOrDefault();
-            Debug.WriteLine(m.Title);
-        }
-
-
-        public void Insert()
-        {
-            using (MyDB mydb = new MyDB())
-            {
-                Category c = new Category { Code = "asd", Name = "asdasd" };
-                mydb.Categories.Add(c);
-
-                //mydb.Categories.Add(new Category { Code="asd", Name="asdasd" });
-
-                int r = mydb.SaveChanges();
-
-                Debug.WriteLine(r);
-            }
-        }
-
-
         public void TestTree()
         {
             MyDB mydb = new MyDB();
 
-            CategoryExt m = mydb.CategoriesExt.FirstOrDefault();
+            OrganizationExt m = mydb.OrganizationExts.FirstOrDefault();
             Debug.WriteLine(m.Name);
         }
 
