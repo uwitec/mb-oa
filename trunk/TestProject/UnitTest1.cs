@@ -300,6 +300,11 @@ namespace TestProject1
                     mydb.Users.Remove(r);
                 }
 
+                foreach (Organization o in mydb.Organizations.Select(o => o).OrderByDescending(o=>o.OrderNO))
+                {
+                    mydb.Organizations.Remove(o);
+                }
+
                 int result = mydb.SaveChanges();
 
                 Debug.WriteLine(result);
@@ -353,13 +358,24 @@ namespace TestProject1
                                     new Privilege
                                     {
                                         ID = Guid.NewGuid().ToString(),
+                                        privilegeName = "组织机构管理",
+                                        privilegeCode = "organization",
+                                        needAuth = true,
+                                        isMenuEntry = true,
+                                        createdTime = DateTime.Now,
+                                        securityGrade = 1,
+                                        orderNO = 30
+                                    },
+                                    new Privilege
+                                    {
+                                        ID = Guid.NewGuid().ToString(),
                                         privilegeName = "用户管理",
                                         privilegeCode = "user",
                                         needAuth = true,
                                         isMenuEntry = true,
                                         createdTime = DateTime.Now,
                                         securityGrade = 1,
-                                        orderNO = 30
+                                        orderNO = 40
                                     },
                                     new Privilege
                                     {
@@ -370,7 +386,7 @@ namespace TestProject1
                                         isMenuEntry = true,
                                         createdTime = DateTime.Now,
                                         securityGrade = 1,
-                                        orderNO = 40
+                                        orderNO = 50
                                     },
                                     new Privilege
                                     {
@@ -381,7 +397,7 @@ namespace TestProject1
                                         isMenuEntry = true,
                                         createdTime = DateTime.Now,
                                         securityGrade = 1,
-                                        orderNO = 50
+                                        orderNO = 100
                                     }
                                 }
                             },
@@ -898,32 +914,130 @@ namespace TestProject1
                 }
             };
 
-            User[] users = new User[]{
-                new User{
-                    ID=Guid.NewGuid().ToString(), 
-                    Code="lilin", 
-                    Name="李林", 
-                    Password="123456",
-                    Roles= roles.Where(r=>r.Name=="admin").ToArray()
-                },
-                new User{
-                    ID=Guid.NewGuid().ToString(), 
-                    Code="chw", 
-                    Name="陈宏伟", 
-                    Password="123456",
-                    Roles= roles.Where(r=>r.Name=="normal user" || r.Name=="guest").ToArray()
-                }
+            Organization[] orgs = new Organization[]{
+                  new Organization{ 
+                      ID = Guid.NewGuid().ToString(), 
+                      Code = "futuresoft",
+                      Name = "某某公司",
+                      OrderNO = 10,
+                      ChildOrganizations = new Organization[]{
+                          new Organization{
+                              ID = Guid.NewGuid().ToString(), 
+                              Code = "dev",
+                              Name = "开发部",
+                              OrderNO = 10,
+                              ChildOrganizations = new Organization[]{
+                                  new Organization{
+                                      ID = Guid.NewGuid().ToString(), 
+                                      Code = "JJ",
+                                      Name = "计价软件项目组",
+                                      OrderNO = 100
+                                  },
+                                  new Organization{
+                                      ID = Guid.NewGuid().ToString(), 
+                                      Code = "GJ",
+                                      Name = "工程量与钢筋项目组",
+                                      OrderNO = 110
+                                  },
+                                  new Organization{
+                                      ID = Guid.NewGuid().ToString(), 
+                                      Code = "MIS",
+                                      Name = "MIS项目组",
+                                      OrderNO = 120,
+                                      Users = new User[]{
+                                          new User{
+                                                ID=Guid.NewGuid().ToString(), 
+                                                Code="lilin", 
+                                                Name="李林", 
+                                                Password="123456",
+                                                Roles= roles.Where(r=>r.Name=="admin").ToArray()
+                                            }
+                                      }
+                                  }
+                              },
+                              Users = new User[]{
+                                    new User{
+                                        ID=Guid.NewGuid().ToString(), 
+                                        Code="chw", 
+                                        Name="陈宏伟", 
+                                        Password="123456",
+                                        Roles= roles.Where(r=>r.Name=="normal user" || r.Name=="guest").ToArray()
+                                    }
+                              }
+                          },
+                          new Organization{
+                              ID = Guid.NewGuid().ToString(), 
+                              Code = "Market",
+                              Name = "市场部",
+                              OrderNO = 20,
+                              ChildOrganizations = new Organization[]{
+                                  new Organization{
+                                      ID = Guid.NewGuid().ToString(), 
+                                      Code = "NJ",
+                                      Name = "南京组",
+                                      OrderNO = 200
+                                  },
+                                  new Organization{
+                                      ID = Guid.NewGuid().ToString(), 
+                                      Code = "SZ",
+                                      Name = "苏州组",
+                                      OrderNO = 210
+                                  },
+                                  new Organization{
+                                      ID = Guid.NewGuid().ToString(), 
+                                      Code = "FZ",
+                                      Name = "非洲组",
+                                      OrderNO = 220
+                                  }
+                              }
+                          },
+                          new Organization{
+                              ID = Guid.NewGuid().ToString(), 
+                              Code = "Test",
+                              Name = "测试部",
+                              OrderNO = 30
+                          },
+                          new Organization{
+                              ID = Guid.NewGuid().ToString(), 
+                              Code = "apply",
+                              Name = "实施部",
+                              OrderNO = 50,
+                              ChildOrganizations = new Organization[]{
+                                  new OrganizationExt{
+                                      ID = Guid.NewGuid().ToString(), 
+                                      Code = "One",
+                                      Name = "实施一组",
+                                      ExtName = "一组附加信息",
+                                      OrderNO = 500
+                                  },
+                                  new Organization{
+                                      ID = Guid.NewGuid().ToString(), 
+                                      Code = "two",
+                                      Name = "实施二组",
+                                      OrderNO = 510
+                                  },
+                                  new Organization{
+                                      ID = Guid.NewGuid().ToString(), 
+                                      Code = "three",
+                                      Name = "实施三组",
+                                      OrderNO = 520
+                                  }
+                          },
+                      }
+                  }
+                  }
             };
             using (MyDB mydb = new MyDB())
             {
+                // 奇怪,下面的foreach不能少,不然会出现"操作到资源"关系缺失的错误提示
                 foreach (Module m in modules)
                 {
                     mydb.Modules.Add(m);
                 }
 
-                foreach (User u in users)
+                foreach (Organization org in orgs)
                 {
-                    mydb.Users.Add(u);
+                    mydb.Organizations.Add(org);
                 }
                 mydb.SaveChanges();
             }

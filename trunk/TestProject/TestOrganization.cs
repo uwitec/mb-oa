@@ -20,6 +20,5 @@ namespace TestProject1
             OrganizationExt m = mydb.OrganizationExts.FirstOrDefault();
             Debug.WriteLine(m.Name);
         }
-
     }
 }
