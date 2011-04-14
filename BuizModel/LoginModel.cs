@@ -85,9 +85,9 @@ namespace BuizApp.Models
         {
             using (MyDB mydb = new MyDB())
             {
+                IEnumerable<Privilege> privileges = getPrivilegesByUser(userId, mydb);
                 return
-                    mydb.Users.FirstOrDefault(u => u.ID.Equals(userId))
-                    .Roles.SelectMany(r => r.RolePrivileges.Select(rp=>rp.Privilege)).Where(p => p.isMenuEntry)
+                    privileges.Where(p => p.isMenuEntry)
                     .GroupBy(p => p.resource)
                     .OrderBy(r => r.Key.orderNO)
                     .ToDictionary(
@@ -100,6 +100,26 @@ namespace BuizApp.Models
                         }).ToList()
                         );
             }
+        }
+
+        public static IEnumerable<Privilege> getPrivilegesByUser(string userId, MyDB mydb)
+        {
+            User current = mydb.Users.FirstOrDefault(u => u.ID.Equals(userId));
+            IEnumerable<Role> orgRoles = getOrganizationsByUser(current, mydb).SelectMany(org => org.Roles);
+            IEnumerable<Privilege> privileges =  orgRoles.Union(current.Roles).SelectMany(r => r.RolePrivileges).Select(rp=>rp.Privilege);
+            return privileges;
+        }
+
+        public static IEnumerable<Organization> getOrganizationsByUser(User current, MyDB mydb)
+        {
+            List<Organization> result = new List<Organization>();
+            Organization org = current.Organization;
+            while (org != null)
+            {
+                result.Add(org);
+                org = org.ParentOrganization;
+            }
+            return result;
         }
 
         /// <summary>
@@ -134,9 +154,7 @@ namespace BuizApp.Models
                     }
                     else
                     {
-                        isAuthorizaion = privilege.PrivilegeRoles.Select(pr=>pr.Role)
-                            .Where(r => r.Users.Where(u => u.ID.Equals(userId)).Count() > 0)
-                            .Count() > 0;
+                        isAuthorizaion = getPrivilegesByUser(userId, mydb).Contains(privilege); ;
                     }
                 }
             }

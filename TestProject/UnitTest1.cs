@@ -688,7 +688,7 @@ namespace TestProject1
                     );
             }
             Role normal_user = roles.FirstOrDefault(r => r.Name.Equals("normal user"));
-            IEnumerable<Privilege> defaultPprivilieges = modules.Where(m => m.moduleCode == "default").SelectMany(p => p.resources).SelectMany(r=>r.privileges);
+            IEnumerable<Privilege> defaultPprivilieges = modules.Where(m => m.moduleCode == "report").SelectMany(p => p.resources).SelectMany(r => r.privileges);
             normal_user.RolePrivileges = new List<RolePrivilege>();
             foreach (Privilege p in defaultPprivilieges)
             {
@@ -702,12 +702,28 @@ namespace TestProject1
                     );
             }
 
+            Role guest = roles.FirstOrDefault(r => r.Name.Equals("guest"));
+            IEnumerable<Privilege> guestPrivilieges = modules.Where(m => m.moduleCode == "Office" || m.moduleCode == "default").SelectMany(p => p.resources).SelectMany(r => r.privileges);
+            guest.RolePrivileges = new List<RolePrivilege>();
+            foreach (Privilege p in guestPrivilieges)
+            {
+                normal_user.RolePrivileges.Add(
+                    new RolePrivilege
+                    {
+                        ID = Guid.NewGuid().ToString(),
+                        Privilege = p,
+                        Parameters = "guest"
+                    }
+                    );
+            }
+
             Organization[] orgs = new Organization[]{
                   new Organization{ 
                       ID = Guid.NewGuid().ToString(), 
                       Code = "futuresoft",
                       Name = "某某公司",
                       OrderNO = 10,
+                      Roles= roles.Where(r=>r.Name=="guest").ToArray(),
                       ChildOrganizations = new Organization[]{
                           new Organization{
                               ID = Guid.NewGuid().ToString(), 
@@ -725,8 +741,7 @@ namespace TestProject1
                                       ID = Guid.NewGuid().ToString(), 
                                       Code = "GJ",
                                       Name = "工程量与钢筋项目组",
-                                      OrderNO = 110,
-                                      Roles = roles.Where(r=>r.Name=="admin").ToArray()
+                                      OrderNO = 110
                                   },
                                   new Organization{
                                       ID = Guid.NewGuid().ToString(), 
@@ -744,13 +759,13 @@ namespace TestProject1
                                       }
                                   }
                               },
+                              Roles= roles.Where(r=>r.Name=="normal user").ToArray(),
                               Users = new User[]{
                                     new User{
                                         ID=Guid.NewGuid().ToString(), 
                                         Code="chw", 
                                         Name="陈宏伟", 
-                                        Password="123456",
-                                        Roles= roles.Where(r=>r.Name=="normal user" || r.Name=="guest").ToArray()
+                                        Password="123456"
                                     }
                               }
                           },
