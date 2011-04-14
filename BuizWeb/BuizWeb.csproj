@@ -147,6 +147,9 @@
     <Content Include="Content\javascript\samples\dataModel.js" />
     <Content Include="Content\site.css" />
     <Content Include="Global.asax" />
+    <Content Include="install.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -237,7 +240,6 @@
     <Content Include="Areas\data\Views\_ViewStart.cshtml" />
     <Content Include="Areas\report\Views\_ViewStart.cshtml" />
     <Content Include="Areas\system\Views\Shared\_Layout.cshtml" />
-    <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\system\Views\Auth\selfAuth.cshtml" />
