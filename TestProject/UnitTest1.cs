@@ -937,7 +937,8 @@ namespace TestProject1
                                       ID = Guid.NewGuid().ToString(), 
                                       Code = "GJ",
                                       Name = "工程量与钢筋项目组",
-                                      OrderNO = 110
+                                      OrderNO = 110,
+                                      Roles = roles.Where(r=>r.Name=="admin").ToArray()
                                   },
                                   new Organization{
                                       ID = Guid.NewGuid().ToString(), 
@@ -1049,6 +1050,20 @@ namespace TestProject1
             using (MyDB mydb = new MyDB())
             {
                 IQueryable<Privilege> Privileges = mydb.Privileges.Select(u => u);
+                return;
+            }
+        }
+
+        [TestMethod]
+        public void testSubject()
+        {
+            using (MyDB mydb = new MyDB())
+            {
+                ICollection<User> us = mydb.Roles.First().Users;
+                IQueryable<User> us1 = mydb.Roles.SelectMany(r => r.Subjects).OfType<User>();
+                IQueryable<User> users = mydb.Roles.SelectMany(r => r.Users);
+                //IQueryable < User > users = mydb.Roles.SelectMany(r => r.Subjects).Distinct().Where(s => s.Category.Equals("User")).Select(s => s as User);
+                IQueryable<Organization> Organizations = mydb.Roles.SelectMany(r => r.Organizations);
                 return;
             }
         }

@@ -17,6 +17,7 @@ namespace EntityObjectContext
         public DbSet<Resource> Resources { get; set; }
         public DbSet<Privilege> Privileges { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Subject> Subjects { get; set; }
         public DbSet<User> Users { get; set; }
 
         public MyDB()
@@ -63,21 +64,37 @@ namespace EntityObjectContext
                 });
 
             modelBuilder.Entity<Role>()
-                .HasMany(p => p.Users)
+                .HasMany(p => p.Subjects)
                 .WithMany(t => t.Roles)
                 .Map(m =>
                 {
-                    m.ToTable("Users_Roles");
+                    m.ToTable("Subjects_Roles");
                     m.MapLeftKey("RoleID");
-                    m.MapRightKey("UserID");
+                    m.MapRightKey("SubjectID");
                     //m.MapLeftKey(p => p.ID, "RoleID");  // CTP5,已淘汰
                     //m.MapRightKey(t => t.ID, "UserID");  // CTP5,已淘汰
                 });
+
+            //modelBuilder.Entity<Role>()
+            //    .HasMany(r => r.Users)
+            //    .WithMany(u => u.Roles)
+            //    .Map(m =>
+            //    {
+            //        m.ToTable("Subjects_Roles");
+            //        m.MapLeftKey("RoleID");
+            //        m.MapRightKey("SubjectID");
+            //        //m.MapLeftKey(p => p.ID, "RoleID");  // CTP5,已淘汰
+            //        //m.MapRightKey(t => t.ID, "UserID");  // CTP5,已淘汰
+            //    });
+
+            modelBuilder.Entity<User>().ToTable("Users");//以多表方式实现继承Table-per-Hierarchy
 
             modelBuilder.Entity<User>()
                 .HasOptional(u => u.Organization)
                 .WithMany(o => o.Users)
                 .Map(m => { m.MapKey("OrgID"); });
+
+            modelBuilder.Entity<Organization>().ToTable("Organizations");//Table-per-Hierarchy
         }
     }
 }

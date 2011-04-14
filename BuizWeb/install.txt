@@ -9,5 +9,6 @@
 	下载地址：http://www.microsoft.com/downloads/zh-cn/details.aspx?FamilyID=d2928bc1-f48c-4e95-a064-2a455a22c8f6
 4.下载安装Entity Framework 4.1
 	下载地址：http://www.microsoft.com/downloads/en/details.aspx?FamilyID=b41c728e-9b4f-4331-a1a8-537d16c6acdf&displaylang=en
+5.使用站点根目录，不要使用虚拟目录，将"默认文档"设置为login
 
 备注：使用的数据库为sqlite，安装包自带所需DLL，不需要安装。
