@@ -23,247 +23,6 @@ namespace TestProject1
         }
 
         [TestMethod]
-        [TestCategory("Data append")]
-        public void AppendData()
-        {
-            ClearData();
-
-            using (MyDB mydb = new MyDB())
-            {
-                #region 模块{m1:系统管理,m2：销售业务管理}
-                Module m1 = new Module
-                {
-                    ID = Guid.NewGuid().ToString(),
-                    moduleCode = "system",
-                    moduleName = "系统管理"
-                };
-                mydb.Modules.Add(m1);
-                Module m2 = new Module
-                {
-                    ID = Guid.NewGuid().ToString(),
-                    moduleCode = "test",
-                    moduleName = "销售业务管理"
-                };
-                mydb.Modules.Add(m2);
-                Module m3 = new Module
-                {
-                    ID = Guid.NewGuid().ToString(),
-                    moduleCode = "default",
-                    moduleName = "缺省"
-                };
-                mydb.Modules.Add(m3);
-                Module m4 = new Module
-                {
-                    ID = Guid.NewGuid().ToString(),
-                    moduleCode = "data",
-                    moduleName = "数据服务"
-                };
-                mydb.Modules.Add(m4);
-                #endregion
-
-                #region 资源{res1:系统管理.权限管理,res2:系统管理.日志管理,res3:销售业务管理.订单管理,res4销售业务管理.库存管理}
-                Resource res1 = new Resource
-                {
-                    ID = Guid.NewGuid().ToString(),
-                    resourceCode = "auth",
-                    resourceName = "权限管理"
-                };
-                mydb.Resources.Add(res1);
-                Resource res2 = new Resource
-                {
-                    ID = Guid.NewGuid().ToString(),
-                    resourceCode = "log",
-                    resourceName = "日志查询"
-                };
-                mydb.Resources.Add(res2);
-
-
-                Resource res3 = new Resource
-                {
-                    ID = Guid.NewGuid().ToString(),
-                    resourceCode = "order",
-                    resourceName = "订单管理"
-                };
-                mydb.Resources.Add(res3);
-                Resource res4 = new Resource
-                {
-                    ID = Guid.NewGuid().ToString(),
-                    resourceCode = "kuCun",
-                    resourceName = "库存管理"
-                };
-                mydb.Resources.Add(res4);
-                Resource res5 = new Resource
-                {
-                    ID = Guid.NewGuid().ToString(),
-                    resourceCode = "Login",
-                    resourceName = "登录"
-                };
-                mydb.Resources.Add(res5);
-                Resource res6 = new Resource
-                {
-                    ID = Guid.NewGuid().ToString(),
-                    resourceCode = "Main",
-                    resourceName = "主界面"
-                };
-                mydb.Resources.Add(res6);
-                Resource res7 = new Resource
-                {
-                    ID = Guid.NewGuid().ToString(),
-                    resourceCode = "Privilege",
-                    resourceName = "权限"
-                };
-                mydb.Resources.Add(res7);
-                #endregion
-
-                #region 权限 系统管理.权限管理
-                Privilege p1 = new Privilege
-                {
-                    ID = Guid.NewGuid().ToString(),
-                    privilegeName = "权限",
-                    privilegeCode = "privilege",
-                    needAuth = true,
-                    isMenuEntry = true,
-                    createdTime = DateTime.Now,
-                    securityGrade = 1,
-                    orderNO = 1
-                };
-                mydb.Privileges.Add(p1);
-                Privilege p2 = new Privilege
-                {
-                    ID = Guid.NewGuid().ToString(),
-                    privilegeName = "角色",
-                    privilegeCode = "role",
-                    needAuth = true,
-                    isMenuEntry = true,
-                    createdTime = DateTime.Now,
-                    securityGrade = 1,
-                    orderNO = 2
-                };
-                mydb.Privileges.Add(p2);
-
-                Privilege p3 = new Privilege
-                {
-                    ID = Guid.NewGuid().ToString(),
-                    privilegeName = "创建新订单",
-                    privilegeCode = "create",
-                    needAuth = true,
-                    isMenuEntry = true,
-                    createdTime = DateTime.Now,
-                    securityGrade = 1,
-                    orderNO = 100
-                };
-                mydb.Privileges.Add(p3);
-                Privilege p4 = new Privilege
-                {
-                    ID = Guid.NewGuid().ToString(),
-                    privilegeName = "审核订单",
-                    privilegeCode = "audit",
-                    needAuth = true,
-                    isMenuEntry = true,
-                    createdTime = DateTime.Now,
-                    securityGrade = 1,
-                    orderNO = 101
-                };
-                mydb.Privileges.Add(p4);
-
-                Privilege p5 = new Privilege
-                {
-                    ID = Guid.NewGuid().ToString(),
-                    privilegeName = "操作日志查询",
-                    privilegeCode = "query",
-                    needAuth = true,
-                    isMenuEntry = true,
-                    createdTime = DateTime.Now,
-                    securityGrade = 1,
-                    orderNO = 120
-                };
-                mydb.Privileges.Add(p5);
-
-                Privilege p6 = new Privilege
-                {
-                    ID = Guid.NewGuid().ToString(),
-                    privilegeName = "登录",
-                    privilegeCode = "Index",
-                    needAuth = false,
-                    isMenuEntry = false,
-                    createdTime = DateTime.Now,
-                    securityGrade = 1,
-                    orderNO = 120
-                };
-                mydb.Privileges.Add(p6);
-
-                Privilege p7 = new Privilege
-                {
-                    ID = Guid.NewGuid().ToString(),
-                    privilegeName = "主界面",
-                    privilegeCode = "Index",
-                    needAuth = true,
-                    isMenuEntry = false,
-                    createdTime = DateTime.Now,
-                    securityGrade = 1,
-                    orderNO = 120
-                };
-                mydb.Privileges.Add(p7);
-                Privilege p8 = new Privilege
-                {
-                    ID = Guid.NewGuid().ToString(),
-                    privilegeName = "权限表",
-                    privilegeCode = "Index",
-                    needAuth = false,
-                    isMenuEntry = false,
-                    createdTime = DateTime.Now,
-                    securityGrade = 1,
-                    orderNO = 120
-                };
-                mydb.Privileges.Add(p8);
-                #endregion
-
-                #region 用户角色
-                Role R1 = new Role { ID = Guid.NewGuid().ToString(), Name = "Role1" };
-                mydb.Roles.Add(R1);
-                Role R2 = new Role { ID = Guid.NewGuid().ToString(), Name = "Role2" };
-                mydb.Roles.Add(R2);
-                Role R3 = new Role { ID = Guid.NewGuid().ToString(), Name = "Role3" };
-                mydb.Roles.Add(R3);
-
-                User u1 = new User { ID = Guid.NewGuid().ToString(), Code = "chenhongwei", Name = "陈宏伟", Password = "123456" };
-                mydb.Users.Add(u1);
-                User u2 = new User { ID = Guid.NewGuid().ToString(), Code = "lilin", Name = "李琳", Password = "123456" };
-                mydb.Users.Add(u2);
-                #endregion
-                m1.resources = new[] { res1, res2 };
-                m2.resources = new[] { res3, res4 };
-                m3.resources = new[] { res5, res6 };
-                m4.resources = new[] { res7 }; ;
-                res1.privileges = new[] { p1, p2 };
-                res3.privileges = new[] { p3, p4 };
-                res2.privileges = new[] { p5 };
-                res5.privileges = new[] { p6 };
-                res6.privileges = new[] { p7 };
-                res7.privileges = new[] { p8 };
-                R1.Privileges = new Privilege[] { p1, p2, p7 };
-                R2.Privileges = new Privilege[] { p1, p3, p4, p7 };
-                R3.Privileges = new Privilege[] { p5, p7 };
-                u1.Roles = new Role[] { R1, R2 };
-                u2.Roles = new Role[] { R2, R3 };
-
-                try
-                {
-                    int r = mydb.SaveChanges();
-                    Debug.WriteLine(r);
-                }
-                catch (DbEntityValidationException ex)
-                {
-                    Debug.WriteLine(ex.ToString());
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.ToString());
-                }
-            }
-        }
-
-        [TestMethod]
         public void ClearData()
         {
             using (MyDB mydb = new MyDB())
@@ -271,7 +30,7 @@ namespace TestProject1
                 IQueryable<Role> roles = mydb.Roles.Select(p => p);
                 foreach (Role r in roles)
                 {
-                    r.Privileges.Clear();
+                    r.RolePrivileges.Clear();
                     r.Users.Clear();
                     mydb.Roles.Remove(r);
                 }
@@ -897,22 +656,51 @@ namespace TestProject1
                     }
                 };
 
+
+
             Role[] roles = new Role[]{
                 new Role { 
                     ID = Guid.NewGuid().ToString(), 
-                    Name = "admin" ,
-                    Privileges = modules.SelectMany(p=>p.resources).SelectMany(r=>r.privileges).ToArray()
+                    Name = "admin" 
                 },
                 new Role { 
                     ID = Guid.NewGuid().ToString(), 
-                    Name = "normal user",
-                    Privileges = modules.Where(m=>m.moduleCode=="default").SelectMany(p=>p.resources).SelectMany(r=>r.privileges).ToArray()
+                    Name = "normal user"
                 },
                 new Role { 
                     ID = Guid.NewGuid().ToString(), 
                     Name = "guest" 
                 }
             };
+
+            Role admin = roles.FirstOrDefault(r => r.Name.Equals("admin"));
+            IEnumerable<Privilege> allPprivilieges = modules.SelectMany(p => p.resources).SelectMany(r=>r.privileges);
+            admin.RolePrivileges = new List<RolePrivilege>();
+            foreach (Privilege p in allPprivilieges)
+            {
+                admin.RolePrivileges.Add(
+                    new RolePrivilege
+                    {
+                        ID = Guid.NewGuid().ToString(),
+                        Privilege = p,
+                        Parameters = "admin"
+                    }
+                    );
+            }
+            Role normal_user = roles.FirstOrDefault(r => r.Name.Equals("normal user"));
+            IEnumerable<Privilege> defaultPprivilieges = modules.Where(m => m.moduleCode == "default").SelectMany(p => p.resources).SelectMany(r=>r.privileges);
+            normal_user.RolePrivileges = new List<RolePrivilege>();
+            foreach (Privilege p in defaultPprivilieges)
+            {
+                normal_user.RolePrivileges.Add(
+                    new RolePrivilege
+                    {
+                        ID = Guid.NewGuid().ToString(),
+                        Privilege = p,
+                        Parameters = "normal user"
+                    }
+                    );
+            }
 
             Organization[] orgs = new Organization[]{
                   new Organization{ 

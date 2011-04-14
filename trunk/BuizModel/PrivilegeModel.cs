@@ -52,7 +52,7 @@ namespace BuizModel
                     {
                         r.ID,
                         r.Name,
-                        privileges = r.Privileges.Select(p => new { p.ID, p.privilegeCode, p.privilegeName }).ToArray()
+                        privileges = r.RolePrivileges.Select(p => new { p.Privilege.ID, p.Privilege.privilegeCode, p.Privilege.privilegeName }).ToArray()
                     }).ToArray();
             }
         }

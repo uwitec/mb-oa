@@ -38,6 +38,7 @@
     <Reference Include="System.Data.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RolePrivilege.cs" />
     <Compile Include="Subject.cs" />
     <Compile Include="Organization.cs" />
     <Compile Include="OrganizationExt.cs" />

@@ -38,6 +38,6 @@ namespace EntityObjectLib
             }
         }
 
-        public virtual ICollection<Privilege> Privileges { get; set; }
+        public virtual ICollection<RolePrivilege> RolePrivileges { get; set; }
     }
 }
