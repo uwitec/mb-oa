@@ -87,7 +87,7 @@ namespace BuizApp.Models
             {
                 return
                     mydb.Users.FirstOrDefault(u => u.ID.Equals(userId))
-                    .Roles.SelectMany(r => r.Privileges).Where(p => p.isMenuEntry)
+                    .Roles.SelectMany(r => r.RolePrivileges.Select(rp=>rp.Privilege)).Where(p => p.isMenuEntry)
                     .GroupBy(p => p.resource)
                     .OrderBy(r => r.Key.orderNO)
                     .ToDictionary(
@@ -134,7 +134,7 @@ namespace BuizApp.Models
                     }
                     else
                     {
-                        isAuthorizaion = privilege.Roles
+                        isAuthorizaion = privilege.PrivilegeRoles.Select(pr=>pr.Role)
                             .Where(r => r.Users.Where(u => u.ID.Equals(userId)).Count() > 0)
                             .Count() > 0;
                     }

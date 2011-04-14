@@ -27,7 +27,7 @@ namespace EntityObjectLib
 
         public int orderNO { get; set; }
 
-        public virtual ICollection<Role> Roles { get; set; }
+        public virtual ICollection<RolePrivilege> PrivilegeRoles { get; set; }
 
         /// 下面的定义是不必要的，可以使用Map(m => { m.MapKey("resourceID"); })直接指定字段名
         //[Required(ErrorMessage = "resourceID required")] //必须指定

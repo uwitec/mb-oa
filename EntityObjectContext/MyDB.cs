@@ -19,6 +19,7 @@ namespace EntityObjectContext
         public DbSet<Role> Roles { get; set; }
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<RolePrivilege> RolePrivileges { get; set; }
 
         public MyDB()
             : base("MyDB2") // MyDB2是连接串的名称
@@ -52,18 +53,6 @@ namespace EntityObjectContext
             //.HasForeignKey(p => p.resourceID); // 如果在Privilege中定义了resourceID，可以用该语句建立关联，但建议不这样做
 
             modelBuilder.Entity<Role>()
-                .HasMany(p => p.Privileges)
-                .WithMany(t => t.Roles)
-                .Map(m =>
-                {
-                    m.ToTable("Roles_Privileges");
-                    m.MapLeftKey("RoleID");
-                    m.MapRightKey("PrivilegeID");
-                    //m.MapLeftKey(p => p.ID, "RoleID");  // CTP5,已淘汰
-                    //m.MapRightKey(t => t.ID, "PrivilegeID");  // CTP5,已淘汰
-                });
-
-            modelBuilder.Entity<Role>()
                 .HasMany(p => p.Subjects)
                 .WithMany(t => t.Roles)
                 .Map(m =>
@@ -95,6 +84,16 @@ namespace EntityObjectContext
                 .Map(m => { m.MapKey("OrgID"); });
 
             modelBuilder.Entity<Organization>().ToTable("Organizations");//Table-per-Hierarchy
+
+            modelBuilder.Entity<RolePrivilege>()
+                .HasRequired(rp => rp.Privilege)
+                .WithMany(p => p.PrivilegeRoles)
+                .Map(m => m.MapKey("PrivilegeID"));
+
+            modelBuilder.Entity<RolePrivilege>()
+                .HasRequired(rp => rp.Role)
+                .WithMany(p => p.RolePrivileges)
+                .Map(m => m.MapKey("RoleID"));
         }
     }
 }
