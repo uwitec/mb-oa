@@ -4,7 +4,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EntityObjectLib
 {
-    public class User
+    public class UID
+    {
+        public string ID { get; set; }
+    }
+    public class User : UID
     {
         [Key]
         public string ID { get; set; }
