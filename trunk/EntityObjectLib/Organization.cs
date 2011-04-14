@@ -4,10 +4,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EntityObjectLib
 {
-    public class Organization
+    public class Organization : Subject
     {
-        [Key]
-        public string ID { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
         public int OrderNO { get; set; }
@@ -16,5 +14,11 @@ namespace EntityObjectLib
         public virtual ICollection<Organization> ChildOrganizations { get; set; }
 
         public virtual ICollection<User> Users { get; set; }
+
+        public Organization()
+        {
+            //return; //要在此处实现对this.Category赋值
+            this.Category = this.GetType().Name;
+        }
     }
 }

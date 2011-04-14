@@ -4,14 +4,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EntityObjectLib
 {
-    public class UID
+    public class User : Subject
     {
-        public string ID { get; set; }
-    }
-    public class User : UID
-    {
-        [Key]
-        public string ID { get; set; }
+        //[Key]
+        //public string ID { get; set; }
 
         public string Code { get; set; }
         
@@ -21,8 +17,6 @@ namespace EntityObjectLib
 
         public virtual Organization Organization { get; set; }
 
-        public virtual ICollection<Role> Roles { get; set; }
-
         [NotMapped]
         public string FullName
         {
@@ -30,6 +24,12 @@ namespace EntityObjectLib
             {
                 return string.Format("{0}[{1}]", this.Name, this.ID);
             }
+        }
+
+        public User()
+        {
+            //return; //要在此处实现对this.Category赋值
+            this.Category = this.GetType().Name;
         }
     }
 }
