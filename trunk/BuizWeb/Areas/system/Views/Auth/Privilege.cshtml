@@ -5,12 +5,12 @@
             title: '模块功能树',
             //selModel: new Ext.selection.CheckboxModel({}),
             tbar: [
-                { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '增加', tooltipType: 'title', handler: function (source, e) { alert('增加') } },
-                { xtype: 'button', iconCls: 'iconEdit', text: '', tooltip: '编辑', tooltipType: 'title', handler: function (source, e) { alert('编辑') } },
-                { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { Ext.getCmp('grid001').view.refresh(); } },
+                { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '增加', tooltipType: 'title', handler: function (source, e) {treepNodeNewOrEdit(null)} },
+                { xtype: 'button', iconCls: 'iconEdit', text: '', tooltip: '编辑', tooltipType: 'title', handler: function (source, e) {treepNodeNewOrEdit(treep.selModel.selected.items[0].get("id")); } },
+                { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { treeqRemoveNode(treep.selModel.selected.items[0].get("id")) } },
                 { xtype: 'tbseparator' },
                 { xtype: 'tbfill' },
-                { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { alert('刷新!') } }
+                { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { treep.getView().getTreeStore().load()} }
              ],
             store: new Ext.data.TreeStore({
                 proxy: {
@@ -44,15 +44,62 @@
                 itemcontextmenu: function (view, record, el, index, event) {// 声明菜单类型
                     event.preventDefault(); // 阻止浏览器默认右键菜单显示
                     //debugger;
-                    var m = Ext.create("myctMenu");
-                    //debugger;
-                    m.selRecord = record;  //treep被选中的是treep.selModel.selected.items[0].get("id")
-                    //debugger;
-                    m.showAt(event.getXY()); // 取得鼠标点击坐标，展示菜单
+                    var nodeType = record.data.depth<2?"模块":"资源";
+//                    m.selRecord = record;  //treep被选中的是treep.selModel.selected.items[0].get("id")
+                    Ext.create("Ext.menu.Menu",{
+                        items: [
+                            {id: 'rMenu1',text: '添加'+nodeType,iconCls: 'iconNew',handler: function () {treepNodeNewOrEdit(null);}}, 
+                            {id: 'rMenu2',text: '编辑'+nodeType,iconCls: 'iconEdit',handler: function (n,e) {treepNodeNewOrEdit(record.data.id);}},
+                            {id: 'rMenu3',text: '删除'+nodeType,iconCls: 'iconDelete',handler: function(){ treeqRemoveNode(record.data.id)}}
+                            ]
+                    }).showAt(event.getXY());
                 },
                 scope: this
             }
         });
+
+        var treeqRemoveNode = function(id){
+                    //alert('删除'+nodeType+':' + this.parentMenu.selRecord.get('id')); 
+            Ext.Ajax.request({
+                url: '/system/auth/DeleteModule',
+                params: {
+                    ID: id
+                },
+                success: function(response){
+                    alert("success");
+                    treep.getView().getTreeStore().load();
+                    //var text = response.responseText;
+                    // process server response here
+                },
+                failure: function(response){
+                    alert("failure");
+                }
+            });
+        };
+
+        var treepNodeNewOrEdit = function(id){
+            new Ext.window.Window({
+                id: 'fwin',
+                title: '模块信息'+id||'',
+                modal: true,
+                closable: true,
+                stateful:false,
+                closeAction: 'hide',
+                //animateTarget: this,
+                width: 600,
+                //height: 500,
+                layout: 'fit',
+                bodyStyle: 'padding: 5px;',
+                items: [
+                    new MB.form.Module({
+                        id: id,
+                        close:function(){Ext.getCmp('fwin').destroy();},
+                        submitSccess:function(form,action){ Ext.getCmp('fwin').destroy();treep.getView().getTreeStore().load();;alert("submitSccess");},
+                        submitFailure: function(form,action){alert("submitFailure"); }
+                        })
+                ]
+            }).show();
+        }
 
         Ext.regModel('Privileges', {
             //            fields: ['ID','privilegeName', 'resourceCode', 'privilegeCode']
@@ -93,7 +140,7 @@
                 { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { alert(grid.selModel.selected.length) }},
                 { xtype: 'tbseparator' },
                 { xtype: 'tbfill' },
-                { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { alert('刷新!') } }
+                { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) {grid.getView().getStore().load() } }
             ],
             title: '操作表',
             features: [{
@@ -130,7 +177,8 @@
                 width: 50
             }],
                 listeners: {
-                    itemdblclick: function (view, record, el, index, e) { /*alert(record.get("ID"))*/winMR.show(this) }
+                    itemdblclick: function (view, record, el, index, e) { 
+                }
                 }
         });
 
@@ -155,7 +203,7 @@
             margin: 0,
             tbar: [
                 { xtype: 'label', text: '权限管理 -> 模块功能操作项', cls: 'formNav' },
-                { xtype: 'button', iconCls: 'iconRefresh', tooltip: '刷新', tooltipType: 'title', handle: function (source, e) { window.location.reload(true);alert('ss') } },
+                { xtype: 'button', iconCls: 'iconRefresh', tooltip: '刷新', tooltipType: 'title', handle: function (source, e) { window.location.refresh();alert('ss') } },
                 { xtype: 'tbfill' },
                 { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }
             ],
@@ -166,128 +214,7 @@
         }]
         });
 
-       
-
-        //debugger;
-
-        winMR = Ext.create('Ext.window.Window', {
-            title: '模块信息',
-            closable: true,
-            closeAction: 'hide',
-            modal: true,
-            //animateTarget: this,
-            width: 600,
-            height: 350,
-            //layout: 'border',
-            bodyStyle: 'padding: 5px;',
-            layout: 'fit',
-            bodyPadding: 10,
-            items: [{
-                xtype: 'form',
-                layout: {
-                    type: 'vbox',
-                    align: 'stretch'
-                },
-                bodyBorder: 0,
-
-                fieldDefaults: {
-                    labelAlign: 'top',
-                    labelWidth: 100,
-                    labelStyle: 'font-weight:bold'
-                },
-                defaults: {
-                    margins: '0 0 10 0'
-                },
-
-                items: [{
-                    xtype: 'fieldcontainer',
-                    fieldLabel: '模块信息',
-                    labelStyle: 'font-weight:bold;padding:0',
-                    layout: 'hbox',
-                    defaultType: 'textfield',
-
-                    fieldDefaults: {
-                        labelAlign: 'top'
-                    },
-
-                    items: [{
-                        flex: 1,
-                        name: 'code',
-                        fieldLabel: '模块编码',
-                        allowBlank: false
-                    }, {
-                        flex: 1,
-                        //                        width: 100,
-                        name: 'name',
-                        fieldLabel: '模块名称',
-                        margins: '0 0 0 20',
-                        allowBlank: false
-                    }/*, {
-                        flex: 2,
-                        name: 'lastName',
-                        fieldLabel: 'Last',
-                        allowBlank: false,
-                        margins: '0 0 0 5'
-                    }*/]
-                }, {
-                    xtype: 'textfield',
-                    fieldLabel: 'Your Email Address',
-                    vtype: 'email',
-                    allowBlank: true
-                }, {
-                    xtype: 'textfield',
-                    fieldLabel: 'Subject',
-                    allowBlank: true
-                }, {
-                    xtype: 'textareafield',
-                    fieldLabel: 'Message',
-                    labelAlign: 'top',
-                    flex: 1,
-                    margins: '0',
-                    allowBlank: true
-                }],
-
-                buttons: [{
-                    text: '确定',
-                    handler: function () {
-                        if (this.up('form').getForm().isValid()) {
-                            this.up('form').getForm().reset();
-                            this.up('window').hide();
-                        }
-                    }
-                }, {
-                    text: '取消',
-                    margins: '0 0 0 20',
-                    handler: function () {
-                        this.up('form').getForm().reset();
-                        this.up('window').hide();
-                    }
-                }]
-            }
-            ]
-        });
-
-        Ext.define("myctMenu", {
-            extend: "Ext.menu.Menu",
-            items: [{
-                id: 'rMenu1',
-                text: '添加节点',
-                handler: function () { alert('添加节点的实现！'); }
-            }, {
-                id: 'rMenu2',
-                text: '编辑节点',
-                handler: function (n,e) { debugger;alert('编辑节点:' + this.parentMenu.selRecord.get('id')); }
-            }, {
-                id: 'rMenu3',
-                text: '删除节点',
-                handler: function () { alert('删除节点:' + this.parentMenu.selRecord.get('id')); }
-            }],
-            initComponent: function () {
-                //Ext.apply(this, {})
-                this.callParent(arguments);
-//                myctMenu.superclass.initComponent.apply(this, arguments);
-            }
-        });
+        
    })
     </script>
 }

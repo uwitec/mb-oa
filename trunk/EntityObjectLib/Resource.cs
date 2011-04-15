@@ -24,6 +24,14 @@ namespace EntityObjectLib
         [Required(ErrorMessage = "Resource required")]
         public string resourceName { get; set; }
 
+        /// <summary>
+        /// 资源描述
+        /// </summary>
+        public string resourceDescription { get; set; }
+
+        /// <summary>
+        /// 顺序号
+        /// </summary>
         public int? orderNO { get; set; }
 
         public string moduleID { get; set; }

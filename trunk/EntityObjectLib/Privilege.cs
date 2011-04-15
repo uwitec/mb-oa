@@ -19,11 +19,19 @@ namespace EntityObjectLib
         /// </summary>
         public bool needAuth { get; set; }
 
+        /// <summary>
+        /// 是否是菜单入口
+        /// </summary>
         public bool isMenuEntry { get; set; }
 
         public DateTime createdTime { get; set; }
 
         public int securityGrade { get; set; }
+
+        /// <summary>
+        /// 操作描述,包括请求的方式和数据格式
+        /// </summary>
+        public string privilegeDescription { get; set; }
 
         public int orderNO { get; set; }
 

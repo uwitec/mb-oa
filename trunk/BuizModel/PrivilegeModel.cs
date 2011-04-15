@@ -29,12 +29,14 @@ namespace BuizModel
                         {
                             id = m.ID,
                             text = m.moduleName + "[" + m.moduleCode + "]",
+                            type = "module",
                             expanded = true,
                             children = m.resources.Select(
                                 r => new
                                 {
                                     id = r.ID,
                                     text = r.resourceName + "[" + r.resourceCode + "]",
+                                    type = "resource",
                                     leaf = true
                                 }
                             )

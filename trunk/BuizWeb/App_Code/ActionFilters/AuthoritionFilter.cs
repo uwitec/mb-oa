@@ -19,6 +19,8 @@ namespace BuizApp
             //    filterContext.HttpContext.Response.Write("ValidateLogin");
             //}
             base.OnActionExecuting(filterContext);
+
+            return;
             //filterContext.HttpContext.Response.Write("<p>授权检查...</p>");
 
             // 取出区域名、控制器名、行为名，看是否包含在当前用户的权限集里
@@ -36,7 +38,7 @@ namespace BuizApp
             else
             {
                 // 授权不通过执行以下代码
-                filterContext.HttpContext.Response.Redirect("/ulogin");
+                filterContext.HttpContext.Response.Redirect("/login");
             }
         }
 
