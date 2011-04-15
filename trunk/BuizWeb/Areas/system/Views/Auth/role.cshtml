@@ -68,7 +68,7 @@
                 bodyPadding: 0,
                 flex: 4,
                 stripeRows: true,
-                plugins: [new Ext.grid.CellEditing({ clicksToEdit: 2 })],
+                plugins: [new Ext.grid.plugin.CellEditing({ clicksToEdit: 2 })],
                 selModel: { selType: 'cellmodel' },
                 tbar: [
                           { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '新建角色', tooltipType: 'title', handler: function (source, e) { Ext.getCmp('grid001').view.refresh(); } },
@@ -146,7 +146,7 @@
                 frame: true,
                 height: 300,
                 flex: 1,
-                plugins: [new Ext.grid.CellEditing({ clicksToEdit: 2 })],
+                plugins: [new Ext.grid.plugin.CellEditing({ clicksToEdit: 2 })],
                 selModel: { selType: 'cellmodel' },
 //                tbar: [
 //                { xtype: 'button', text: '新增操作' },

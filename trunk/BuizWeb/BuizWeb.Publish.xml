@@ -1,86 +1,123 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <publishData>
   <publishProfile publishUrl="C:\FromCVS\buizApp" deleteExistingFiles="True" ftpAnonymousLogin="False" ftpPassiveMode="True" msdeploySite="" msdeploySiteID="" msdeployRemoteSitePhysicalPath="" msdeployAllowUntrustedCertificate="False" msdeploySkipExtraFilesOnServer="True" msdeployMarkAsApp="False" profileName="Profile1" publishMethod="FileSystem" replaceMatchingFiles="False" userName="" savePWD="False" userPWD="" SelectedForPublish="True">
-    <file relUrl="Scripts/jquery.validate.unobtrusive.js" publishTime="04/10/2011 11:30:55" />
-    <file relUrl="Areas/system/Views/Auth/formByModel.cshtml" publishTime="04/11/2011 23:28:19" />
+    <file relUrl="Content/images/user_comment.png" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Areas/report/Views/Web.config" publishTime="04/12/2011 12:20:16" />
-    <file relUrl="bin/RazorFromDB.dll" publishTime="04/12/2011 12:23:56" />
-    <file relUrl="bin/RazorFromDB.pdb" publishTime="04/12/2011 12:23:56" />
+    <file relUrl="bin/RazorFromDB.dll" publishTime="04/14/2011 17:35:09" />
+    <file relUrl="Content/images/table_refresh.png" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="bin/RazorFromDB.pdb" publishTime="04/14/2011 17:35:09" />
+    <file relUrl="Content/images/image_add.png" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Areas/report/Views/Shared/_Layout.cshtml" publishTime="04/12/2011 12:21:14" />
-    <file relUrl="Scripts/jquery-1.4.4.js" publishTime="04/10/2011 11:30:55" />
+    <file relUrl="Content/images/cog.png" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Areas/report/Views/report/query1.cshtml" publishTime="04/12/2011 13:34:47" />
     <file relUrl="Areas/default/Views/main/index.cshtml" publishTime="04/12/2011 12:04:26" />
     <file relUrl="Areas/workflow/Views/Web.config" publishTime="04/12/2011 10:52:16" />
     <file relUrl="Areas/test/Views/t1/index.cshtml" publishTime="04/10/2011 11:30:57" />
-    <file relUrl="bin/EntityFramework.xml" publishTime="04/10/2011 11:31:08" />
-    <file relUrl="Scripts/MicrosoftMvcValidation.debug.js" publishTime="04/10/2011 11:30:55" />
-    <file relUrl="Scripts/jquery-1.4.4-vsdoc.js" publishTime="04/10/2011 11:30:55" />
+    <file relUrl="Content/images/feed_add.png" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Content/images/imagecode.jpg" publishTime="04/10/2011 11:30:56" />
-    <file relUrl="Web.config" publishTime="04/13/2011 12:48:30" />
-    <file relUrl="Scripts/MicrosoftAjax.js" publishTime="04/10/2011 11:30:55" />
+    <file relUrl="Content/images/rss_go.png" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="Web.config" publishTime="04/14/2011 19:14:36" />
     <file relUrl="Content/javascript/samples/dataModel.js" publishTime="04/10/2011 11:30:56" />
-    <file relUrl="Scripts/MicrosoftMvcAjax.js" publishTime="04/10/2011 11:30:55" />
+    <file relUrl="canvas/home.bmp" publishTime="04/12/2011 10:49:14" />
+    <file relUrl="Content/images/application_go.png" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="Content/images/add.png" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="Content/images/user_green.png" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Areas/default/Views/Shared/_Layout.cshtml" publishTime="04/10/2011 16:47:34" />
+    <file relUrl="Content/images/user_delete.png" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="Content/images/folder_go.gif" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Areas/default/Views/Shared/Error.cshtml" publishTime="04/10/2011 11:30:57" />
-    <file relUrl="App_Data/TestEF.db3" publishTime="04/12/2011 12:58:32" />
+    <file relUrl="Content/images/user_suit.png" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="App_Data/TestEF.db3" publishTime="04/14/2011 18:56:48" />
     <file relUrl="Global.asax" publishTime="04/10/2011 11:30:57" />
+    <file relUrl="Content/images/user.png" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Areas/system/Views/_ViewStart.cshtml" publishTime="04/12/2011 12:21:04" />
-    <file relUrl="Areas/default/Views/Login/Index.cshtml" publishTime="04/10/2011 11:30:57" />
-    <file relUrl="Areas/report/Views/_ViewStart.cshtml" publishTime="04/10/2011 11:30:57" />
-    <file relUrl="Scripts/jquery-1.4.4.min.js" publishTime="04/10/2011 11:30:55" />
+    <file relUrl="Content/images/user_green.gif" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="Areas/system/Views/Auth/formByModel.cshtml" publishTime="04/11/2011 23:28:19" />
+    <file relUrl="Content/images/error.png" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="Content/images/cog.gif" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Areas/office/Views/myOffice/myMessage.cshtml" publishTime="04/12/2011 10:26:39" />
-    <file relUrl="Scripts/jquery-ui.js" publishTime="04/10/2011 11:30:55" />
     <file relUrl="Areas/data/Views/_ViewStart.cshtml" publishTime="04/10/2011 11:30:57" />
-    <file relUrl="Scripts/jquery.unobtrusive-ajax.min.js" publishTime="04/10/2011 11:30:55" />
+    <file relUrl="canvas/page.bmp" publishTime="04/12/2011 10:49:22" />
+    <file relUrl="Content/images/plugin_add.gif" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Areas/office/Views/_ViewStart.cshtml" publishTime="04/10/2011 22:37:22" />
+    <file relUrl="Content/images/menuItem.gif" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Areas/resource/Views/equipment/apply.cshtml" publishTime="04/12/2011 12:17:36" />
+    <file relUrl="Content/images/user_orange.png" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Areas/system/Views/log/query.cshtml" publishTime="04/10/2011 11:30:57" />
-    <file relUrl="Areas/test/Views/Web.config" publishTime="04/10/2011 11:30:57" />
+    <file relUrl="Content/images/plugin.gif" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="bin/EntityObjectContext.pdb" publishTime="04/14/2011 17:35:09" />
+    <file relUrl="install.txt" publishTime="04/14/2011 12:09:33" />
+    <file relUrl="canvas/canvas.htm" publishTime="04/12/2011 11:10:10" />
+    <file relUrl="Content/images/user_add.gif" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Areas/data/Views/Web.config" publishTime="04/10/2011 11:30:57" />
     <file relUrl="Areas/workflow/Views/define.cshtml" publishTime="04/12/2011 10:56:05" />
-    <file relUrl="Scripts/jquery.validate.unobtrusive.min.js" publishTime="04/10/2011 11:30:55" />
+    <file relUrl="Content/images/user_suit.gif" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="bin/System.Data.SQLite.DLL" publishTime="04/18/2010 13:58:58" />
+    <file relUrl="canvas/world.bmp" publishTime="04/12/2011 10:49:01" />
     <file relUrl="Areas/system/Views/Auth/query.cshtml" publishTime="04/12/2011 08:30:08" />
+    <file relUrl="Content/images/user_gray.png" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Areas/resource/Views/equipment/account.cshtml" publishTime="04/12/2011 12:07:18" />
     <file relUrl="Areas/resource/Views/Web.config" publishTime="04/12/2011 10:29:38" />
     <file relUrl="Content/javascript/samples/ArrayStore.js" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="bin/install.txt" publishTime="04/14/2011 12:09:33" />
     <file relUrl="Areas/office/Views/Web.config" publishTime="04/10/2011 21:47:59" />
+    <file relUrl="Content/images/accept.png" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="Content/javascript/Common.js" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Areas/system/Views/Auth/role.cshtml" publishTime="04/11/2011 19:32:22" />
+    <file relUrl="Content/images/help.png" publishTime="04/10/2011 21:08:49" />
     <file relUrl="Areas/system/Views/Auth/selfAuth.cshtml" publishTime="04/12/2011 02:22:12" />
-    <file relUrl="packages.config" publishTime="04/10/2011 11:30:57" />
+    <file relUrl="Content/images/accept.gif" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Areas/default/Views/main/Ext_Extend.cshtml" publishTime="04/10/2011 11:30:57" />
-    <file relUrl="Scripts/jquery-ui.min.js" publishTime="04/10/2011 11:30:55" />
+    <file relUrl="bin/MyHtmlHelp.dll" publishTime="04/14/2011 17:35:09" />
     <file relUrl="Areas/default/Views/Web.config" publishTime="04/10/2011 11:30:57" />
     <file relUrl="Areas/office/Views/Shared/_Layout.cshtml" publishTime="04/12/2011 09:34:52" />
-    <file relUrl="bin/EntityObjectContext.dll" publishTime="04/12/2011 18:24:40" />
-    <file relUrl="bin/BuizModel.dll" publishTime="04/12/2011 18:24:40" />
-    <file relUrl="Scripts/jquery.validate.min.js" publishTime="04/10/2011 11:30:55" />
+    <file relUrl="Content/images/user_female.gif" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="Content/images/information.png" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="Content/images/user_red.png" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="bin/EntityObjectContext.dll" publishTime="04/14/2011 17:35:10" />
+    <file relUrl="bin/BuizModel.dll" publishTime="04/14/2011 19:08:04" />
+    <file relUrl="Content/images/feed_delete.png" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="Content/images/user_delete.gif" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Areas/system/Views/Auth/Privilege.cshtml" publishTime="04/12/2011 03:02:51" />
-    <file relUrl="bin/BuizModel.pdb" publishTime="04/12/2011 18:24:40" />
+    <file relUrl="Content/images/application_view_list.png" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="Content/images/error.gif" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="Areas/report/Views/_ViewStart.cshtml" publishTime="04/10/2011 11:30:57" />
+    <file relUrl="bin/BuizModel.pdb" publishTime="04/14/2011 19:08:03" />
     <file relUrl="Areas/default/Views/_ViewStart.cshtml" publishTime="04/10/2011 22:36:12" />
+    <file relUrl="Content/images/user_female.png" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="Content/images/user_add.png" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="Content/images/add.gif" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Areas/test/Views/Shared/master.cshtml" publishTime="04/10/2011 11:30:57" />
     <file relUrl="Areas/resource/Views/_ViewStart.cshtml" publishTime="04/12/2011 11:20:49" />
-    <file relUrl="bin/EntityObjectLib.dll" publishTime="04/12/2011 12:23:56" />
-    <file relUrl="bin/BuizApp.dll" publishTime="04/13/2011 12:20:40" />
+    <file relUrl="Content/images/user_edit.png" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="bin/EntityObjectLib.dll" publishTime="04/14/2011 17:35:08" />
+    <file relUrl="Content/images/connect.gif" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="Content/images/SILK.txt" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="bin/BuizApp.dll" publishTime="04/14/2011 19:14:11" />
+    <file relUrl="Content/images/cog_edit.png" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Content/site.css" publishTime="04/11/2011 19:25:52" />
-    <file relUrl="Scripts/MicrosoftMvcValidation.js" publishTime="04/10/2011 11:30:55" />
+    <file relUrl="Content/images/book.png" publishTime="04/10/2011 11:30:56" />
     <file relUrl="bin/System.Data.SQLite.Linq.dll" publishTime="04/18/2010 13:34:14" />
-    <file relUrl="bin/EntityFramework.dll" publishTime="04/10/2011 11:31:08" />
-    <file relUrl="bin/BuizApp.pdb" publishTime="04/13/2011 12:20:39" />
+    <file relUrl="bin/BuizApp.pdb" publishTime="04/14/2011 19:14:11" />
+    <file relUrl="Content/images/connect.png" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="Content/images/cross.gif" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="Content/images/folder_go.png" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Areas/system/Views/Auth/user.cshtml" publishTime="04/11/2011 23:00:24" />
-    <file relUrl="bin/EntityObjectLib.pdb" publishTime="04/12/2011 12:23:56" />
-    <file relUrl="Content/javascript/Common.js" publishTime="04/10/2011 11:30:56" />
-    <file relUrl="Scripts/jquery.unobtrusive-ajax.js" publishTime="04/10/2011 11:30:55" />
+    <file relUrl="bin/EntityObjectLib.pdb" publishTime="04/14/2011 17:35:08" />
+    <file relUrl="Areas/test/Views/Web.config" publishTime="04/10/2011 11:30:57" />
+    <file relUrl="Content/images/folder_wrench.png" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Areas/resource/Views/Shared/_Layout.cshtml" publishTime="04/12/2011 11:15:52" />
-    <file relUrl="Scripts/MicrosoftAjax.debug.js" publishTime="04/10/2011 11:30:55" />
-    <file relUrl="bin/System.Data.SQLite.DLL" publishTime="04/18/2010 13:58:58" />
-    <file relUrl="bin/MyHtmlHelp.pdb" publishTime="04/12/2011 12:23:57" />
+    <file relUrl="bin/MyHtmlHelp.pdb" publishTime="04/14/2011 17:35:08" />
     <file relUrl="Areas/system/Views/Shared/_Layout.cshtml" publishTime="04/12/2011 09:32:26" />
-    <file relUrl="Scripts/MicrosoftMvcAjax.debug.js" publishTime="04/10/2011 11:30:55" />
     <file relUrl="Areas/system/Views/Web.config" publishTime="04/10/2011 11:30:57" />
-    <file relUrl="Scripts/jquery.validate-vsdoc.js" publishTime="04/10/2011 11:30:55" />
-    <file relUrl="Scripts/jquery.validate.js" publishTime="04/10/2011 11:30:55" />
-    <file relUrl="bin/EntityObjectContext.pdb" publishTime="04/12/2011 18:24:39" />
+    <file relUrl="Content/images/grid.png" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="Areas/default/Views/Login/Index.cshtml" publishTime="04/13/2011 15:57:37" />
+    <file relUrl="Content/images/delete.gif" publishTime="04/10/2011 11:30:56" />
     <file relUrl="Areas/office/Views/myOffice/myRemind.cshtml" publishTime="04/12/2011 10:27:02" />
-    <file relUrl="bin/MyHtmlHelp.dll" publishTime="04/12/2011 12:23:57" />
+    <file relUrl="bin/App_Data/TestEF.db3" publishTime="04/14/2011 18:56:48" />
+    <file relUrl="Content/images/control_rewind.png" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="Content/images/user.gif" publishTime="04/10/2011 11:30:56" />
+    <file relUrl="canvas/json.js" publishTime="03/10/2011 22:00:11" />
+    <file relUrl="Content/images/feed_error.png" publishTime="04/10/2011 11:30:56" />
   </publishProfile>
 </publishData>

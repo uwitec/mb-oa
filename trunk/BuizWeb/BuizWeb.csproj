@@ -91,6 +91,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="canvas\canvas.htm" />
+    <Content Include="canvas\home.bmp" />
+    <Content Include="canvas\json.js" />
+    <Content Include="canvas\page.bmp" />
+    <Content Include="canvas\world.bmp" />
     <Content Include="Content\images\accept.gif" />
     <Content Include="Content\images\accept.png" />
     <Content Include="Content\images\add.gif" />
@@ -159,24 +164,6 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Scripts\jquery-1.4.4.js" />
-    <Content Include="Scripts\jquery-1.4.4.min.js" />
-    <Content Include="Scripts\jquery-1.4.4-vsdoc.js" />
-    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
-    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
-    <Content Include="Scripts\jquery.validate.js" />
-    <Content Include="Scripts\jquery.validate.min.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery-ui.js" />
-    <Content Include="Scripts\jquery-ui.min.js" />
-    <Content Include="Scripts\MicrosoftAjax.js" />
-    <Content Include="Scripts\MicrosoftAjax.debug.js" />
-    <Content Include="Scripts\MicrosoftMvcAjax.js" />
-    <Content Include="Scripts\MicrosoftMvcAjax.debug.js" />
-    <Content Include="Scripts\MicrosoftMvcValidation.js" />
-    <Content Include="Scripts\MicrosoftMvcValidation.debug.js" />
     <Content Include="Areas\default\Views\_ViewStart.cshtml" />
     <Content Include="Areas\default\Views\Shared\Error.cshtml" />
     <Content Include="Areas\default\Views\Shared\_Layout.cshtml" />
@@ -195,7 +182,9 @@
     <Folder Include="Content\ExtJS\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\TestEF.db3" />
+    <Content Include="App_Data\TestEF.db3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BuizModel\BuizModel.csproj">
