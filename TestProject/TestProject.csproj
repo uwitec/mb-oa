@@ -60,6 +60,7 @@
     <Compile Include="Class1.cs" />
     <Compile Include="generic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestJSON.cs" />
     <Compile Include="TestOrganization.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="UnitTestForT4.cs" />

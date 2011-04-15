@@ -9,7 +9,7 @@ using System.Diagnostics;
 namespace BuizApp.Areas.system.Controllers
 {
     //[MyFilter]
-    public class AuthController : Controller
+    public partial class AuthController : Controller
     {
         //
         // GET: /Home/
@@ -17,12 +17,6 @@ namespace BuizApp.Areas.system.Controllers
         public string Index()
         {
             return "m.Title";
-        }
-        public ActionResult Privilege()
-        {
-            ViewData["dataUrl"] = "/data/Privilege";
-            ViewData["cwid"] = Request.Form["cwid"];
-            return View();
         }
 
         public ActionResult selfAuth()

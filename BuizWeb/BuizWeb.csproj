@@ -34,6 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Data.SQLite">
       <HintPath>..\packages\System.Data.SQLite.DLL</HintPath>
@@ -73,11 +74,13 @@
     <Compile Include="Areas\report\reportAreaRegistration.cs" />
     <Compile Include="Areas\resource\Controllers\equipmentController.cs" />
     <Compile Include="Areas\resource\resourceAreaRegistration.cs" />
+    <Compile Include="Areas\system\Controllers\AuthController\Module.cs" />
+    <Compile Include="Areas\system\Controllers\AuthController\Privilege.cs" />
     <Compile Include="Areas\system\Controllers\logController.cs" />
     <Compile Include="Areas\system\systemAreaRegistration.cs" />
     <Compile Include="Areas\test\Controllers\t1Controller.cs" />
     <Compile Include="Areas\test\testAreaRegistration.cs" />
-    <Compile Include="Areas\system\Controllers\AuthController.cs" />
+    <Compile Include="Areas\system\Controllers\AuthController\AuthController.cs" />
     <Compile Include="Areas\default\defaultAreaRegistration.cs" />
     <Compile Include="Areas\data\Controllers\PrivilegeController.cs" />
     <Compile Include="Areas\default\Controllers\MainController.cs" />
@@ -148,6 +151,7 @@
     <Content Include="Content\images\user_suit.gif" />
     <Content Include="Content\images\user_suit.png" />
     <Content Include="Content\javascript\Common.js" />
+    <Content Include="Content\javascript\BuizForm.js" />
     <Content Include="Content\javascript\samples\ArrayStore.js" />
     <Content Include="Content\javascript\samples\dataModel.js" />
     <Content Include="Content\site.css" />
@@ -190,6 +194,14 @@
     <ProjectReference Include="..\BuizModel\BuizModel.csproj">
       <Project>{8B79EA68-656A-42CF-9466-D34B7E128D38}</Project>
       <Name>BuizModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EntityObjectContext\EntityObjectContext.csproj">
+      <Project>{3DC63F88-DBE2-476E-94A3-B4B7E7F62988}</Project>
+      <Name>EntityObjectContext</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EntityObjectLib\EntityObjectLib.csproj">
+      <Project>{FF25DC29-7456-46D4-86F2-22BC2D8C02E8}</Project>
+      <Name>EntityObjectLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\MyHtmlHelp\MyHtmlHelp.csproj">
       <Project>{42972A53-384E-4A3B-8EF8-A4AB29493A36}</Project>
