@@ -34,7 +34,7 @@ namespace BuizApp
         private string[] getLinks(List<string[]> menuItem)
         {
             return menuItem
-                .Select(m => string.Format("<a href='{0}'>{1}</a>", Url.Action(m[1], m[2], new { area = m[3] }), m[0]))
+                .Select(m => string.Format("<a href='javascript:addTab(\"{0}\",\"{1}\")'>{1}</a>", Url.Action(m[1], m[2], new { area = m[3] }), m[0]))
                 .ToArray();
                 // 如果test区域不存在，返回的url为空
         }

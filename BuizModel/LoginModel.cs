@@ -106,7 +106,7 @@ namespace BuizApp.Models
         {
             User current = mydb.Users.FirstOrDefault(u => u.ID.Equals(userId));
             IEnumerable<Role> orgRoles = getOrganizationsByUser(current, mydb).SelectMany(org => org.Roles);
-            IEnumerable<Privilege> privileges =  orgRoles.Union(current.Roles).SelectMany(r => r.RolePrivileges).Select(rp=>rp.Privilege);
+            IEnumerable<Privilege> privileges =  orgRoles.Union(current.Roles).SelectMany(r => r.RolePrivileges).Select(rp=>rp.Privilege).Distinct();
             return privileges;
         }
 
