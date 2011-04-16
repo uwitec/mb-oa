@@ -24,14 +24,14 @@ namespace BuizModel
         {
             using (MyDB mydb = new MyDB())
             {
-                return mydb.Modules.Select(
+                return mydb.Modules.OrderBy(m=>m.OrderNO).Select(
                         m => new
                         {
                             id = m.ID,
                             text = m.moduleName + "[" + m.moduleCode + "]",
                             type = "module",
                             expanded = true,
-                            children = m.resources.Select(
+                            children = m.resources.OrderBy(r=>r.orderNO).Select(
                                 r => new
                                 {
                                     id = r.ID,

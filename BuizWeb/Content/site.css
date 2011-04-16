@@ -29,6 +29,14 @@
     border:0;
 }
 
+.iconSave
+{
+    background: url(/content/images/save.png) top left no-repeat !important;
+    display: inline-block;
+    cursor:pointer;
+    border:0;
+}
+
 .iconRefresh
 {
     background: url(ExtJS/resources/themes/images/default/grid/refresh.gif) top left no-repeat !important;

@@ -9,6 +9,7 @@
                 { xtype: 'button', iconCls: 'iconEdit', text: '', tooltip: '编辑', tooltipType: 'title', handler: function (source, e) {treepNodeNewOrEdit(treep.selModel.selected.items[0].get("id")); } },
                 { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { treeqRemoveNode(treep.selModel.selected.items[0].get("id")) } },
                 { xtype: 'tbseparator' },
+                { xtype: 'button', iconCls: 'iconSave', text: '', tooltip: '保存排序', tooltipType: 'title', handler: function (source, e) { treeqReorderNodes(treep.getView()) } },
                 { xtype: 'tbfill' },
                 { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { treep.getView().getTreeStore().load()} }
              ],
@@ -20,14 +21,22 @@
                 root: {
                     text: '所有模块功能',
                     expanded: true
-                },
+                }/*,
                 folderSort: true,
                 sorters: [{
                     property: 'text',
                     direction: 'ASC'
-                }]
+                }]*/
             }),
             margin: 6,
+            viewConfig: {
+                plugins: {
+                    ptype: 'treeviewdragdrop', //就是Ext.tree.ViewDDPlugin
+                    listeners:{
+                        beforedrop: function(){alert("sss")}
+                    }
+                }
+            },
             listeners: {
                 itemclick: function (view, record, item, index, e) {
         //                //alert(record.get('id') + ' clicked!');
@@ -57,6 +66,25 @@
                 scope: this
             }
         });
+
+        var treeqReorderNodes = function(view){
+            
+            Ext.Ajax.request({
+                url: '/system/auth/ReOrderModules',
+                params: {
+                    data: view.store.data.keys
+                },
+                success: function(response){
+                    alert("success");
+                    treep.getView().getTreeStore().load();
+                    //var text = response.responseText;
+                    // process server response here
+                },
+                failure: function(response){
+                    alert("failure");
+                }
+            });
+        }
 
         var treeqRemoveNode = function(id){
                     //alert('删除'+nodeType+':' + this.parentMenu.selRecord.get('id')); 
@@ -203,7 +231,7 @@
             margin: 0,
             tbar: [
                 { xtype: 'label', text: '权限管理 -> 模块功能操作项', cls: 'formNav' },
-                { xtype: 'button', iconCls: 'iconRefresh', tooltip: '刷新', tooltipType: 'title', handle: function (source, e) { window.location.refresh();alert('ss') } },
+                { xtype: 'button', iconCls: 'iconRefresh', tooltip: '刷新，尚未实现！', tooltipType: 'title', handle: function (source, e) {window.location.href=window.location.href;} },
                 { xtype: 'tbfill' },
                 { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }
             ],

@@ -84,7 +84,37 @@ namespace BuizApp.Areas.system.Controllers
         [HttpPost]
         public ActionResult ReOrderModules()
         {
-            return View();
+            string[] Ids = Request.Form["data"].Split(",".ToCharArray());
+            using (MyDB mydb = new MyDB())
+            {
+                EntityObjectLib.Module last = null;
+                int order = 0;
+                foreach (string id in Ids)
+                {
+                    order = order+10;
+                    EntityObjectLib.Module p = mydb.Modules.Find(id);
+                    if (p == null)
+                    {
+                        EntityObjectLib.Resource r = mydb.Resources.Find(id);
+                        if (r == null)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            r.orderNO = order;
+                            r.module = last;
+                        }
+                    }
+                    else
+                    {
+                        last = p;
+                        p.OrderNO = order;
+                    }
+                }
+                mydb.SaveChanges();
+            }
+            return Json(new { success = true });
         }
 
         private EntityObjectLib.Module getModule(HttpRequestBase request)
