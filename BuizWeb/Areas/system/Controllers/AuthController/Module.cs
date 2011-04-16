@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using System.Diagnostics;
 using EntityObjectContext;
+using System.Data.Entity;
 
 namespace BuizApp.Areas.system.Controllers
 {
@@ -17,7 +18,12 @@ namespace BuizApp.Areas.system.Controllers
             using (MyDB mydb = new MyDB())
             {
                 EntityObjectLib.Module p = mydb.Modules.Find(Request.Form["ID"]);
-                return Json(new { success = true, data = new { ID = p.ID, moduleCode = p.moduleCode, moduleName = p.moduleName, moduleDescription = p.moduleDescription } });
+                return Json(new
+                {
+                    success = true,
+                    data = new { ID = p.ID, moduleCode = p.moduleCode, moduleName = p.moduleName, moduleDescription = p.moduleDescription }
+                }
+                );
             }
         }
         /// <summary>
@@ -79,6 +85,7 @@ namespace BuizApp.Areas.system.Controllers
 
         /// <summary>
         /// 对操作重新排序
+        /// 使用本地实体集，参考：http://blogs.msdn.com/b/adonet/archive/2011/02/01/using-dbcontext-in-ef-feature-ctp5-part-7-local-data.aspx
         /// </summary>
         /// <returns></returns>
         [HttpPost]
@@ -87,15 +94,18 @@ namespace BuizApp.Areas.system.Controllers
             string[] Ids = Request.Form["data"].Split(",".ToCharArray());
             using (MyDB mydb = new MyDB())
             {
+                mydb.Modules.Load();
+                mydb.Resources.Load();
+
                 EntityObjectLib.Module last = null;
                 int order = 0;
                 foreach (string id in Ids)
                 {
-                    order = order+10;
-                    EntityObjectLib.Module p = mydb.Modules.Find(id);
+                    order = order + 10;
+                    EntityObjectLib.Module p = mydb.Modules.Local.FirstOrDefault(m => m.ID.Equals(id));
                     if (p == null)
                     {
-                        EntityObjectLib.Resource r = mydb.Resources.Find(id);
+                        EntityObjectLib.Resource r = mydb.Resources.Local.FirstOrDefault(m => m.ID.Equals(id));
                         if (r == null)
                         {
                             continue;

@@ -7,6 +7,7 @@ using System.Web.Routing;
 using System.Diagnostics;
 using System.Web.Script.Serialization;
 using BuizModel;
+using EntityObjectContext;
 
 namespace BuizApp.Areas.data.Controllers
 {
@@ -15,7 +16,17 @@ namespace BuizApp.Areas.data.Controllers
 
         public JsonResult index()
         {
-            return Json(new { success = true, data = PrivilegeModel.getList() }, JsonRequestBehavior.AllowGet);
+            string mrId = Request.Params["mrId"];
+            string depth = Request.Params["depth"];
+            switch (depth)
+            {
+                case "1": //模块
+                    return Json(new { success = true, data = PrivilegeModel.getListByModule(mrId) }, JsonRequestBehavior.AllowGet);
+                case "2": //功能
+                    return Json(new { success = true, data = PrivilegeModel.getListByResource(mrId) }, JsonRequestBehavior.AllowGet);
+                default:
+                    return Json(new { success = true, data = PrivilegeModel.getList() }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         public JsonResult moduleResourceTree()

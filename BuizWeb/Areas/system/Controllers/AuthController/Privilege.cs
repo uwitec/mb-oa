@@ -13,7 +13,6 @@ namespace BuizApp.Areas.system.Controllers
     {
         public ActionResult Privilege()
         {
-            ViewData["dataUrl"] = "/data/Privilege";
             return View();
         }
 

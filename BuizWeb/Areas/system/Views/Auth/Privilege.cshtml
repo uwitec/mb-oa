@@ -28,7 +28,9 @@
                     direction: 'ASC'
                 }]*/
             }),
-            margin: 6,
+            singleSelect: true,
+            simpleSelect: false,
+            margin: 6, bodyPadding:0,padding:0,autoScroll:true,
             viewConfig: {
                 plugins: {
                     ptype: 'treeviewdragdrop', //就是Ext.tree.ViewDDPlugin
@@ -39,11 +41,13 @@
             },
             listeners: {
                 itemclick: function (view, record, item, index, e) {
-        //                //alert(record.get('id') + ' clicked!');
-        //                //debugger;
-        //                winMR.eData = record;
-        //                winMR.show(this);
+//                    debugger;
+//                    alert(record.get('id') + "=="+record.data.depth+ ' clicked!');
+//                        //debugger;
+//                        winMR.eData = record;
+//                        winMR.show(this);
                 },
+                selectionchange: function(){privilegeGridRefresh()},
                 itemdbclick: function (view, record, item, index, e) {
                     //alert(record.get('id') + ' clicked!');
                     //debugger;
@@ -129,6 +133,15 @@
             }).show();
         }
 
+        var privilegeGridRefresh = function(){
+            grid.getView().getStore().load({
+                params: {
+                    mrId/*当前的模块功能节点*/: treep.selModel.selected.items.length>0?treep.selModel.selected.items[0].get("id"):"",
+                    depth:treep.selModel.selected.items.length>0?treep.selModel.selected.items[0].data.depth:0
+                    }
+                }) 
+            } 
+
         Ext.regModel('Privileges', {
             //            fields: ['ID','privilegeName', 'resourceCode', 'privilegeCode']
             fields: [
@@ -137,6 +150,9 @@
             { name: 'resourceName', type: 'string' },
             { name: 'moduleName', type: 'string' },
             { name: 'privilegeCode', type: 'string' },
+            { name: 'needAuth', type: 'boolean'},
+            { name: 'isMenuEntry', type: 'boolean'},
+             { name: 'createdTime', type: 'date'},
             { name: 'orderNO', type: 'int' }
             ]
         });
@@ -149,7 +165,10 @@
                 groupField: 'moduleName',
                 proxy: {
                     type: 'ajax',
-                    url: '@ViewData["dataUrl"].ToString()',
+                    url: '/data/Privilege',
+//                    params: {mrId/*当前的模块功能节点*/: treep.selModel.selected.items.length>0?treep.selModel.selected.items[0].get("id"):""},
+                    extraParams: {mrId:'',depth:0}, //传参数,在Request.Params["mrId"]
+                    //params: {mrId:'params'},
                     reader: {
                         type: 'json',
                         root: 'data'
@@ -168,7 +187,7 @@
                 { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { alert(grid.selModel.selected.length) }},
                 { xtype: 'tbseparator' },
                 { xtype: 'tbfill' },
-                { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) {grid.getView().getStore().load() } }
+                { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) {privilegeGridRefresh()}}
             ],
             title: '操作表',
             features: [{
@@ -187,16 +206,26 @@
             }, {
                 text: '操作名称',
                 dataIndex: 'privilegeName',
+                renderer: function (v) { return '<a href="#">'+v+'</a>'; },
                 flex: 1
             }, {
                 text: '功能',
                 dataIndex: 'resourceName',
                 width: 100
             }, {
-                text: '模块',
-                dataIndex: 'moduleName',
-                renderer: function (v) { return '<a href="#">'+v+'</a>'; },
-                width: 100,
+                text: '需要授权',
+                dataIndex: 'needAuth',
+                renderer: function (v) { return v?'是':'否' },
+                flex: 1
+            }, {
+                text: '是否入口',
+                dataIndex: 'isMenuEntry',
+                renderer: function (v) { return v?'是':'否' },
+                flex: 1
+            }, {
+                text: '创建时间',
+                dataIndex: 'createdTime',
+                flex: 1
             }, {
                 text: '操作',
                 vtype: 'field',
