@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Diagnostics;
+using EntityObjectContext;
 
 namespace BuizApp.Areas.system.Controllers
 {
@@ -14,6 +15,29 @@ namespace BuizApp.Areas.system.Controllers
         public ActionResult Privilege()
         {
             return View();
+        }
+
+        public ActionResult getPrivilege()
+        {
+            using (MyDB mydb = new MyDB())
+            {
+                EntityObjectLib.Privilege p = mydb.Privileges.Find(Request.Form["ID"]);
+                return Json(new
+                {
+                    success = true,
+                    data = new 
+                    { 
+                        ID = p.ID, 
+                        privilegeCode = p.privilegeCode, 
+                        privilegeName = p.privilegeName, 
+                        p.isMenuEntry,
+                        p.needAuth,
+                        privilegeDescription = p.privilegeDescription, 
+                        resourceID=p.resource.ID 
+                    }
+                }
+                );
+            }
         }
 
         /// <summary>
@@ -26,9 +50,13 @@ namespace BuizApp.Areas.system.Controllers
         [HttpPost]
         public ActionResult CreatePrivilege()
         {
-            //将JSON格式转换为Module类型
-            //return Json(new { success = false, errors = new { clientCode = "", portOfLoading = "" } });
-
+            using (MyDB mydb = new MyDB())
+            {
+                EntityObjectLib.Privilege p = getPrivilege(Request, mydb);
+                p.ID = Guid.NewGuid().ToString();
+                mydb.Privileges.Add(p);
+                mydb.SaveChanges();
+            }
             return Json(new { success = true });
         }
 
@@ -39,7 +67,15 @@ namespace BuizApp.Areas.system.Controllers
         [HttpPost]
         public ActionResult UpdatePrivilege()
         {
-            return View();
+            using (MyDB mydb = new MyDB())
+            {
+                EntityObjectLib.Privilege p = getPrivilege(Request, mydb);
+                //mydb.Modules.Attach(p);
+                //mydb.Entry<EntityObjectLib.Privilege>(p).State = System.Data.EntityState.Modified;
+                mydb.SaveChanges();
+            }
+
+            return Json(new { success = true });
         }
 
         /// <summary>
@@ -49,7 +85,13 @@ namespace BuizApp.Areas.system.Controllers
         [HttpPost]
         public ActionResult DeletePrivilege()
         {
-            return View();
+            using (MyDB mydb = new MyDB())
+            {
+                EntityObjectLib.Privilege p = mydb.Privileges.Find(Request.Form["ID"]);
+                mydb.Privileges.Remove(p);
+                mydb.SaveChanges();
+            }
+            return Json(new { success = true });
         }
 
         /// <summary>
@@ -60,6 +102,23 @@ namespace BuizApp.Areas.system.Controllers
         public ActionResult ReOrderPrivileges()
         {
             return View();
+        }
+
+
+        private EntityObjectLib.Privilege getPrivilege(HttpRequestBase request,MyDB mydb)
+        {
+            EntityObjectLib.Privilege p = mydb.Privileges.Find(Request.Form["ID"]);
+            if (p == null)
+            {
+                p = new EntityObjectLib.Privilege();
+            }
+            p.privilegeCode = Request.Form["privilegeCode"];
+            p.privilegeName = Request.Form["privilegeName"];
+            p.needAuth = Request.Form["needAuth"] != null;
+            p.isMenuEntry = Request.Form["isMenuEntry"] != null;
+            p.privilegeDescription = Request.Form["privilegeDescription"];
+            p.resource = mydb.Resources.Find(Request.Form["resourceID"]);
+            return p;
         }
     }
 }
