@@ -24,9 +24,9 @@ MB.form.Module = function (config) {
         fieldDefaults: { labelAlign: 'top', msgTarget: 'none', width: '100%', anchor: '100%', columnWidth: .5, margin: "4px 10px" },
         items: [
             { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
-            { xtype: 'textfield', name: 'moduleCode', fieldLabel: '模块编码', allowBlank: true },
-            { xtype: 'textfield', name: 'moduleName', fieldLabel: '模块名称', allowBlank: true },
-            { xtype: 'htmleditor', name: 'moduleDescription', columnWidth: 1, fieldLabel: '模块说明', allowBlank: false }
+            { xtype: 'textfield', name: 'moduleCode', fieldLabel: '模块编码' },
+            { xtype: 'textfield', name: 'moduleName', fieldLabel: '模块名称' },
+            { xtype: 'textareafield', name: 'moduleDescription', columnWidth: 1, fieldLabel: '模块说明'}
         ],
         buttons: [
             { text: '保存', handler: function () {
@@ -57,13 +57,13 @@ MB.form.Module = function (config) {
 
 /** 用户数据表单
 */
-MB.form.User= function (config) {
-    this.name = "模块表单";
+MB.form.User = function (config) {
+    this.name = "用户表单";
     this.form = new Ext.form.FormPanel({
         layout: 'column',
         //autoHeight: true,
         autoScroll: true,
-        fieldDefaults: { labelAlign: 'top', msgTarget: 'side', width: '100%', anchor: '100%', columnWidth: .5,margin:"4px 10px" },
+        fieldDefaults: { labelAlign: 'top', msgTarget: 'side', width: '100%', anchor: '100%', columnWidth: .5, margin: "4px 10px" },
         items: [
             { xtype: 'textfield', name: '用户编码', fieldLabel: '用户编码', allowBlank: false },
             { xtype: 'textfield', name: '用户名称', fieldLabel: '用户名称', allowBlank: false },
@@ -87,6 +87,74 @@ MB.form.User= function (config) {
             { text: '取消', handler: function () { alert('取消') } }
         ]
     })
+
+    return this.form;
+}
+
+/** 权限数据表单
+*/
+MB.form.Privilege= function (config) {
+    this.name = "权限表单";
+    this.form = new Ext.form.FormPanel({
+        layout: 'column',
+        //autoHeight: true,
+        autoScroll: true,
+        stateful: false,
+        fieldDefaults: { labelAlign: 'top', msgTarget: 'none', width: '100%', anchor: '100%', columnWidth: .5, margin: "4px 10px" },
+        items: [
+            { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
+            { xtype: 'textfield', name: 'privilegeCode', fieldLabel: '操作编码' },
+            { xtype: 'textfield', name: 'privilegeName', fieldLabel: '操作名称' },
+            { xtype: 'checkboxfield', name: 'needAuth', boxLabel: '是否需要授权', checked: true, },
+            { xtype: 'checkboxfield', name: 'isMenuEntry', boxLabel: '是否菜单入口', checked:false },
+            { xtype: 'combo', name: 'resourceID', fieldLabel: '所属功能', 
+                forceSelection: true,
+                blankText:'请选择所属功能',
+                emptyText:'请选择所属功能',
+                valueField: 'ID',
+                displayField: 'resourceName',
+                editable: false,
+//                listConfig: new Ext.view.BoundList({}),
+                store:  new Ext.data.Store({
+                    fields: ['ID', 'resourceName'],
+                    proxy: {
+                        type: 'ajax',
+                        url: '/data/Privilege/resource',
+                        //extraParams: {mrId:'',depth:0}, //传参数,在Request.Params["mrId"]
+                        reader: {
+                            type: 'json',
+                            root: 'data'
+                        }
+                    },
+                    autoLoad: true
+                }),
+                lisenters: {
+                    //afterrender: function(){ select(0)}
+                }
+            },
+            { xtype: 'textareafield', name: 'privilegeDescription', columnWidth: 1, fieldLabel: '模块说明'}
+        ],
+        buttons: [
+            { text: '保存', handler: function () {
+                this.up('form').getForm().submit({
+                    url: config.id ? '/system/auth/UpdatePrivilege' : '/system/auth/CreatePrivilege',
+                    success: function (form, action) { if (config && config.submitSccess) config.submitSccess(form, action) },
+                    failure: function (form, action) { if (config && config.submitFailure) config.submitFailure(form, action) }
+                }
+                );
+            }
+            },
+            { text: '取消', handler: function () { if (config && config.close) config.close() } }
+        ]
+    })
+
+    if (config.id) {
+        this.form.getForm().load({
+            url: '/system/auth/getPrivilege',
+            params: { id: config.id }
+        }
+        );
+    }
 
     return this.form;
 }

@@ -13,7 +13,6 @@ namespace BuizApp.Areas.data.Controllers
 {
     public class PrivilegeController : Controller
     {
-
         public JsonResult index()
         {
             string mrId = Request.Params["mrId"];
@@ -37,6 +36,39 @@ namespace BuizApp.Areas.data.Controllers
         public JsonResult role()
         {
             return Json(PrivilegeModel.getRoles(), JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult resource()
+        {
+            using (MyDB mydb = new MyDB())
+            {
+                //return 
+                //Json(
+                //    new
+                //    {
+                //        success = true,
+                //        data =
+                //            mydb.Resources.Select(
+                //            r => new
+                //            {
+                //                r.ID,
+                //                r.resourceName
+                //            }).ToArray()
+                //    },
+                //    JsonRequestBehavior.AllowGet
+                //    );
+                return
+                Json(
+                            mydb.Resources.OrderBy(r=>r.orderNO).Select(
+                            r => new
+                            {
+                                r.ID,
+                                resourceName = r.module.moduleName+":"+r.resourceName
+                            }).ToArray()
+                    ,
+                    JsonRequestBehavior.AllowGet
+                    );
+            }
         }
 
         #region 私有方法
