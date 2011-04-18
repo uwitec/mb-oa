@@ -28,35 +28,42 @@ namespace BuizApp.Areas.data.Controllers
             }
         }
 
+        public JsonResult rolePrivilege()
+        {
+            return Json(PrivilegeModel.rolePrivilege(Request.Params["roleID"]), JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult moduleResourceTree()
         {
-            return Json(PrivilegeModel.getModuleResourceTreeData(), JsonRequestBehavior.AllowGet);
+            return Json(new { text = "ALL", children = PrivilegeModel.getModuleResourceTreeData() }, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult moduleResourceTree2()
+        {
+            return Json(new { text = "ALL", children = PrivilegeModel.getModuleResourceTreeData2() }, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult role()
         {
-            return Json(PrivilegeModel.getRoles(), JsonRequestBehavior.AllowGet);
+            using (MyDB mydb = new MyDB())
+            {
+                return Json(
+                    mydb.Roles.Select(
+                        r => new
+                        {
+                            r.ID,
+                            r.roleCode,
+                            r.roleName,
+                            r.roleDescription
+                        }).ToArray(),
+                    JsonRequestBehavior.AllowGet); ;
+            }
         }
 
         public JsonResult resource()
         {
             using (MyDB mydb = new MyDB())
             {
-                //return 
-                //Json(
-                //    new
-                //    {
-                //        success = true,
-                //        data =
-                //            mydb.Resources.Select(
-                //            r => new
-                //            {
-                //                r.ID,
-                //                r.resourceName
-                //            }).ToArray()
-                //    },
-                //    JsonRequestBehavior.AllowGet
-                //    );
                 return
                 Json(
                             mydb.Resources.OrderBy(r=>r.orderNO).Select(
@@ -68,6 +75,15 @@ namespace BuizApp.Areas.data.Controllers
                     ,
                     JsonRequestBehavior.AllowGet
                     );
+            }
+        }
+
+        public JsonResult module()
+        {
+            using (MyDB mydb = new MyDB())
+            {
+                return
+                Json(mydb.Modules.OrderBy(r => r.orderNO).Select(r => new { r.ID, r.moduleName }).ToArray(), JsonRequestBehavior.AllowGet);
             }
         }
 

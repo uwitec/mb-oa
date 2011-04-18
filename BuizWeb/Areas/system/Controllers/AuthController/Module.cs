@@ -119,7 +119,7 @@ namespace BuizApp.Areas.system.Controllers
                     else
                     {
                         last = p;
-                        p.OrderNO = order;
+                        p.orderNO = order;
                     }
                 }
                 mydb.SaveChanges();

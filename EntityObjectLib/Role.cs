@@ -10,7 +10,13 @@ namespace EntityObjectLib
         [Key]
         public string ID { get; set; }
 
-        public string Name { get; set; }
+        public string roleCode { get; set; }
+
+        public string roleName { get; set; }
+
+        public string roleDescription { get; set; }
+
+        public int? orderNO { get; set; }
 
         public virtual ICollection<Subject> Subjects { get; set; }
 

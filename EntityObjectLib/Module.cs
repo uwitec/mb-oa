@@ -24,7 +24,7 @@ namespace EntityObjectLib
         /// </summary>
         public string moduleDescription { get; set; }
 
-        public int? OrderNO { get; set; }
+        public int? orderNO { get; set; }
 
         public virtual ICollection<Resource> resources { get; set; }
     }

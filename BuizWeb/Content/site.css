@@ -62,3 +62,9 @@
 .x-grid-row .x-grid-cell{ 
     line-height:18px;/*控制GRID单元格高度 */
 }
+
+/*
+.x-tree-checked {
+    text-decoration: line-through;
+    color: #777;
+}*/
