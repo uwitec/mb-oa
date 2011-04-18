@@ -1,0 +1,127 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>苏迈克斯协同办公系统</title>
+    <!--通用代码块开始-->
+    <link href="@Url.Content("~/Content/ExtJS/resources/css/ext-all.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/Content/ExtJS/bootstrap.js")" type="text/javascript"></script>
+
+    <!-- portal classes -->
+    <script type="text/javascript" src="@Url.Content("~/Content/ExtJS/classes/Portlet.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Content/ExtJS/classes/PortalColumn.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Content/ExtJS/classes/PortalPanel.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Content/ExtJS/classes/PortalDropZone.js")"></script>
+    <!-- example portlets -->
+    <script type="text/javascript" src="@Url.Content("~/Content/ExtJS/classes/GridPortlet.js")"></script>
+    <script type="text/javascript" src="@Url.Content("~/Content/ExtJS/classes/ChartPortlet.js")"></script>
+    <!-- app -->
+    <script src="@Url.Content("~/Content/javascript/common.js")" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/ExtJS/classes/portal.css")"/>
+    <script type="text/javascript">
+        var Portal;
+        Ext.define('Ext.app.Portal', {
+
+            extend: 'Ext.container.Viewport',
+
+            getTools: function () {
+                return [{
+                    xtype: 'tool',
+                    type: 'gear',
+                    handler: function (e, target, panelHeader, tool) {
+                        var portlet = panelHeader.ownerCt, el = portlet.getEl();
+
+                        // simulate some gear activity
+                        el.mask('Working...');
+                        Ext.defer(el.unmask, 2000, el);
+                    }
+                }];
+            },
+
+            initComponent: function () {
+
+                var content = '<div class="portlet-content"> Ext.example.shortBogusMarkup </div>';
+
+                Ext.apply(this, {
+                    id: 'app-viewport',
+                    layout: {
+                        type: 'border',
+                        padding: '0 5 5 5' // pad the layout from the window edges
+                    },
+                    items: [{
+                        id: 'app-portal',
+                        xtype: 'portalpanel',
+                        region: 'center',
+                        tbar: [
+                          { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '新建部件', tooltipType: 'title', handler: function (source, e) { addportlet() } },
+                          { xtype: 'tbseparator' },
+                          { xtype: 'tbfill' },
+                          { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handle: function (source, e) { alert(刷新) } }
+                        ],
+                        items: [{
+                            id: 'col-1',
+                            flex: 1,
+                            items: [{
+                                id: 'portlet-1',
+                                title: 'Grid Portlet',
+                                tools: this.getTools(),
+                                items: new Ext.app.GridPortlet(),
+                                listeners: {
+                                    'close': Ext.bind(this.onPortletClose, this)
+                                }
+                            }, {
+                                id: 'portlet-2',
+                                title: 'Portlet 2',
+                                tools: this.getTools(),
+                                html: content
+                            }]
+                        }, {
+                            id: 'col-2',
+                            flex: 1,
+                            items: [{
+                                id: 'portlet-3',
+                                title: 'Portlet 3',
+                                tools: this.getTools(),
+                                html: '<div class="portlet-content"> Ext.example.bogusMarkup </div>',
+                                listeners: {
+                                    'close': Ext.bind(this.onPortletClose, this)
+                                }
+                            }]
+                        }, {
+                            id: 'col-3',
+                            flex: 1,
+                            margins: '0 26 0 0',
+                            items: [{
+                                id: 'portlet-4',
+                                title: 'Stock Portlet',
+                                tools: this.getTools(),
+                                items: new Ext.app.ChartPortlet(),
+                                listeners: {
+                                    'close': Ext.bind(this.onPortletClose, this)
+                                }
+                            }]
+                        }]
+                    }]
+                });
+
+                this.callParent(arguments);
+            },
+
+            onPortletClose: function (portlet) {
+                alert('PortletClose');
+            }
+
+        });
+        Ext.onReady(function () {
+            Portal = Ext.create('Ext.app.Portal');
+        });
+    </script>
+</head>
+<body>
+    <div>
+    </div>
+</body>
+</html>

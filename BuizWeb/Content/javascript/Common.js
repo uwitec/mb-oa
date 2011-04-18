@@ -163,3 +163,24 @@ Ext.define('Ext.ux.SimpleIFrame', {
         }
     }
 });
+
+
+var addportlet = function () {
+    var portalpanel = Ext.getCmp('app-portal');
+    portalpanel.items.items[0].add(
+        new Ext.panel.Panel({
+            title: 'adsfasdf',
+            html: 'dafasdfasdf',
+            frame: true,
+            //tools: Portal.getTools,
+            closable:true,
+            draggable:true,  
+            cls:'x-portlet',
+            listeners: {
+                'close': Ext.bind(Portal.onPortletClose, this)
+            }
+        })
+            );
+    portalpanel.doLayout();
+    //debugger;
+}

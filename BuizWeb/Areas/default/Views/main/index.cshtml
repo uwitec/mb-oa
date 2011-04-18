@@ -46,55 +46,57 @@
     <!--以下代码块与视图引擎无关-->
     <script type="text/javascript">
         Ext.onReady(function () {
-            new Ext.container.Viewport({
-                layout: "border",
-                padding: 5,
-                defaults: {
-                //bodyStyle: 'padding:5px;'
-            },
-            items: [{
-                region: "north",
-                xtype: "container",
-                margins: '0 0 5 0',
-                height: 24,
-                bodyPadding: 15,
-                layout: 'hbox',
-                style: {
-                    'background-color': '#dfe8f6',
-                    'text-align': 'right'
-                },
-                items: [
+
+    new Ext.container.Viewport({
+        id: 'Viewport',
+        layout: "border",
+        padding: 5,
+        defaults: {
+        //bodyStyle: 'padding:5px;'
+    },
+    items: [{
+        region: "north",
+        xtype: "container",
+        margins: '0 0 5 0',
+        height: 24,
+        bodyPadding: 15,
+        layout: 'hbox',
+        style: {
+            'background-color': '#dfe8f6',
+            'text-align': 'right'
+        },
+        items: [
                         { xtype: 'label', flex: 1, text: '苏 迈 克 斯 协 同 办 公 系 统', style: 'text-align:left; padding:2px; font-size:22px; font-weight:bolder; color:#225588; font-family: 华文行楷;' },
                         { xtype: 'label', text: '当前用户：' + UserID + '', margin: '2 0 0 0' },
                         { xtype: 'button', text: '修改密码', margin: '0 0 0 20', handler: function () { alert('修改密码') } },
                         { xtype: 'button', text: '退出系统', margin: '0 0 0 20', handler: function () { window.location = '/login'; } }
                     ]
-            }, {
-                region: 'west',
-                //xtype: 'container',  // 写在配置对象里要描述xtype,直接创建组件不需要，已经在组件类型里了
-                layout: 'accordion',
-                split: true,
-                collapsible: true,
-                //collapseMode: 'mini',
-                title: '系统菜单',
-                width: 160,
-                frame: true,
-                minSize: 120,
-                defaults: {
-                    border: false
-                },
-                margin: 0,
-                padding: 0,
-                items: MenuJson
-            }, {
-                xtype: 'container',
-                region: 'south',
-                height: 0,
-                //html: 'South',
-                margins: '0 0 0 0',
-                bodyPadding: 0,
-                padding: 0
-            }
+    }, {
+        region: 'west',
+        //xtype: 'container',  // 写在配置对象里要描述xtype,直接创建组件不需要，已经在组件类型里了
+        layout: 'accordion',
+        split: true,
+        collapsible: true,
+        //collapseMode: 'mini',
+        title: '系统菜单',
+        width: 160,
+        frame: true,
+        minSize: 120,
+        defaults: {
+            border: false
+        },
+        margin: 0,
+        padding: 0,
+        items: MenuJson
+    }, {
+        xtype: 'container',
+        region: 'south',
+        height: 0,
+        //html: 'South',
+        margins: '0 0 0 0',
+        bodyPadding: 0,
+        padding: 0
+    }
                 , {
                     region: 'center',
                     id: 'mainTabPanel',
@@ -102,27 +104,28 @@
                     frame: true,
                     enableTabScroll: true,
                     activeTab: 0,
-                    //html: '<iframe src="http://localhost/ext-4.0-beta3/index.html"  id="MainArea" name="MainArea" width="100%" height="100%" frameborder="0" ></iframe>',
                     items: [{
                         id: "myDesk",
                         title: '我的桌面',
-                        html: '<iframe src="" width="100%" height="100%" frameborder="0" ></iframe>'
+                        html: '<iframe src="/main/mydesk" width="100%" height="100%" frameborder="0" ></iframe>'
                     }
                     ],
                     margins: 0,
                     bodyPadding: 0
                 }]
-        });
+});
 
-        //        Ext.select('.MBmenu a').each(function (s, w, index) { //s:Element,w:Composite
-        //            s.on("click", function (e) {
-        //                var url = e.getTarget().href;
-        //                //debugger;
-        //                e.preventDefault(); //这样才能阻止链接，return false;不行，参考 http://yiminghe.javaeye.com/blog/368860
-        //                addTab(url, e.getTarget().innerText || e.getTarget().text, url);
-        //            }
-        //               );
-        //        });
+
+
+//        Ext.select('.MBmenu a').each(function (s, w, index) { //s:Element,w:Composite
+//            s.on("click", function (e) {
+//                var url = e.getTarget().href;
+//                //debugger;
+//                e.preventDefault(); //这样才能阻止链接，return false;不行，参考 http://yiminghe.javaeye.com/blog/368860
+//                addTab(url, e.getTarget().innerText || e.getTarget().text, url);
+//            }
+//               );
+//        });
 
 //        Ext.select('.MBmenu li').each(function (s, w, index) {
 //            s.on('mouseenter', setEnter);
@@ -136,7 +139,7 @@
 //        function setLeaver(e, t) {
 //            t.className = "";
 //        }
-    });
+});
     </script>
 </head>
 <body>

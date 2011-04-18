@@ -18,6 +18,11 @@ namespace BuizApp
             return View();
         }
 
+        public ActionResult mydesk()
+        {
+            return View();
+        }
+
         public ActionResult Ext_Extend()
         {
             return View();
