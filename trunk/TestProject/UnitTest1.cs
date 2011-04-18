@@ -661,19 +661,22 @@ namespace TestProject1
             Role[] roles = new Role[]{
                 new Role { 
                     ID = Guid.NewGuid().ToString(), 
-                    Name = "admin" 
+                    roleCode = "admin" ,
+                    roleName = "管理员"
                 },
                 new Role { 
                     ID = Guid.NewGuid().ToString(), 
-                    Name = "normal user"
+                    roleCode = "normal user",
+                    roleName = "一般用户"
                 },
                 new Role { 
                     ID = Guid.NewGuid().ToString(), 
-                    Name = "guest" 
+                    roleCode = "guest" ,
+                    roleName = "访问者"
                 }
             };
 
-            Role admin = roles.FirstOrDefault(r => r.Name.Equals("admin"));
+            Role admin = roles.FirstOrDefault(r => r.roleCode.Equals("admin"));
             IEnumerable<Privilege> allPprivilieges = modules.SelectMany(p => p.resources).SelectMany(r=>r.privileges);
             admin.RolePrivileges = new List<RolePrivilege>();
             foreach (Privilege p in allPprivilieges)
@@ -687,7 +690,7 @@ namespace TestProject1
                     }
                     );
             }
-            Role normal_user = roles.FirstOrDefault(r => r.Name.Equals("normal user"));
+            Role normal_user = roles.FirstOrDefault(r => r.roleCode.Equals("normal user"));
             IEnumerable<Privilege> defaultPprivilieges = modules.Where(m => m.moduleCode == "report").SelectMany(p => p.resources).SelectMany(r => r.privileges);
             normal_user.RolePrivileges = new List<RolePrivilege>();
             foreach (Privilege p in defaultPprivilieges)
@@ -702,7 +705,7 @@ namespace TestProject1
                     );
             }
 
-            Role guest = roles.FirstOrDefault(r => r.Name.Equals("guest"));
+            Role guest = roles.FirstOrDefault(r => r.roleCode.Equals("guest"));
             IEnumerable<Privilege> guestPrivilieges = modules.Where(m => m.moduleCode == "Office" || m.moduleCode == "default").SelectMany(p => p.resources).SelectMany(r => r.privileges);
             guest.RolePrivileges = new List<RolePrivilege>();
             foreach (Privilege p in guestPrivilieges)
@@ -723,7 +726,7 @@ namespace TestProject1
                       Code = "futuresoft",
                       Name = "某某公司",
                       OrderNO = 10,
-                      Roles= roles.Where(r=>r.Name=="guest").ToArray(),
+                      Roles= roles.Where(r=>r.roleCode=="guest").ToArray(),
                       ChildOrganizations = new Organization[]{
                           new Organization{
                               ID = Guid.NewGuid().ToString(), 
@@ -754,12 +757,12 @@ namespace TestProject1
                                                 Code="lilin", 
                                                 Name="李林", 
                                                 Password="123456",
-                                                Roles= roles.Where(r=>r.Name=="admin").ToArray()
+                                                Roles= roles.Where(r=>r.roleCode=="admin").ToArray()
                                             }
                                       }
                                   }
                               },
-                              Roles= roles.Where(r=>r.Name=="normal user").ToArray(),
+                              Roles= roles.Where(r=>r.roleCode=="normal user").ToArray(),
                               Users = new User[]{
                                     new User{
                                         ID=Guid.NewGuid().ToString(), 
