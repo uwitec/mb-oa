@@ -173,6 +173,7 @@
     <Content Include="Areas\default\Views\_ViewStart.cshtml" />
     <Content Include="Areas\default\Views\Shared\Error.cshtml" />
     <Content Include="Areas\default\Views\Shared\_Layout.cshtml" />
+    <Content Include="遗留问题汇总.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\data\Models\" />

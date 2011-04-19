@@ -35,6 +35,7 @@
             });
             new Ext.container.Viewport({
                 layout: 'border',
+                stateful: false,
                 border: 0,
                 items: [
                 panel
@@ -252,7 +253,7 @@
                     })
                 ]
             }).show();
-            }
+        }
 
         roledelete = function (id) {
             Ext.Ajax.request({
@@ -309,13 +310,13 @@
                     new MB.form.RolePrivilegeParam({
                         id: id,
                         close: function () { Ext.getCmp('fwinsetParam').destroy(); },
-                        submitSccess: function (form, action) { Ext.getCmp('fwinsetParam').destroy(); store.load({ params: { roleID: roleGrid.selModel.selected.items[0].data.ID} }) ; alert("submitSccess"); },
+                        submitSccess: function (form, action) { Ext.getCmp('fwinsetParam').destroy(); store.load({ params: { roleID: roleGrid.selModel.selected.items[0].data.ID} }); alert("submitSccess"); },
                         submitFailure: function (form, action) { alert("submitFailure"); }
                     })
                 ]
             }).show();
         }
-    });                                     // Ext.onReady
+    });                                      // Ext.onReady
 
             
     </script>
