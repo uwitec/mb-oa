@@ -7,32 +7,38 @@
         mainTabPanel.setActiveTab(tab); //激活
     }
     else {
-//        tab = Ext.create('Ext.panel.Panel', {
+        tab = Ext.create('Ext.panel.Panel', {
+            //id: Id, // 此id 不是html元素的ID
+            closable: true,
+            autoDestroy: true,
+            autoShow:true,
+            border: 0,
+            title: text,
+            hideMode: 'offsets',
+            html: '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" ></iframe>',
+            listeners: {
+                beforedestroy: function (source, e) { source.body.dom.getElementsByTagName("iframe")[0].src = "javascript:false"; } ,
+                activate: function () { this.doLayout(); }
+                /*render: function(){ this.ownerCt.doLayout(); }*/
+            }
+                });
+        mainTabPanel.add(tab);
+
+//        tab = mainTabPanel.add(Ext.create('Ext.ux.SimpleIFrame', {
 //            id: Id, // 此id 不是html元素的ID
 //            closable: true,
-//            autoDestroy: true,
-//            //autoShow:true,
-//            border: 0,
+//            //autoDestroy: true,
+//            autoShow: true,
 //            title: text,
-//html: '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" ></iframe>',
+//            border: false,
+//            src: url,
 //            listeners: {
-//                beforedestroy: function (source, e) { source.body.dom.getElementsByTagName("iframe")[0].src = "javascript:false"; }/*,
-//                render: function(){ this.ownerCt.doLayout(); }*/
+//                deactivate: function () { this.doLayout(); }
 //            }
-        //        });
+//        }));
 
-        
-        tab = mainTabPanel.add(Ext.create('Ext.ux.SimpleIFrame', {
-            id: Id, // 此id 不是html元素的ID
-            closable: true,
-            //autoDestroy: true,
-            //autoShow:true,
-            title: text,
-            border: false,
-            src: url
-        }));
-        tab.show();
-        mainTabPanel.doLayout();
+        //tab.show();
+        //mainTabPanel.doLayout();
         mainTabPanel.setActiveTab(tab);
     }
 }
@@ -52,7 +58,6 @@ function hashCode(str) {
 }
 
 
-// from: http://www.rockstown.com/node/4
 // vim: sw=2:ts=2:nu:nospell:fdc=2:expandtab
 /**
 * @class Ext.ux.SimpleIFrame
@@ -62,32 +67,35 @@ function hashCode(str) {
 * For example:
 *
 * var panel=Ext.create('Ext.ux.SimpleIFrame', {
-*   border: false,
-*   src: '<a href="http://localhost">http://localhost</a>'
+*   border: false,
+*   src: 'http://localhost'
 * });
-* panel.setSrc('<a href="http://www.sencha.com">http://www.sencha.com</a>');
+* panel.setSrc('http://www.sencha.com');
 * panel.reset();
 * panel.reload();
 * panel.getSrc();
 * panel.update('<div><b>Some Content....</b></div>');
 * panel.destroy();
 *
-* @author    Conor Armstrong
+* @author    Conor Armstrong
 * @copyright (c) 2011 Conor Armstrong
-* @date      12 April 2011
-* @version   0.1
+* @date      12 April 2011
+* @version   0.1
 *
 * @license Ext.ux.SimpleIFrame.js is licensed under the terms of the Open Source
 * LGPL 3.0 license. Commercial use is permitted to the extent that the 
 * code/component(s) do NOT become part of another Open Source or Commercially
 * licensed development library or toolkit without explicit permission.
 * 
-* <p>License details: <a href="<a href="http://www.gnu.org/licenses/lgpl.html">http://www.gnu.org/licenses/lgpl.html</a>"
-* target="_blank"><a href="http://www.gnu.org/licenses/lgpl.html</a></p>">http://www.gnu.org/licenses/lgpl.html</a></p></a>
+* <p>License details: <a href="http://www.gnu.org/licenses/lgpl.html"
+* target="_blank">http://www.gnu.org/licenses/lgpl.html</a></p>
 *
 */
-Ext.require(['Ext.panel.*'
+
+Ext.require([
+	'Ext.panel.*'
 ]);
+
 Ext.define('Ext.ux.SimpleIFrame', {
     extend: 'Ext.Panel',
     alias: 'widget.simpleiframe',
@@ -98,7 +106,11 @@ Ext.define('Ext.ux.SimpleIFrame', {
         this.callParent(arguments);
     },
     updateHTML: function () {
-        this.html = '<iframe id="iframe-' + this.id + '"' + ' width="100%" height="100%"' + ' frameborder="0" ' + ' src="' + this.src + '"' + '></iframe>';
+        this.html = '<iframe id="iframe-' + this.id + '"' +
+        ' style="overflow:auto;width:100%;height:100%;"' +
+        ' frameborder="0" ' +
+        ' src="' + this.src + '"' +
+        '></iframe>';
     },
     reload: function () {
         this.setSrc(this.src);
@@ -110,6 +122,7 @@ Ext.define('Ext.ux.SimpleIFrame', {
             iframe.src = 'about:blank';
             iframe.parentNode.removeChild(iframe);
         }
+
         iframe = document.createElement('iframe');
         iframe.frameBorder = 0;
         iframe.src = this.src;
@@ -138,12 +151,11 @@ Ext.define('Ext.ux.SimpleIFrame', {
         return iframe.document;
     },
     destroy: function () {
-        this.getDOM().src = 'javascript:false'; //chw
-//        var iframe = this.getDOM();
-//        if (iframe && iframe.parentNode) {
-//            iframe.src = 'about:blank';
-//            iframe.parentNode.removeChild(iframe);
-//        }
+        var iframe = this.getDOM();
+        if (iframe && iframe.parentNode) {
+            iframe.src = 'about:blank';
+            iframe.parentNode.removeChild(iframe);
+        }
         this.callParent(arguments);
     },
     update: function (content) {
@@ -163,24 +175,3 @@ Ext.define('Ext.ux.SimpleIFrame', {
         }
     }
 });
-
-
-var addportlet = function () {
-    var portalpanel = Ext.getCmp('app-portal');
-    portalpanel.items.items[0].add(
-        new Ext.panel.Panel({
-            title: 'adsfasdf',
-            html: 'dafasdfasdf',
-            frame: true,
-            //tools: Portal.getTools,
-            closable:true,
-            draggable:true,  
-            cls:'x-portlet',
-            listeners: {
-                'close': Ext.bind(Portal.onPortletClose, this)
-            }
-        })
-            );
-    portalpanel.doLayout();
-    //debugger;
-}
