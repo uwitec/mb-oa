@@ -117,7 +117,7 @@ namespace BuizApp.Models
             while (org != null)
             {
                 result.Add(org);
-                org = org.ParentOrganization;
+                org = org.Parent;
             }
             return result;
         }

@@ -38,6 +38,12 @@
     <Reference Include="System.Data.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Subscription.cs" />
+    <Compile Include="MyInfo.cs" />
+    <Compile Include="InfoFile.cs" />
+    <Compile Include="InfoBoard.cs" />
+    <Compile Include="Info.cs" />
+    <Compile Include="File.cs" />
     <Compile Include="RolePrivilege.cs" />
     <Compile Include="Subject.cs" />
     <Compile Include="Organization.cs" />

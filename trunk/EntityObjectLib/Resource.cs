@@ -34,9 +34,8 @@ namespace EntityObjectLib
         /// </summary>
         public int? orderNO { get; set; }
 
-        public string moduleID { get; set; }
-
-        [Association("Resource_module", "moduleID", "ID", IsForeignKey = true)] //moduleID必须存在
+        //public string moduleID { get; set; }
+        //[Association("Resource_module", "moduleID", "ID", IsForeignKey = true)] //moduleID必须存在
         public virtual Module module { get; set; }
 
         public virtual ICollection<Privilege> privileges { get; set; }

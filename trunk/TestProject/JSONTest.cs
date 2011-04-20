@@ -8,7 +8,7 @@ using System.Web.Script.Serialization;
 namespace TestProject1
 {
     [TestClass]
-    public class generic
+    public class JSONTest
     {
         [TestMethod]
         public void DeserializeObject()
