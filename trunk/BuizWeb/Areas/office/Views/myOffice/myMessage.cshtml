@@ -1,16 +1,205 @@
 ﻿@section header {
     <style type="text/css">
-    body
-    {
-        height:100%;
-        width:100%;
-    }
+        body
+        {
+            height: 100%;
+            width: 100%;
+        }
+        .MBmenu li
+        {
+            background: url(/Content/images/book.png) no-repeat 2px 2px;
+        }
     </style>
     <script type="text/javascript">
+        var msgShow = function (id, text) {
+            this.parent.addTab('/office/myOffice/MsgShow?id=' + id, '消息:' + text);
+            window.setTimeout(refreshMsg, 3000);
+        };
 
+        var msgNew = function () {
+            this.parent.addTab('/office/myOffice/MsgNew', '新建消息');
+            window.setTimeout(refreshMsg, 3000);
+        }
+
+        var refreshMsg;
+        var getUnReadCount
+
+        Ext.onReady(function () {
+            Ext.regModel('info', {
+                fields: [
+                    { name: 'ID', type: 'string' },
+                    { name: 'Title', type: 'string' },
+                    { name: 'Sender', type: 'string' },
+                    { name: 'SendDate', type: 'string' },
+                    { name: 'SendDateTime', type: 'string' },
+                    { name: 'Receivers', type: 'string' }
+            ]
+            });
+
+            refreshMsg = function (type) {
+                store.load({ params: { type: type} });
+            }
+
+            var store = new Ext.data.Store({
+                model: 'info',
+                groupField: 'SendDate',
+                proxy: {
+                    type: 'ajax',
+                    url: '/data/info',
+                    extraParams: { type: 'unread' }, //传参数,在Request.Params["mrId"]
+                    reader: {
+                        type: 'json',
+                        root: 'data'
+                    }
+                },
+                autoLoad: true,
+                listeners: {
+                    load: function (store, records, success) {
+                        getUnReadCount();
+                    }
+                }
+            });
+
+            getUnReadCount = function () {
+                Ext.Ajax.request({
+                    url: '/data/info/unReadCount',
+                    //                    params: {
+                    //                        id: 1
+                    //                    },
+                    success: function (response, opts) {
+                        //debugger;
+                        Ext.fly('unRead').dom.innerText = "(" + response.responseText + ")";
+                    },
+                    failure: function (response, opts) {
+                        debugger;
+                    }
+                });
+            };
+
+            Ext.TaskManager.start({
+                run: getUnReadCount,
+                interval: 20000 //1 second
+            });
+
+            var grid = new Ext.grid.GridPanel({
+                id: 'grid001',
+                //                frame: true,
+                store: store,
+                margin: 6,
+                //selModel: new Ext.selection.CheckboxModel({}),
+                tbar: [
+                { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '增加', tooltipType: 'title', handler: function (source, e) { privilegeNewOrEdit(null) } },
+                { xtype: 'tbseparator' },
+                { xtype: 'tbfill' },
+                { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { privilegeGridRefresh() } }
+            ],
+                title: '消息列表',
+                features: [{
+                    ftype: 'grouping',
+                    groupHeaderTpl: '发送日期: {name} ' //API文档错误,groupHdTpl无效
+                }],
+                columns: [
+                new Ext.grid.RowNumberer(), //序号乱,暂时不显示
+                {
+                text: 'ID',
+                flex: 1,
+                dataIndex: 'ID',
+                hidden: true
+            }, {
+                text: '发件人',
+                dataIndex: 'Sender',
+                width: 100
+            }, {
+                text: '标题',
+                dataIndex: 'Title',
+                renderer: function (val, meta, record) { return '<a href="javascript:msgShow(\'' + record.data.ID + '\',\'' + val + '\')">' + val + '</a>'; },
+                flex: 1
+            }, {
+                text: '收件人',
+                dataIndex: 'Receivers',
+                width: 160
+            }, {
+                text: '发送时间',
+                dataIndex: 'SendDateTime',
+                width: 140
+            }],
+            listeners: {
+                itemdblclick: function (view, record, el, index, e) {
+                }
+            }
+        });
+
+        var msgPanel = new Ext.panel.Panel({
+            title: '我的消息',
+            bodyPadding: 0,
+            width: '100%',
+            tbar: [
+                { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '增加', tooltipType: 'title', handler: function (source, e) { privilegeNewOrEdit(null) } },
+                { xtype: 'tbseparator' },
+                { xtype: 'tbfill' },
+                { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { privilegeGridRefresh() } }
+            ],
+            html: '<ul class="MBmenu"><li><a href="javascript:msgNew()">新建消息</a></li><li><a href="javascript:refreshMsg(\'unread\')">未读消息<span id="unRead">(10)</span></a></li><li><a href="javascript:refreshMsg(\'all\')">收件箱</a></li><li><a href="javascript:refreshMsg(\'outbox\')">发件箱</a></li><li><a>回收站</a></li></ul>'
+        });
+
+        var subPanel = new Ext.panel.Panel({
+            title: '我的订阅',
+            bodyPadding: 0,
+            width: '100%',
+            flex: 1,
+            margin: '6 0 0 0',
+            tbar: [
+                { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '增加', tooltipType: 'title', handler: function (source, e) { privilegeNewOrEdit(null) } },
+                { xtype: 'tbseparator' },
+                { xtype: 'tbfill' },
+                { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { privilegeGridRefresh() } }
+            ],
+            html: '<ul class="MBmenu"><li><a>新消息</a></li><li><a>未读消息</a></li><li><a>收件箱</a></li><li><a>发件箱</a></li><li><a>回收站</a></li></ul>'
+        });
+
+        var leftContainer = new Ext.container.Container({
+            flex: 0,
+            width: 200,
+            layout: 'vbox',
+            margin: '6 0 6 6', bodyPadding: 0, padding: 0, autoScroll: true,
+            items: [msgPanel, subPanel]
+        });
+
+        Ext.create('Ext.container.Viewport', {
+            layout: 'fit',
+            border: 0,
+            items: [{
+                layout: {
+                    type: 'hbox',
+                    align: 'stretch'
+                    //pack: 'start'
+                },
+                //oadMask: { msg: 'Please wait...' },
+                defaults: {
+                    flex: 1 //子元素平均分配宽度
+                },
+                split: true,
+                autoScroll: true,
+                bodyPadding: 0,
+                padding: 0,
+                margin: 0,
+                tbar: [
+                { xtype: 'label', text: '我的消息中心 -> 消息列表', cls: 'formNav' },
+                { xtype: 'button', iconCls: 'iconRefresh', tooltip: '刷新，尚未实现！', tooltipType: 'title', handle: function (source, e) { window.location.href = window.location.href; } },
+                { xtype: 'tbfill' },
+                { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } },
+                { xtype: 'button', iconCls: 'iconClose', text: '', tooltip: '关闭', tooltipType: 'title', handler: function (source, e) { window.parent.closeMe(window) } }
+            ],
+                bbar: [
+                { xtype: 'button', text: 'Button 1', handler: function (source, e) { openWindow(); } }
+            ],
+                items: [leftContainer, grid]
+            }]
+        });
+
+    });
     </script>
 }
-
 <a href="javascript:this.parent.addTab('/system/auth/privilege','test')">parent.addTab</a>
 <a href="javascript:this.parent.closeMe(window)">parent.closeme()</a> 发送消息给其他用户和组织,和接收确认<br />
 发送消息到讨论板<br />

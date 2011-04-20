@@ -22,24 +22,24 @@
 {
     background: url(/content/images/cog_edit.png) top left no-repeat !important;
     display: inline-block;
-    cursor:pointer;
-    border:0;
+    cursor: pointer;
+    border: 0;
 }
 
 .iconDelete
 {
     background: url(/content/images/delete.gif) top left no-repeat !important;
-    display:inline-block;
-    cursor:pointer;
-    border:0;
+    display: inline-block;
+    cursor: pointer;
+    border: 0;
 }
 
 .iconSave
 {
     background: url(/content/images/save.png) top left no-repeat !important;
     display: inline-block;
-    cursor:pointer;
-    border:0;
+    cursor: pointer;
+    border: 0;
 }
 
 .iconRefresh
@@ -59,13 +59,16 @@
 
 .formNav
 {
-    /*font-weight: bold; */padding: 6px 10px; font-size:11px;
+    /*font-weight: bold; */
+    padding: 6px 10px;
+    font-size: 11px;
 }
 
 
 
-.x-grid-row .x-grid-cell{ 
-    line-height:18px;/*控制GRID单元格高度 */
+.x-grid-row .x-grid-cell
+{
+    line-height: 18px; /*控制GRID单元格高度 */
 }
 
 /*
@@ -73,3 +76,64 @@
     text-decoration: line-through;
     color: #777;
 }*/
+
+
+body
+{
+    font-size: 11px;
+}
+.MBmenu li
+{
+    margin: 2px;
+    display: block;
+    border: solid 1px #dfe8f6;
+    padding: 0 0 0 22px;
+    background: url(/Content/images/cog.png) no-repeat 2px 2px;
+}
+.MBmenu li a:hover
+{
+    background-color: #dfe8f6;
+}
+.MBmenu li a
+{
+    display: block;
+    width: 100%;
+    text-decoration: none;
+    color: black;
+    vertical-align: middle;
+    padding: 4px;
+}
+
+/*浮动弹出窗口*/
+.msg .x-box-mc
+{
+    font-size: 14px;
+}
+#msg-div
+{
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    width: 300px;
+    z-index: 20000;
+}
+#msg-div .msg
+{
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+    background: #F6F6F6;
+    border: 2px solid #ccc;
+    margin-top: 2px;
+    padding: 10px 15px;
+    color: #555;
+}
+#msg-div .msg h3
+{
+    margin: 0 0 8px;
+    font-weight: bold;
+    font-size: 15px;
+}
+#msg-div .msg p
+{
+    margin: 0;
+}

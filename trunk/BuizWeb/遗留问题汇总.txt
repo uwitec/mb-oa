@@ -48,3 +48,10 @@
 	function closeMe(iframe) {
 		Ext.getCmp('mainTabPanel').remove(Ext.getCmp(iframe.name), true);
 	}
+15.grid列渲染时如何使用其他字段[OK]
+	renderer: function (val, meta, record) { return '<a href="javascript:show(\''+record.data.ID+'\')">' + val + '</a>'; },
+16.grid分组头显示不正确[OK]
+                features: [{
+                    ftype: 'grouping',
+                    groupHeaderTpl: '发送日期: {name} ' //API文档错误,groupHdTpl无效
+                }],
