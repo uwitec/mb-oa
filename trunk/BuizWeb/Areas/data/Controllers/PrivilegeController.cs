@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Web.Script.Serialization;
 using BuizModel;
 using EntityObjectContext;
+using System.Data.Entity;
 
 namespace BuizApp.Areas.data.Controllers
 {
@@ -60,6 +61,33 @@ namespace BuizApp.Areas.data.Controllers
             }
         }
 
+        public JsonResult roleByUser()
+        {
+            string userID = Request.Params["userID"];
+            using (MyDB mydb = new MyDB())
+            {
+                object[] userRoles =
+                    mydb.Roles.GroupJoin(
+                        mydb.Users.Find(userID).Roles.Select(r => r.ID)
+                        , r => r.ID
+                        , ru => ru
+                        , (r, ru) => new { r.ID, r.roleCode, r.roleName, r.roleDescription, @checked = ru.Count() > 0, userID = userID }
+                    ).ToArray();
+
+                // 下面报错
+                //    Unable to create a constant value of type 'EntityLib.Role '. Only primitive types ('such as Int32, String, and Guid') are supported in this context.
+                //object[] userRoles =
+                //    mydb.Roles.GroupJoin(
+                //        mydb.Users.Find(userID).Roles //是这句上的问题，对比PrivilegeModel的rolePrivilege
+                //        , r => r.ID
+                //        , ru => ru.ID
+                //        , (r, ru) => new { r.ID, r.roleCode, r.roleName, r.roleDescription, @checked = ru.Count() > 0, userID = userID }
+                //    ).ToArray();
+
+                return Json(userRoles, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         public JsonResult resource()
         {
             using (MyDB mydb = new MyDB())
@@ -84,6 +112,26 @@ namespace BuizApp.Areas.data.Controllers
             {
                 return
                 Json(mydb.Modules.OrderBy(r => r.orderNO).Select(r => new { r.ID, r.moduleName }).ToArray(), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult user()
+        {
+            using (MyDB mydb = new MyDB())
+            {
+                return
+                Json(mydb.Users.OrderBy(u => u.Code).Select(u => new { u.ID, u.Code, u.Name, u.Password, OrgID = u.Organization.ID, Organization=u.Organization.Name }).ToArray(), JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult Organization()
+        {
+            using (MyDB mydb = new MyDB())
+            {
+                mydb.Organizations.Load();
+                return Json(
+                mydb.Organizations.Local.Select(o => new { o.ID,o.Code,o.Name,o.OrderNO}).OrderBy(org=>org.OrderNO).ToArray()
+                , JsonRequestBehavior.AllowGet);
             }
         }
 

@@ -1,8 +1,50 @@
 ﻿1.弹出窗口点取消时，脚本出错
-2.TAB功能页连续打开时，只有最后一个页外观完好，其他页外观有问题，但改变窗口大小后可正常[0k]设置hideMode为offsets，可以在隐藏时保持尺寸
+2.TAB功能页连续打开时，只有最后一个页外观完好，其他页外观有问题，但改变窗口大小后可正常
+[0k]设置hideMode为offsets，可以在隐藏时保持尺寸
 3.浏览器内存占用的快速增长和不释放问题
-4.EF中左外连接问题[ok]
-5.C#匿名对象的属性名是C#关键字的问题[OK]如checked,使用@checked
+4.EF中左外连接问题
+[ok]
+5.C#匿名对象的属性名是C#关键字的问题
+[OK]如checked,使用@checked
 6.EXT树型的选择框联动，以及在IE8中不可用（chrome中可用）问题
-7.使用Ext.ux.SimpleIFrame，TAB功能页切换时，出现空白，考虑使用EXTJS MVC示例中的IFRAME方式[0k]参考2
-8.
+7.使用Ext.ux.SimpleIFrame，TAB功能页切换时，出现空白，考虑使用EXTJS MVC示例中的IFRAME方式
+[0k]参考2
+8.Unable to create a constant value of type 'EntityLib.Role '. Only primitive types ('such as Int32, String, and Guid') are supported in this context.
+        public JsonResult roleByUser()
+        {
+            string userID = Request.Params["userID"];
+            using (MyDB mydb = new MyDB())
+            {
+                object[] userRoles =
+                    mydb.Roles.GroupJoin(
+                        mydb.Users.Find(userID).Roles.Select(r => r.ID)
+                        , r => r.ID
+                        , ru => ru
+                        , (r, ru) => new { r.ID, r.roleCode, r.roleName, r.roleDescription, @checked = ru.Count() > 0, userID = userID }
+                    ).ToArray();
+
+                // 下面报错
+                //    Unable to create a constant value of type 'EntityLib.Role '. Only primitive types ('such as Int32, String, and Guid') are supported in this context.
+                //object[] userRoles =
+                //    mydb.Roles.GroupJoin(
+                //        mydb.Users.Find(userID).Roles //是这句上的问题，对比PrivilegeModel的rolePrivilege
+                //        , r => r.ID
+                //        , ru => ru.ID
+                //        , (r, ru) => new { r.ID, r.roleCode, r.roleName, r.roleDescription, @checked = ru.Count() > 0, userID = userID }
+                //    ).ToArray();
+
+                return Json(userRoles, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+9.grid的列行为是通过render实现的,只能调用全局函数,出错后无法调试(调试器找不到源),期待4.0提供actioncolumn
+10.菜单区域改为模块TAB页
+11.浮动弹出窗口
+12.反射导入权限树:全导和增量导入
+13.增加后台事件,参考南京造价的到期提醒
+14.iframe中如何在父窗口中新建iframe及关闭自己[OK]
+	//<a href="javascript:this.parent.addTab('/system/auth/privilege','test')">parent.addTab</a>
+	//<a href="javascript:this.parent.closeMe(window)">parent.closeme()</a> 
+	function closeMe(iframe) {
+		Ext.getCmp('mainTabPanel').remove(Ext.getCmp(iframe.name), true);
+	}

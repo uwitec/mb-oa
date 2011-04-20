@@ -15,6 +15,22 @@ namespace EntityObjectLib
         
         public string Password { get; set; }
 
+        public string Email { get; set; }
+
+        public string QQ { get; set; }
+
+        public string MSN { get; set; }
+
+        public string OfficePhone { get; set; }
+
+        public string HomePhone { get; set; }
+
+        public string Mobile { get; set; }
+
+        public DateTime? ExpireDate { get; set; }
+
+        public string Description { get; set; }
+
         public virtual Organization Organization { get; set; }
 
         [NotMapped]

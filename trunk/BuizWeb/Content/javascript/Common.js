@@ -8,14 +8,14 @@
     }
     else {
         tab = Ext.create('Ext.panel.Panel', {
-            //id: Id, // 此id 不是html元素的ID
+            id: Id, // 此id 不是html元素的ID
             closable: true,
             autoDestroy: true,
             autoShow:true,
             border: 0,
             title: text,
-            hideMode: 'offsets',
-            html: '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" ></iframe>',
+            hideMode: 'offsets',//在隐藏时保持面板尺寸
+            html: '<iframe id="' + Id + '" name="' + Id + '" src="' + url + '" width="100%" height="100%" frameborder="0" ></iframe>',
             listeners: {
                 beforedestroy: function (source, e) { source.body.dom.getElementsByTagName("iframe")[0].src = "javascript:false"; } ,
                 activate: function () { this.doLayout(); }
@@ -43,6 +43,12 @@
     }
 }
 
+//<a href="javascript:this.parent.addTab('/system/auth/privilege','test')">parent.addTab</a>
+//<a href="javascript:this.parent.closeMe(window)">parent.closeme()</a> 
+function closeMe(iframe) {
+    Ext.getCmp('mainTabPanel').remove(Ext.getCmp(iframe.name), true);
+}
+
 function hashCode(str) {
     //同一URL返回不同的值
     var now = new Date();
@@ -56,6 +62,30 @@ function hashCode(str) {
 
     return (hash & 0x7FFFFFFF);
 }
+
+
+Ext.example = function () {
+    var msgCt;
+
+    function createBox(t, s) {
+        return '<div class="msg"><h3>' + t + '</h3><p>' + s + '</p></div>';
+    }
+    return {
+        msg: function (title, format) {
+            if (!msgCt) {
+                msgCt = Ext.core.DomHelper.insertFirst(document.body, { id: 'msg-div' }, true);
+            }
+            var s = Ext.String.format.apply(String, Array.prototype.slice.call(arguments, 1));
+            var m = Ext.core.DomHelper.append(msgCt, createBox(title, s), true);
+            m.hide();
+            m.slideIn('b').ghost("r", { delay: 3000, remove: true });
+            //m.slideIn('b').slideOut("r", { delay: 3000, remove: true });
+        },
+
+        init: function () {
+        }
+    };
+} ();
 
 
 // vim: sw=2:ts=2:nu:nospell:fdc=2:expandtab
