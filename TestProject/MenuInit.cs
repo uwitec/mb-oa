@@ -708,13 +708,13 @@ namespace TestProject1
                       Name = "某某公司",
                       OrderNO = 10,
                       Roles= roles.Where(r=>r.roleCode=="guest").ToArray(),
-                      ChildOrganizations = new Organization[]{
+                      Children = new Organization[]{
                           new Organization{
                               ID = Guid.NewGuid().ToString(), 
                               Code = "dev",
                               Name = "开发部",
                               OrderNO = 10,
-                              ChildOrganizations = new Organization[]{
+                              Children = new Organization[]{
                                   new Organization{
                                       ID = Guid.NewGuid().ToString(), 
                                       Code = "JJ",
@@ -758,7 +758,7 @@ namespace TestProject1
                               Code = "Market",
                               Name = "市场部",
                               OrderNO = 20,
-                              ChildOrganizations = new Organization[]{
+                              Children = new Organization[]{
                                   new Organization{
                                       ID = Guid.NewGuid().ToString(), 
                                       Code = "NJ",
@@ -790,7 +790,7 @@ namespace TestProject1
                               Code = "apply",
                               Name = "实施部",
                               OrderNO = 50,
-                              ChildOrganizations = new Organization[]{
+                              Children = new Organization[]{
                                   new OrganizationExt{
                                       ID = Guid.NewGuid().ToString(), 
                                       Code = "One",
