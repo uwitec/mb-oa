@@ -49,8 +49,9 @@
                         //                        //debugger;
                         //                        winMR.eData = record;
                         //                        winMR.show(this);
+                        privilegeGridRefresh()
                     },
-                    selectionchange: function () { privilegeGridRefresh() },
+                    selectionchange: function (view, selections) {  },
                     itemdbclick: function (view, record, item, index, e) {
                         //alert(record.get('id') + ' clicked!');
                         //debugger;
@@ -142,6 +143,7 @@
             }
 
             var privilegeGridRefresh = function () {
+
                 grid.getView().getStore().load({
                     params: {
                         mrId/*当前的模块功能节点*/: treep.selModel.selected.items.length > 0 ? treep.selModel.selected.items[0].get("id") : "",
@@ -215,97 +217,97 @@
                 columns: [
                 //new Ext.grid.RowNumberer(), //序号乱,暂时不显示
                 {
-                    text: 'ID',
-                    flex: 1,
-                    dataIndex: 'ID',
-                    hidden: true
-                }, {
-                    text: '操作编码',
-                    dataIndex: 'privilegeCode',
-                    width: 100
-                }, {
-                    text: '操作名称',
-                    dataIndex: 'privilegeName',
-                    renderer: function (v) { return '<a href="#">' + v + '</a>'; },
-                    flex: 1
-                }, {
-                    text: '功能',
-                    dataIndex: 'resourceName',
-                    width: 100
-                }, {
-                    text: '需要授权',
-                    dataIndex: 'needAuth',
-                    renderer: function (v) { return v ? '是' : '否' },
-                    flex: 1
-                }, {
-                    text: '是否入口',
-                    dataIndex: 'isMenuEntry',
-                    renderer: function (v) { return v ? '是' : '否' },
-                    flex: 1
-                }, {
-                    text: '创建时间',
-                    dataIndex: 'createdTime',
-                    flex: 1
-                }, {
-                    text: '操作',
-                    dataIndex: 'ID',
-                    renderer: function (v) { return '<span class="iconEdit" style="width:20px;height:18px;" title="修改" onclick=privilegeNewOrEdit("' + v + '")></span><span class="iconDelete" style="width:20px;height:18px;" title="删除" onclick=privilegeDelete("' + v + '")></span>'; },
-                    width: 50
-                }],
-                listeners: {
-                    itemdblclick: function (view, record, el, index, e) {
-                    }
+                text: 'ID',
+                flex: 1,
+                dataIndex: 'ID',
+                hidden: true
+            }, {
+                text: '操作编码',
+                dataIndex: 'privilegeCode',
+                width: 100
+            }, {
+                text: '操作名称',
+                dataIndex: 'privilegeName',
+                renderer: function (v) { return '<a href="#">' + v + '</a>'; },
+                flex: 1
+            }, {
+                text: '功能',
+                dataIndex: 'resourceName',
+                width: 100
+            }, {
+                text: '需要授权',
+                dataIndex: 'needAuth',
+                renderer: function (v) { return v ? '是' : '否' },
+                flex: 1
+            }, {
+                text: '是否入口',
+                dataIndex: 'isMenuEntry',
+                renderer: function (v) { return v ? '是' : '否' },
+                flex: 1
+            }, {
+                text: '创建时间',
+                dataIndex: 'createdTime',
+                flex: 1
+            }, {
+                text: '操作',
+                dataIndex: 'ID',
+                renderer: function (v) { return '<span class="iconEdit" style="width:20px;height:18px;" title="修改" onclick=privilegeNewOrEdit("' + v + '")></span><span class="iconDelete" style="width:20px;height:18px;" title="删除" onclick=privilegeDelete("' + v + '")></span>'; },
+                width: 50
+            }],
+            listeners: {
+                itemdblclick: function (view, record, el, index, e) {
                 }
-            });
+            }
+        });
 
 
-            Ext.create('Ext.container.Viewport', {
-                layout: 'fit',
-                border: 0,
-                items: [{
-                    //renderTo: Ext.getBody(),
-                    //region: 'center',
-                    layout: {
-                        type: 'hbox',
-                        align: 'stretch'
-                        //pack: 'start'
-                    },
-                    //oadMask: { msg: 'Please wait...' },
-                    defaults: {
-                        flex: 1 //子元素平均分配宽度
-                    },
-                    split: true,
-                    autoScroll: true,
-                    bodyPadding: 0,
-                    padding: 0,
-                    margin: 0,
-                    tbar: [
+        Ext.create('Ext.container.Viewport', {
+            layout: 'fit',
+            border: 0,
+            items: [{
+                //renderTo: Ext.getBody(),
+                //region: 'center',
+                layout: {
+                    type: 'hbox',
+                    align: 'stretch'
+                    //pack: 'start'
+                },
+                //oadMask: { msg: 'Please wait...' },
+                defaults: {
+                    flex: 1 //子元素平均分配宽度
+                },
+                split: true,
+                autoScroll: true,
+                bodyPadding: 0,
+                padding: 0,
+                margin: 0,
+                tbar: [
                 { xtype: 'label', text: '权限管理 -> 模块功能操作项', cls: 'formNav' },
                 { xtype: 'button', iconCls: 'iconRefresh', tooltip: '刷新，尚未实现！', tooltipType: 'title', handle: function (source, e) { window.location.href = window.location.href; } },
                 { xtype: 'tbfill' },
                 { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }
             ],
-                    bbar: [
+                bbar: [
                 { xtype: 'button', text: 'Button 1', handler: function (source, e) { openWindow(); } }
             ],
-                    items: [treep, grid]
-                }]
-            });
+                items: [treep, grid]
+            }]
+        });
 
-            /*var*/privilegeNewOrEdit = function (id) { //privilegeNewOrEdit是全局变量
-                new Ext.window.Window({
-                    id: 'fwinPrivilege',
-                    title: '模块信息' + id || '',
-                    modal: true,
-                    closable: true,
-                    //stateful: false,
-                    closeAction: 'destroy',
-                    //animateTarget: this,
-                    width: 600,
-                    //height: 500,
-                    layout: 'fit',
-                    bodyStyle: 'padding: 5px;',
-                    items: [
+        /*var*/privilegeNewOrEdit = function (id) { //privilegeNewOrEdit是全局变量
+            new Ext.window.Window({
+                id: 'fwinPrivilege',
+                title: '模块信息' + id || '',
+                modal: true,
+                closable: true,
+                //stateful: false,
+                closeAction: 'destroy',
+                //animateTarget: this,
+                width: 600,
+                //height: 500,
+                layout: 'fit',
+                bodyStyle: 'padding: 5px;',
+                items: [
                     new MB.form.Privilege({
                         id: id,
                         close: function () { Ext.getCmp('fwinPrivilege').close(); },
@@ -313,25 +315,25 @@
                         submitFailure: function () { alert("submitFailure"); }
                     })
                 ]
-                }).show();
-            }
+            }).show();
+        }
 
-            privilegeDelete = function (id) {
-                //alert('删除'+nodeType+':' + this.parentMenu.selRecord.get('id')); 
-                Ext.Ajax.request({
-                    url: '/system/auth/DeletePrivilege',
-                    params: {
-                        ID: id
-                    },
-                    success: function (response) {
-                        alert("success");
-                        grid.getView().getStore().load();
-                    },
-                    failure: function (response) {
-                        alert("failure");
-                    }
-                });
-            };
-        })
+        privilegeDelete = function (id) {
+            //alert('删除'+nodeType+':' + this.parentMenu.selRecord.get('id')); 
+            Ext.Ajax.request({
+                url: '/system/auth/DeletePrivilege',
+                params: {
+                    ID: id
+                },
+                success: function (response) {
+                    alert("success");
+                    grid.getView().getStore().load();
+                },
+                failure: function (response) {
+                    alert("failure");
+                }
+            });
+        };
+    })
     </script>
 }

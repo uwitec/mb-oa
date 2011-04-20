@@ -74,6 +74,7 @@
     <Compile Include="Areas\report\reportAreaRegistration.cs" />
     <Compile Include="Areas\resource\Controllers\equipmentController.cs" />
     <Compile Include="Areas\resource\resourceAreaRegistration.cs" />
+    <Compile Include="Areas\system\Controllers\AuthController\User.cs" />
     <Compile Include="Areas\system\Controllers\AuthController\Role.cs" />
     <Compile Include="Areas\system\Controllers\AuthController\Resource.cs" />
     <Compile Include="Areas\system\Controllers\AuthController\Module.cs" />

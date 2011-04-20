@@ -125,8 +125,6 @@ MB.form.Resource = function (config) {
         ]
     })
 
-    //debugger;
-
     if (config.id) {
         this.form.getForm().load({
             url: '/system/auth/getResource',
@@ -146,30 +144,69 @@ MB.form.User = function (config) {
         layout: 'column',
         //autoHeight: true,
         autoScroll: true,
-        fieldDefaults: { labelAlign: 'top', msgTarget: 'side', width: '100%', anchor: '100%', columnWidth: .5, margin: "4px 10px" },
+        fieldDefaults: { labelAlign: 'top', width: '100%', anchor: '100%', columnWidth: .5, margin: "4px 10px" },
         items: [
-            { xtype: 'textfield', name: '用户编码', fieldLabel: '用户编码', allowBlank: false },
-            { xtype: 'textfield', name: '用户名称', fieldLabel: '用户名称', allowBlank: false },
-            { xtype: 'textfield', name: '初始口令', fieldLabel: '初始口令', allowBlank: false },
-            { xtype: 'textfield', name: '确认初始口令', fieldLabel: '确认初始口令', allowBlank: false },
-            { xtype: 'datefield', name: '创建时间', fieldLabel: '创建时间', columnWidth: .34, allowBlank: false },
-            { xtype: 'datefield', name: '生效时间', fieldLabel: '生效时间', columnWidth: .33, allowBlank: false },
-            { xtype: 'datefield', name: '到期时间', fieldLabel: '到期时间', columnWidth: .33, allowBlank: false },
-            { xtype: 'fieldset', title: '联系方式', collapsible: true, columnWidth: 1, layout: 'column', margin: 10, items: [
-                { xtype: 'textfield', name: '手机', fieldLabel: '手机', columnWidth: .34, allowBlank: false },
-                { xtype: 'textfield', name: '办公电话一', columnWidth: .33, fieldLabel: '办公电话一', allowBlank: false },
-                { xtype: 'textfield', name: '办公电话二', columnWidth: .33, fieldLabel: '办公电话二', allowBlank: false },
-                { xtype: 'textfield', name: '电子邮箱', fieldLabel: '电子邮箱', columnWidth: .34, allowBlank: false },
-                { xtype: 'textfield', name: 'QQ', columnWidth: .33, fieldLabel: 'QQ', allowBlank: false },
-                { xtype: 'textfield', name: 'MSN', columnWidth: .33, fieldLabel: 'MSN', allowBlank: false}]
+            { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
+            { xtype: 'textfield', name: 'Code', fieldLabel: '用户编码' },
+            { xtype: 'textfield', name: 'Name', fieldLabel: '用户名称' },
+            { xtype: 'textfield', name: 'Password', fieldLabel: '初始口令' },
+            { xtype: 'textfield', name: 'Password1', fieldLabel: '确认初始口令' },
+            { xtype: 'combo', name: 'OrgID', fieldLabel: '所在部门', 
+                forceSelection: true,
+                blankText:'请选择所属部门',
+                emptyText:'请选择所属部门',
+                valueField: 'ID',
+                displayField: 'Name',
+                editable: false,
+                store:  new Ext.data.Store({
+                    fields: ['ID', 'Name'],
+                    proxy: {
+                        type: 'ajax',
+                        url: '/data/Privilege/Organization',
+                        //extraParams: {mrId:'',depth:0}, //传参数,在Request.Params["mrId"]
+                        reader: {
+                            type: 'json',
+                            root: 'data'
+                        }
+                    },
+                    autoLoad: true
+                }),
+                lisenters: {
+                    //afterrender: function(){ select(0)}
+                }
             },
-            { xtype: 'htmleditor', name: '备注', columnWidth: 1, fieldLabel: '备注', allowBlank: false }
+            { xtype: 'datefield', name: 'ExpireDate', fieldLabel: '到期时间' },
+            { xtype: 'fieldset', title: '联系方式', collapsible: true, columnWidth: 1, layout: 'column', margin: 10, items: [
+                { xtype: 'textfield', name: 'Mobile', fieldLabel: '手机', columnWidth: .34 },
+                { xtype: 'textfield', name: 'OfficePhone', columnWidth: .33, fieldLabel: '办公电话' },
+                { xtype: 'textfield', name: 'HomePhone', columnWidth: .33, fieldLabel: '住宅电话' },
+                { xtype: 'textfield', name: 'Email', fieldLabel: '电子邮箱', columnWidth: .34 },
+                { xtype: 'textfield', name: 'QQ', columnWidth: .33, fieldLabel: 'QQ' },
+                { xtype: 'textfield', name: 'MSN', columnWidth: .33, fieldLabel: 'MSN'}]
+            },
+            { xtype: 'textareafield', name: 'Description', columnWidth: 1, fieldLabel: '备注' }
         ],
         buttons: [
-            { text: '保存', handler: function () { alert('保存') } },
-            { text: '取消', handler: function () { alert('取消') } }
+            { text: '保存', handler: function () {
+                this.up('form').getForm().submit({
+                    url: config.id ? '/system/auth/UpdateUser' : '/system/auth/CreateUser',
+                    success: function (form, action) { if (config && config.submitSccess) config.submitSccess(form, action) },
+                    failure: function (form, action) { if (config && config.submitFailure) config.submitFailure(form, action) }
+                }
+                );
+            }
+            },
+            { text: '取消', handler: function () { if (config && config.close) config.close() } }
         ]
     })
+
+    if (config.id) {
+        this.form.getForm().load({
+            url: '/system/auth/getUser',
+            params: { id: config.id }
+        }
+        );
+    }
 
     return this.form;
 }

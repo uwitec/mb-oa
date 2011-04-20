@@ -12,7 +12,7 @@ using System.Data;
 namespace TestProject1
 {
     [TestClass]
-    public class UnitTest1
+    public class MenuInit
     {
         public void TestTree()
         {
@@ -288,35 +288,6 @@ namespace TestProject1
                         }
                     },
                     new Module{
-                        ID = Guid.NewGuid().ToString(), moduleCode = "message", moduleName = "消息管理",
-                        resources = new Resource[]{
-                            new Resource{ ID = Guid.NewGuid().ToString(),resourceCode = "notice",resourceName = "通知公告",orderNO = 200,
-                                privileges = new Privilege[] {
-                                    new Privilege {
-                                        ID = Guid.NewGuid().ToString(),
-                                        privilegeName = "通知公告",
-                                        privilegeCode = "Index",
-                                        needAuth = true,
-                                        isMenuEntry = true,
-                                        createdTime = DateTime.Now,
-                                        securityGrade = 1,
-                                        orderNO = 120
-                                    },
-                                    new Privilege {
-                                        ID = Guid.NewGuid().ToString(),
-                                        privilegeName = "公告管理[本部门]",
-                                        privilegeCode = "create",
-                                        needAuth = true,
-                                        isMenuEntry = true,
-                                        createdTime = DateTime.Now,
-                                        securityGrade = 1,
-                                        orderNO = 120
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    new Module{
                         ID = Guid.NewGuid().ToString(), moduleCode = "Office", moduleName = "日常办公",
                         resources = new Resource[]{
                             new Resource{ ID = Guid.NewGuid().ToString(),resourceCode = "myOffice",resourceName = "个人办公", orderNO=100,
@@ -407,7 +378,7 @@ namespace TestProject1
                                 privileges = new Privilege[] {
                                     new Privilege {
                                         ID = Guid.NewGuid().ToString(),
-                                        privilegeName = "部门文件柜",
+                                        privilegeName = "文件柜",
                                         privilegeCode = "orgDocument",
                                         needAuth = true,
                                         isMenuEntry = true,
@@ -417,7 +388,17 @@ namespace TestProject1
                                     },
                                     new Privilege {
                                         ID = Guid.NewGuid().ToString(),
-                                        privilegeName = "部门公告板",
+                                        privilegeName = "通知公告",
+                                        privilegeCode = "orgNotice",
+                                        needAuth = true,
+                                        isMenuEntry = true,
+                                        createdTime = DateTime.Now,
+                                        securityGrade = 1,
+                                        orderNO = 20
+                                    },
+                                    new Privilege {
+                                        ID = Guid.NewGuid().ToString(),
+                                        privilegeName = "讨论板",
                                         privilegeCode = "orgNotice",
                                         needAuth = true,
                                         isMenuEntry = true,
