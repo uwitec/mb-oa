@@ -9,7 +9,6 @@
     <link href="@Url.Content("~/Content/ExtJS/resources/css/ext-all.css")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
     <script src="@Url.Content("~/Content/ExtJS/bootstrap.js")" type="text/javascript"></script>
-
     <!-- portal classes -->
     <script type="text/javascript" src="@Url.Content("~/Content/ExtJS/classes/Portlet.js")"></script>
     <script type="text/javascript" src="@Url.Content("~/Content/ExtJS/classes/PortalColumn.js")"></script>
@@ -22,7 +21,26 @@
     <script src="@Url.Content("~/Content/javascript/common.js")" type="text/javascript"></script>
     <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/ExtJS/classes/portal.css")"/>
     <script type="text/javascript">
-        var Portal;
+        function addportlet() {
+            var portalpanel = Ext.getCmp('app-portal');
+            portalpanel.items.items[0].insert(0,
+                new Ext.panel.Panel({
+                    title: 'adsfasdf',
+                    html: 'dafasdfasdf',
+                    frame: true,
+                    tools: this.getTools,
+                    closable: true,
+                    draggable: true,
+                    cls: 'x-portlet',
+                    listeners: {
+                        'close': Ext.bind(Portal.onPortletClose, this)
+                    }
+                })
+            );
+            portalpanel.doLayout();
+            //debugger;
+        }
+ 
         Ext.define('Ext.app.Portal', {
 
             extend: 'Ext.container.Viewport',
