@@ -11,63 +11,6 @@
     <script src="@Url.Content("~/Content/ExtJS/bootstrap.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Content/javascript/common.js")" type="text/javascript"></script>
     <!--通用代码块完成-->
-    <style type="text/css">
-        body
-        {
-            font-size: 11px;
-        }
-        .MBmenu li
-        {
-            margin:2px;
-            display: block;
-            border:solid 1px #dfe8f6;
-            padding: 0 0 0 22px ;
-            background: url(@Url.Content("~/Content/images/cog.png")) no-repeat 2px 2px;
-        }
-        .MBmenu li a:hover
-        {
-            background-color :#dfe8f6;
-        }
-        .MBmenu li a
-        {
-            display: block;
-            width: 100%;
-            text-decoration: none;
-            color: black;
-            vertical-align: middle; 
-            padding:4px;
-        }
-
-        // Ext.example.msg 用
-        .msg .x-box-mc {
-            font-size:14px;
-        }
-        #msg-div {
-            position:absolute;
-            right: 5px;
-            bottom:5px;
-            width:300px;
-            z-index:20000;
-        }
-        #msg-div .msg {
-            border-radius: 8px;
-            -moz-border-radius: 8px;
-            background: #F6F6F6;
-            border: 2px solid #ccc;
-            margin-top: 2px;
-            padding: 10px 15px;
-            color: #555;
-        }
-        #msg-div .msg h3 {
-            margin: 0 0 8px;
-            font-weight: bold;
-            font-size: 15px;
-        }
-        #msg-div .msg p {
-            margin: 0;
-        }
-        ///////////////////////////////////////////////
-    </style>
     <!--将涉及视图引擎变量的JS脚本写在下面代码块里-->
     <script type="text/javascript">
         var UserID = "@BuizApp.Models.LoginModel.getUserName(Html.ViewContext.HttpContext.User.Identity.Name)";
@@ -150,6 +93,21 @@
 });
 
 
+        Ext.TaskManager.start({
+            run: function () {
+                Ext.Ajax.request({
+                    url: '/data/info/unReadCount',
+                    success: function (response, opts) {
+                        if(response.responseText!='0')
+                            Ext.example.msg("有未读消息","您有{0}条未读消息,请查收!",response.responseText);
+                    },
+                    failure: function (response, opts) {
+                        debugger;
+                    }
+                });
+            },
+            interval: 10000 //1 second
+        });
 
 //        Ext.select('.MBmenu a').each(function (s, w, index) { //s:Element,w:Composite
 //            s.on("click", function (e) {

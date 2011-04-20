@@ -19,7 +19,7 @@ namespace EntityObjectLib
 
         public string ReceiveTypes { get; set; }
 
-        public virtual DateTime ReadDate { get; set; }
+        public DateTime? ReadDate { get; set; }
 
         /// <summary>
         /// 接收人
