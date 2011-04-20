@@ -78,7 +78,7 @@ Ext.example = function () {
             var s = Ext.String.format.apply(String, Array.prototype.slice.call(arguments, 1));
             var m = Ext.core.DomHelper.append(msgCt, createBox(title, s), true);
             m.hide();
-            m.slideIn('b').ghost("r", { delay: 3000, remove: true });
+            m.slideIn('b').ghost("b", { delay: 3000, remove: true });
             //m.slideIn('b').slideOut("r", { delay: 3000, remove: true });
         },
 

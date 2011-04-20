@@ -32,6 +32,7 @@
                 }]*/
                 }),
                 singleSelect: true,
+                frame: true,
                 simpleSelect: false,
                 margin: 6, bodyPadding: 0, padding: 0, autoScroll: true,
                 viewConfig: {
@@ -169,6 +170,7 @@
 
             var grid = new Ext.grid.GridPanel({
                 id: 'grid001',
+                frame: true,
                 store: new Ext.data.Store({
                     model: 'Privileges',
                     sorters: ['orderNO'],
@@ -285,7 +287,8 @@
                 { xtype: 'label', text: '权限管理 -> 模块功能操作项', cls: 'formNav' },
                 { xtype: 'button', iconCls: 'iconRefresh', tooltip: '刷新，尚未实现！', tooltipType: 'title', handle: function (source, e) { window.location.href = window.location.href; } },
                 { xtype: 'tbfill' },
-                { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }
+                { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } },
+                { xtype: 'button', iconCls: 'iconClose', text: '', tooltip: '关闭', tooltipType: 'title', handler: function (source, e) { window.parent.closeMe(window) } }
             ],
                 bbar: [
                 { xtype: 'button', text: 'Button 1', handler: function (source, e) { openWindow(); } }

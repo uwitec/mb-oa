@@ -13,6 +13,11 @@
     background: url(/content/images/add.gif) top left no-repeat !important;
 }
 
+.iconClose
+{
+    background: url(/content/images/close.png) top left no-repeat !important;
+}
+
 .iconEdit
 {
     background: url(/content/images/cog_edit.png) top left no-repeat !important;
