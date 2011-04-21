@@ -88,6 +88,40 @@ namespace BuizApp.Areas.data.Controllers
             }
         }
 
+        public JsonResult roleByOrg()
+        {
+            string orgID = Request.Params["orgID"];
+            using (MyDB mydb = new MyDB())
+            {
+                object[] orgRoles =
+                    mydb.Roles.GroupJoin(
+                        mydb.Organizations.Find(orgID).Roles.Select(r => r.ID)
+                        , r => r.ID
+                        , ru => ru
+                        , (r, ru) => new { r.ID, r.roleCode, r.roleName, r.roleDescription, @checked = ru.Count() > 0, orgID = orgID }
+                    ).ToArray();
+
+                return Json(orgRoles, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult userByOrg()
+        {
+            string orgID = Request.Params["orgID"];
+            using (MyDB mydb = new MyDB())
+            {
+                object[] orgUsers =
+                    mydb.Users.GroupJoin(
+                        mydb.Organizations.Find(orgID).Users.Select(r => r.ID)
+                        , r => r.ID
+                        , ru => ru
+                        , (r, ru) => new { r.ID, r.Code, r.Name, OrgName = r.Organization.Name, @checked = ru.Count() > 0, orgID = orgID }
+                    ).ToArray();
+
+                return Json(orgUsers, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         public JsonResult resource()
         {
             using (MyDB mydb = new MyDB())
@@ -135,6 +169,32 @@ namespace BuizApp.Areas.data.Controllers
             }
         }
 
+        public JsonResult OrganizationTree()
+        {
+            using (MyDB mydb = new MyDB())
+            {
+                mydb.Organizations.Load();
+                object[] result = mydb.Organizations.Local.Where(o => o.Parent == null).Select(o => getOrg(o.ID, mydb)).ToArray();
+                return Json(new { text = ",", children = result }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        private object getOrg(string OrgID, MyDB mydb)
+        {
+            EntityObjectLib.Organization org = mydb.Organizations.Local.FirstOrDefault(o => o.ID.Equals(OrgID));
+            return new
+            {
+                ID = OrgID,
+                org.Name,
+                org.Code,
+                expanded = true,
+                leaf = org.Children.Count == 0/*org.Children.Count() == 0*/,
+                //@checked = false,
+                //iconCls = "icon-org",
+                children = org.Children.Select(o => getOrg(o.ID, mydb)).ToArray()
+            };
+        }
+
         /// <summary>
         /// 返回组织用户树型结构
         /// </summary>
@@ -144,13 +204,13 @@ namespace BuizApp.Areas.data.Controllers
             using (MyDB mydb = new MyDB())
             {
                 mydb.Organizations.Load();
-                object[] result = mydb.Organizations.Local.Where(o => o.Parent==null).Select(o => getOrg(o.ID, mydb)).ToArray();
+                object[] result = mydb.Organizations.Local.Where(o => o.Parent==null).Select(o => getOrgAndUser(o.ID, mydb)).ToArray();
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
            
         }
 
-        private object getOrg(string OrgID, MyDB mydb)
+        private object getOrgAndUser(string OrgID, MyDB mydb)
         {
             EntityObjectLib.Organization org = mydb.Organizations.Local.FirstOrDefault(o=>o.ID.Equals(OrgID));
             return new
@@ -162,7 +222,7 @@ namespace BuizApp.Areas.data.Controllers
                 //@checked = false,
                 //iconCls = "icon-org",
                 children =
-                    org.Children.Select(o => getOrg(o.ID, mydb))
+                    org.Children.Select(o => getOrgAndUser(o.ID, mydb))
                     .Union(org.Users.Select(u => new { id = u.Code, text = u.Name, leaf = true, iconCls = "icon-user", @checked = false }))
                     .ToArray()
             };

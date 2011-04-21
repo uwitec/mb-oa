@@ -13,15 +13,15 @@ namespace BuizApp.Areas.system.Controllers
     //[MyFilter]
     public partial class AuthController : Controller
     {
-        public ActionResult getUser()
+        public ActionResult getOrg()
         {
             using (MyDB mydb = new MyDB())
             {
-                EntityObjectLib.User p = mydb.Users.Find(Request.Form["ID"]);
+                EntityObjectLib.Organization p = mydb.Organizations.Find(Request.Form["ID"]);
                 return Json(new
                 {
                     success = true,
-                    data = new { p.ID, p.Code, p.Name, p.Password, mobile = p.Mobile, p.MSN, p.QQ, p.OfficePhone, p.HomePhone, p.Email, p.ExpireDate, p.Description, OrgID = p.Organization.ID, Orgname = p.Organization.Name }
+                    data = new { p.ID,p.Code,p.Name,p.OrderNO }
                 }
                 );
             }
@@ -34,16 +34,16 @@ namespace BuizApp.Areas.system.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult CreateUser()
+        public ActionResult CreateOrg()
         {
             //将JSON格式转换为Module类型
             //return Json(new { success = false, errors = new { clientCode = "", portOfLoading = "" } });
             
             using (MyDB mydb = new MyDB())
             {
-                EntityObjectLib.User p = getUser(Request, mydb);
+                EntityObjectLib.Organization p = getOrg(Request, mydb);
                 p.ID = Guid.NewGuid().ToString();
-                mydb.Users.Add(p);
+                mydb.Organizations.Add(p);
                 mydb.SaveChanges();
             }
 
@@ -55,11 +55,11 @@ namespace BuizApp.Areas.system.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult UpdateUser()
+        public ActionResult UpdateOrg()
         {
             using (MyDB mydb = new MyDB())
             {
-                EntityObjectLib.User p = getUser(Request, mydb);
+                EntityObjectLib.Organization p = getOrg(Request, mydb);
                 ////mydb.Modules.Attach(p);
                 //mydb.Entry<EntityObjectLib.User>(p).State = System.Data.EntityState.Modified;
                 //mydb.Entry<EntityObjectLib.Organization>(p.Organization).State = System.Data.EntityState.Modified;
@@ -74,63 +74,72 @@ namespace BuizApp.Areas.system.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult DeleteUser()
+        public ActionResult DeleteOrg()
         {
             using (MyDB mydb = new MyDB())
             {
-                EntityObjectLib.User p = mydb.Users.Find(Request.Form["ID"]);
-                mydb.Users.Remove(p);
+                EntityObjectLib.Organization p = mydb.Organizations.Find(Request.Form["ID"]);
+                mydb.Organizations.Remove(p);
                 mydb.SaveChanges();
             }
             return Json(new { success = true });
         }
 
-        private EntityObjectLib.User getUser(HttpRequestBase request,MyDB mydb)
+        private EntityObjectLib.Organization getOrg(HttpRequestBase request, MyDB mydb)
         {
-            EntityObjectLib.User p = mydb.Users.Find(Request.Form["ID"]);
+            EntityObjectLib.Organization p = mydb.Organizations.Find(Request.Form["ID"]);
             if (p == null)
             {
-                p = new EntityObjectLib.User();
+                p = new EntityObjectLib.Organization();
             }
             p.ID = request.Form["ID"];
             p.Code = request.Form["Code"];
             p.Name = request.Form["Name"];
-            p.Password = request.Form["Password"];
-            p.Email = request.Form["Email"];
-            p.Mobile = request.Form["Mobile"];
-            p.MSN = request.Form["MSN"];
-            p.QQ = request.Form["QQ"];
-            p.OfficePhone = request.Form["OfficePhone"];
-            p.HomePhone = request.Form["HomePhone"];
-            p.ExpireDate = Convert.ToDateTime(request.Form["ExpireDate"]);
-            p.Description = request.Form["Description"];
-            p.Organization = mydb.Organizations.Find(request.Form["OrgID"]);
             return p;
         }
 
         [HttpPost]
-        public ActionResult updateUserRoles()
+        public ActionResult updateOrgRoles()
         {
             IEnumerable<string> Ids = Request.Params["IDs"].Split(",".ToArray()).AsEnumerable(); //新的角色ID串
-            string userID = Request.Params["userID"];
+            string orgID = Request.Params["orgID"];
             using (MyDB mydb = new MyDB())
             {
-                EntityObjectLib.User user = mydb.Users.Find(userID);
+                EntityObjectLib.Organization org = mydb.Organizations.Find(orgID);
 
-                IQueryable<string> OriRoleIDs = user.Roles.Select(r => r.ID) == null ? null : user.Roles.Select(r => r.ID).AsQueryable();
+                IQueryable<string> OriRoleIDs = org.Roles.Select(r => r.ID) == null ? null : org.Roles.Select(r => r.ID).AsQueryable();
 
                 OriRoleIDs.Load();
 
                 string[] removeIDS = OriRoleIDs.Except(Ids).ToArray();
                 foreach (string s in removeIDS)
                 {
-                    user.Roles.Remove(mydb.Roles.Find(s));
+                    org.Roles.Remove(mydb.Roles.Find(s));
                 }
 
                 string[] appendIDS = Ids.Except(OriRoleIDs).ToArray();
                 foreach (string s in appendIDS)
                 {
-                    user.Roles.Add(mydb.Roles.Find(s));
+                    org.Roles.Add(mydb.Roles.Find(s));
+                }
+                mydb.SaveChanges();
+            }
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        public ActionResult updateOrgUsers()
+        {
+            IEnumerable<string> Ids = Request.Params["IDs"].Split(",".ToArray()).AsEnumerable(); //新的用户ID串
+            string orgID = Request.Params["orgID"];
+            using (MyDB mydb = new MyDB())
+            {
+                EntityObjectLib.Organization org = mydb.Organizations.Find(orgID);
+                mydb.Users.Load();
+
+                foreach (string userID in Ids)
+                {
+                    mydb.Users.Local.FirstOrDefault(u => u.ID.Equals(userID)).Organization = org;
                 }
                 mydb.SaveChanges();
             }

@@ -1,0 +1,327 @@
+﻿@section header {
+    <script type="text/javascript">
+        var userNewOrEdit, userDelete;
+        /**
+        * chw 2011.4.7
+        * panel: 主面板
+        */
+        Ext.onReady(function () {
+            var panel = Ext.create('Ext.panel.Panel', {
+                region: 'center',
+                layout: {
+                    type: 'hbox',
+                    align: 'stretch'
+                    //pack: 'start'
+                },
+                defaults: {
+                    flex: 1 //子元素平均分配宽度
+                },
+                split: true,
+                autoScroll: true,
+                bodyPadding: 0,
+                border: 0,
+                padding: 0,
+                margin: 0,
+                tbar: [
+                          { xtype: 'label', text: '权限管理 -> 组织管理', cls: 'formNav' },
+                          { xtype: 'tbfill' },
+                          { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }
+                          ]/*,
+                bbar: [
+                          { xtype: 'button', text: 'Button 1', handler: function (source, e) { openWindow(); } }
+                        ],
+                html: ''*/
+            });
+            new Ext.container.Viewport({
+                layout: 'border',
+                border: 0,
+                items: [
+                panel
+                ]
+            });
+
+            var orgStore = new Ext.data.TreeStore({
+                fields: [
+                    { name: 'ID', type: 'string' },
+                    { name: 'Code', type: 'string' },
+                    { name: 'Name', type: 'string' }
+                    ],
+                proxy: {
+                    type: 'ajax',
+                    url: '/data/privilege/OrganizationTree'
+                }
+            })
+
+            var orgGrid = new Ext.tree.Panel({
+                title: '组织列表',
+                store: orgStore,
+                rootVisible: false,
+                margin: 6,
+                autoScroll: true,
+                border: 0,
+                padding: 0,
+                bodyPadding: 0,
+                flex: 2,
+                tbar: [
+                          { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '新建组织', tooltipType: 'title', handler: function (source, e) { userNewOrEdit(); } },
+                          { xtype: 'tbseparator' },
+                          { xtype: 'tbfill' },
+                          { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { userGrid.getView().getStore().load(); } }
+                        ],
+                frame: true,
+                columns: [
+                 {
+                    xtype: 'treecolumn',
+                    text: '组织名称',
+                    dataIndex: 'Name',
+                    flex: 1, 
+                    field: { allowBlank: false }
+                }, {
+                    text: '组织编码',
+                    dataIndex: 'Code',
+                    width: 100,
+                    field: { allowBlank: false },
+                    renderer: function (v) { return '<a href="#">' + v + '</a>'; }
+                }, {
+                    text: '操作',
+                    dataIndex: 'ID',
+                    width: 50,
+                    align: 'center',
+                    renderer: function (v) { return '<span class="iconEdit" style="width:20px;height:18px;" title="修改" onclick=userNewOrEdit("' + v + '")></span><span class="iconDelete" style="width:20px;height:18px;" title="删除" onclick=userDelete("' + v + '")></span>'; }
+                }],
+                viewConfig: {
+                    listeners: {
+                        itemclick: function (view, record, el, index, e) {
+                            userStore.load({ params: { orgID: record.data.ID} });
+                            roleStore.load({ params: { orgID: record.data.ID} });
+                        }
+                    }
+                }
+            }); // grid
+
+            var userStore = new Ext.data.Store({
+                fields: [
+                    { name: 'ID', type: 'string' },
+                    { name: 'Code', type: 'string' },
+                    { name: 'Name', type: 'string' },
+                    { name: 'OrgName', type: 'string' },
+                    { name: 'checked', type: 'boolean' }
+                    ],
+                proxy: {
+                    type: 'ajax',
+                    url: '/data/privilege/userByOrg'
+                },
+                listeners: {
+                    datachanged: function (store, records, success) {
+                        //debugger;
+                        var index = 0;
+                        store.each(function (record) {
+                            if (record.data.checked) {
+                                userGrid.selModel.select(index, true);
+                            };
+                            index++;
+                        })
+                    }
+                }
+            })
+
+            var userGrid = new Ext.grid.GridPanel({
+                title: '用户列表',
+                store: userStore,
+                margin: 6,
+                autoScroll: true,
+                border: 0,
+                padding: 0,
+                bodyPadding: 0,
+                flex: 1,
+                selModel: new Ext.selection.CheckboxModel({
+                    checkOnly: true,
+                    listeners: {
+                    //                        select: function (RowSelectionModel, record, index) { alert(index) },
+                    //                        deselect: function (RowSelectionModel, record, index) { alert(index) }
+                }
+            }),
+                stripeRows: true,
+                //                plugins: [new Ext.grid.plugin.CellEditing({ clicksToEdit: 2 })],
+                //                selModel: { selType: 'cellmodel' },
+                tbar: [
+                          { xtype: 'button', iconCls: 'iconSave', text: '', tooltip: '保存', tooltipType: 'title', handler: function (source, e) { updateOrgUsers() } },
+                          { xtype: 'tbseparator' },
+                          { xtype: 'tbfill' },
+                          { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { userGrid.getView().getStore().load(); } }
+                        ],
+                frame: true,
+                columns: [
+                {
+                    text: '用户编码',
+                    dataIndex: 'Code',
+                    width: 60
+                }, {
+                    text: '用户名称',
+                    dataIndex: 'Name',
+                    flex: 1,
+                    renderer: function (v) { return '<a href="#">' + v + '</a>'; }
+                }, {
+                    text: '所在组织',
+                    dataIndex: 'OrgName',
+                    flex: 1
+                }]
+            }); // grid
+
+
+
+            var roleStore = new Ext.data.Store({
+                fields: [
+                    { name: 'ID', type: 'string' },
+                    { name: 'roleCode', type: 'string' },
+                    { name: 'roleName', type: 'string' },
+                    { name: 'roleDescription', type: 'string' },
+                    { name: 'checked', type: 'boolean' },
+                    { name: 'userID', type: 'string' }
+                    ],
+                proxy: {
+                    type: 'ajax',
+                    url: '/data/privilege/roleByOrg'
+                },
+                listeners: {
+                    datachanged: function (store, records, success) {
+                        //debugger;
+                        var index = 0;
+                        store.each(function (record) {
+                            if (record.data.checked) {
+                                roleGrid.selModel.select(index, true);
+                            };
+                            index++;
+                        })
+                    }
+                }
+            })
+
+            var roleGrid = new Ext.grid.GridPanel({
+                title: '角色列表',
+                store: roleStore,
+                margin: 6,
+                frame: true,
+                height: 300,
+                flex: 1,
+                selModel: new Ext.selection.CheckboxModel({
+                    checkOnly: true,
+                    listeners: {
+                    //                        select: function (RowSelectionModel, record, index) { alert(index) },
+                    //                        deselect: function (RowSelectionModel, record, index) { alert(index) }
+                }
+            }),
+            tbar: [
+                          { xtype: 'button', iconCls: 'iconSave', text: '', tooltip: '保存', tooltipType: 'title', handler: function (source, e) { updateOrgRoles() } },
+                          { xtype: 'tbseparator' },
+                          { xtype: 'tbfill' },
+                          { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { roleStore.load({ params: { userID: userGrid.selModel.selected.items[0].data.ID} }) } }
+                        ],
+            columns: [
+//                new Ext.grid.RowNumberer(),
+                {
+                    header: '角色编码',
+                    flex: 1,
+                    dataIndex: 'roleCode'
+                }, {
+                    header: '角色名称',
+                    flex: 1,
+                    dataIndex: 'roleName'
+                }],
+            viewConfig: {
+            //                    listeners: {
+            //                        itemdblclick: function (view, record, el, index, e) { /*alert(record.get("ID"))*/winMR.show(this) }
+            //                    }
+        }
+    }); // grid
+    panel.add(orgGrid);
+    panel.add(userGrid);
+    panel.add(roleGrid);
+
+    userNewOrEdit = function (id) {
+        Ext.create('Ext.window.Window', {
+            id: 'fwinNewUser',
+            title: '权限管理->新建用户',
+            modal: true,
+            closable: true,
+            width: 800,
+            layout: 'fit',
+            bodyStyle: 'padding: 5px;',
+            items: [
+                new MB.form.User({
+                    id: id,
+                    close: function () { Ext.getCmp('fwinNewUser').close(); },
+                    submitSccess: function (form, action) { Ext.getCmp('fwinNewUser').close(); userGrid.getView().getStore().load(); alert("submitSccess"); },
+                    submitFailure: function (form, action) { alert("submitFailure"); }
+                })
+            ]
+        }).show();
+    };
+
+    var updateOrgRoles = function () {
+        //debugger;
+        var records = roleGrid.getView().selModel.getSelection();
+        var Ids = new Array();
+        for (var i = 0; i < records.length; i++) {
+            Ids.push(records[i].data.ID);
+        }
+        Ext.Ajax.request({
+            url: '/system/auth/updateOrgRoles',
+            params: {
+                IDs: Ids.join(','),
+                orgID: orgGrid.selModel.selected.items[0].data.ID
+            },
+            success: function (response) {
+                alert("success");
+                roleStore.load({ params: { orgID: orgGrid.selModel.selected.items[0].data.ID} });
+            },
+            failure: function (response) {
+                alert("failure");
+            }
+        });
+    };
+
+    var updateOrgUsers = function () {
+        //debugger;
+        var records = userGrid.getView().selModel.getSelection();
+        var Ids = new Array();
+        for (var i = 0; i < records.length; i++) {
+            Ids.push(records[i].data.ID);
+        }
+        Ext.Ajax.request({
+            url: '/system/auth/updateOrgUsers',
+            params: {
+                IDs: Ids.join(','),
+                orgID: orgGrid.selModel.selected.items[0].data.ID
+            },
+            success: function (response) {
+                alert("success");
+                userStore.load({ params: { orgID: orgGrid.selModel.selected.items[0].data.ID} });
+            },
+            failure: function (response) {
+                alert("failure");
+            }
+        });
+    };
+
+    userDelete = function () {
+        Ext.Ajax.request({
+            url: '/system/auth/deleteUser',
+            params: {
+                ID: id
+            },
+            success: function (response) {
+                alert("success");
+                userGrid.getView().getStore().load();
+            },
+            failure: function (response) {
+                alert("failure");
+            }
+        });
+    }
+
+});     // Ext.onReady
+
+            
+    </script>
+}
