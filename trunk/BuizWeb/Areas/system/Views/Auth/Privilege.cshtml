@@ -3,6 +3,23 @@
 
         var privilegeNewOrEdit, privilegeDelete;
         Ext.onReady(function () {
+//            Ext.tree.View.extend({
+//                getRecords: function (nodes) {
+//                    var records = Ext.create("Ext.util.MixedCollection");
+
+//                    for (var i = 0, ilen = nodes.length; i < ilen; i++)
+//                        records.add(i, this.store.data.getByKey(nodes[i].viewRecordId));
+
+//                    return records;
+//                },
+
+//                getChecked: function () {
+//                    var records = this.getRecords(this.getNodes());
+//                    return records.filterBy(function (record, i, k) {
+//                        return record.data.checked;
+//                    });
+//                }
+//            });  
 
             var treep = new Ext.tree.TreePanel({
                 title: '模块功能树',
@@ -45,14 +62,10 @@
                 },
                 listeners: {
                     itemclick: function (view, record, item, index, e) {
-                        //                    debugger;
-                        //                    alert(record.get('id') + "=="+record.data.depth+ ' clicked!');
-                        //                        //debugger;
-                        //                        winMR.eData = record;
-                        //                        winMR.show(this);
+                                            //debugger;
                         privilegeGridRefresh()
                     },
-                    selectionchange: function (view, selections) {  },
+                    selectionchange: function (view, selections) { },
                     itemdbclick: function (view, record, item, index, e) {
                         //alert(record.get('id') + ' clicked!');
                         //debugger;
@@ -74,6 +87,18 @@
                     scope: this
                 }
             });
+
+            treep.on('checkchange', function (node, checked) {
+                debugger;
+                node.expand();
+                node.attributes.checked = checked;
+                node.eachChild(function (child) {
+                    child.ui.toggleCheck(checked);
+                    child.attributes.checked = checked;
+                    child.fireEvent('checkchange', child, checked);
+                });
+            }, treep);
+
 
             var treeqReorderNodes = function (view) {
 

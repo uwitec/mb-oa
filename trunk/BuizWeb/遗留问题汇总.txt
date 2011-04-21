@@ -55,3 +55,6 @@
                     ftype: 'grouping',
                     groupHeaderTpl: '发送日期: {name} ' //API文档错误,groupHdTpl无效
                 }],
+17.树型选择框,当前结点选择则自动选择子孙结点
+18.带上传文件的表单提交,成功返回时是下载文件,
+	return Json(new { success = true }, "text/html");  //必须加上 "text/html"才正常

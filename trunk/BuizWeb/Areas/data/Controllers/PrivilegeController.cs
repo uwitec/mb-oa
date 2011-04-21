@@ -135,6 +135,39 @@ namespace BuizApp.Areas.data.Controllers
             }
         }
 
+        /// <summary>
+        /// 返回组织用户树型结构
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult OrgUser()
+        {
+            using (MyDB mydb = new MyDB())
+            {
+                mydb.Organizations.Load();
+                object[] result = mydb.Organizations.Local.Where(o => o.Parent==null).Select(o => getOrg(o.ID, mydb)).ToArray();
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+           
+        }
+
+        private object getOrg(string OrgID, MyDB mydb)
+        {
+            EntityObjectLib.Organization org = mydb.Organizations.Local.FirstOrDefault(o=>o.ID.Equals(OrgID));
+            return new
+            {
+                id = OrgID,
+                text = org.Name,
+                expanded = true,
+                leaf = org.Users.Count == 0&&org.Children.Count==0/*org.Children.Count() == 0*/,
+                //@checked = false,
+                //iconCls = "icon-org",
+                children =
+                    org.Children.Select(o => getOrg(o.ID, mydb))
+                    .Union(org.Users.Select(u => new { id = u.Code, text = u.Name, leaf = true, iconCls = "icon-user", @checked = false }))
+                    .ToArray()
+            };
+        }
+
         #region 私有方法
         private string getJsonString(object o)
         {

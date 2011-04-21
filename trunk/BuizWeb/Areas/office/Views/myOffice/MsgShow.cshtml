@@ -1,13 +1,48 @@
-﻿<!DOCTYPE html>
-
-<html>
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>MsgShow</title>
+    <title>@ViewBag.Title</title>
+    <link href='@Url.Content("~/Content/Site.css")' rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        span
+        {
+            display: inline-block;
+            width: 80px;
+            height: 20px;
+            margin: 10px 0;
+        }
+        .content
+        {
+            font-weight: bold;
+            width: auto;
+            border-bottom: solid 1px;
+        }
+    </style>
 </head>
-<body>
-    <div>
-        标题: @ViewData["Title"] .
-
+<body style="margin: 10px 10%;">
+    <div style="margin-top: 50px;" id="ddd">
+        <div>
+            <span>标题:</span><span class="content">@ViewBag.info.Title</span></div>
+        <div>
+            <span>发件人:</span><span class="content"></span><span class="content">@ViewBag.Creator</span>
+            <span style="margin-left: 100px">发件时间:</span><span class="content">@ViewBag.info.SendDate</span>
+        </div>
+        <div>
+            <span>收件人:</span><span class="content">@ViewBag.Receivers</span></div>
+        <div>
+            <span>内容:</span><span class="content">@ViewBag.info.Content</span></div>
+        <div>
+            <span>附件:</span>
+                <ul>
+                    @foreach (var item in ViewBag.files)
+                    {
+                        <li>@Html.Raw(@item)</li>
+                    }
+                </ul>
+        </div>
     </div>
 </body>
 </html>

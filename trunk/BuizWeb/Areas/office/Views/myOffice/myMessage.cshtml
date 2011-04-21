@@ -36,7 +36,8 @@
             ]
             });
 
-            refreshMsg = function (type) {
+            refreshMsg = function (type, title) {
+                grid.setTitle(title);
                 store.load({ params: { type: type} });
             }
 
@@ -139,7 +140,7 @@
                 { xtype: 'tbfill' },
                 { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { privilegeGridRefresh() } }
             ],
-            html: '<ul class="MBmenu"><li><a href="javascript:msgNew()">新建消息</a></li><li><a href="javascript:refreshMsg(\'unread\')">未读消息<span id="unRead">(10)</span></a></li><li><a href="javascript:refreshMsg(\'all\')">收件箱</a></li><li><a href="javascript:refreshMsg(\'outbox\')">发件箱</a></li><li><a>回收站</a></li></ul>'
+            html: '<ul class="MBmenu"><li><a href="javascript:msgNew()">新建消息</a></li><li><a href="javascript:refreshMsg(\'unread\',\'未读消息\')">未读消息<span id="unRead">(10)</span></a></li><li><a href="javascript:refreshMsg(\'all\',\'收件箱\')">收件箱</a></li><li><a href="javascript:refreshMsg(\'outbox\',\'发件箱\')">发件箱</a></li><li><a>回收站</a></li></ul>'
         });
 
         var subPanel = new Ext.panel.Panel({
@@ -196,7 +197,7 @@
                 items: [leftContainer, grid]
             }]
         });
-
+        refreshMsg('unread', '未读消息');
     });
     </script>
 }
