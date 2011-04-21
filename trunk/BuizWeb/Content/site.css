@@ -8,6 +8,16 @@
     background: url(/content/images/help.png) top left no-repeat !important;
 }
 
+.iconRSS
+{
+    background: url(/content/images/rss.png) top left no-repeat !important;
+}
+
+.iconEmail
+{
+    background: url(/content/images/email.gif) top left no-repeat !important;
+}
+
 .iconNew
 {
     background: url(/content/images/add.gif) top left no-repeat !important;
