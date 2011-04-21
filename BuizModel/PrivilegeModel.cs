@@ -54,13 +54,15 @@ namespace BuizModel
                             text = m.moduleName + "[" + m.moduleCode + "]",
                             type = "module",
                             expanded = true,
+                            @checked = true,
                             children = m.resources.OrderBy(r => r.orderNO).Select(
                                 r => new
                                 {
                                     id = r.ID,
                                     text = r.resourceName + "[" + r.resourceCode + "]",
                                     type = "resource",
-                                    leaf = true
+                                    leaf = true,
+                                    @checked = true
                                 }
                             )
                         }

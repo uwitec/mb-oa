@@ -1,17 +1,157 @@
-﻿<!DOCTYPE html>
+﻿@section header {
+    <style type="text/css">
+        body
+        {
+            height: 100%;
+            width: 100%;
+        }
+        .MBmenu li
+        {
+            background: url(/Content/images/book.png) no-repeat 2px 2px;
+        }
+    </style>
+    <script type="text/javascript">
+        Ext.onReady(function () {
+            var treeSelectUser = new Ext.tree.TreePanel({
+                store: new Ext.data.TreeStore({
+                    proxy: {
+                        type: 'ajax',
+                        url: '/data/Privilege/OrgUser'
+                    },
+                    root: {
+                        text: '用户列表',
+                        expanded: true
+                    }
+                }),
+                stateful: true,
+                rootVisible: false
+            });
 
-<html>
-<head>
-    <title>MsgNew</title>
-</head>
-<body>
-    <div>
-        1.写标题
-        2.选收件人:用户\组织
-        3.写内容
-        4.上传附件
-        5.设置途径或默认
-        6.发送,关闭当前标签
-    </div>
-</body>
-</html>
+            var win = new Ext.window.Window({
+                id: 'fwin',
+                title: '选择用户',
+                modal: true,
+                closable: true,
+                //stateful: true,
+                width: 300,
+                height: 500,
+                bodyStyle: 'padding: 5px;',
+                layout: 'fit',
+                items: [
+                                        treeSelectUser
+                                    ],
+                closeAction: 'hide',
+                buttons: [{
+                    text: '确定',
+                    handler: function () {
+                        var selectNodes = treeSelectUser.view.getChecked();
+                        var users = '';
+                        for (var i = 0; i < selectNodes.length; i++) {
+                            users = (users.length > 0 ? users + ',' : '') + selectNodes[i].data.text + '(' + selectNodes[i].data.id + ')';
+                        }
+                        //alert(users);
+                        Ext.getCmp('formNewMsg').getForm().findField('Receivers').setValue(users);
+                        win.close();
+                        //debugger;
+                    }
+                }, {
+                    text: '取消',
+                    handler: function () {
+                        win.close();
+                    }
+                }
+                ]
+            });
+
+            Ext.create('Ext.container.Viewport', {
+                id: 'Viewport',
+                layout: 'fit',
+                border: 0,
+                items: [{
+                    xtype: 'form',
+                    id: 'formNewMsg',
+                    layout: {
+                        type: 'vbox',
+                        align: 'stretch'
+                    },
+                    split: true,
+                    autoScroll: true,
+                    width: '100%',
+                    //bodyPadding: 20,
+                    margin: 0,
+                    tbar: [
+                        { xtype: 'label', text: '我的消息中心 -> 新建消息', cls: 'formNav' },
+                        { xtype: 'tbfill' },
+                        { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } },
+                        { xtype: 'button', iconCls: 'iconClose', text: '', tooltip: '关闭', tooltipType: 'title', handler: function (source, e) { window.parent.closeMe(window) } }
+                        ],
+                    bbar: [
+                        { xtype: 'button', text: 'Button 1', handler: function (source, e) { openWindow(); } }
+                        ],
+                    defaults: { labelWidth: 80, layout: 'anchor', anchor: '100%', xtype: 'textfield' },
+                    fieldDefaults: { labelAlign: 'left', msgTarget: 'none', margin: "4px 10px" },
+                    items: [{
+                        xtype: 'hiddenfield',
+                        name: 'ReveiverIDs',  //收件人ID列表,逗号分隔
+                        hidden: true
+                    }, {
+                        xtype: 'fieldcontainer',
+                        //anchor: '100%',
+                        layout: 'hbox',
+                        fieldLabel: '收件人',
+                        items: [{
+                            xtype: 'textareafield',
+                            name: 'Receivers',
+                            flex: 1,
+                            height: 'auto'
+                        }, {
+                            xtype: 'splitter'
+                        }, {
+                            xtype: 'button',
+                            text: '选择用户...',
+                            handler: function () {
+                                win.show();
+                            }
+                        }]
+                    }, {
+                        fieldLabel: '消息主题',
+                        name: 'Title'
+                    }, {
+                        fieldLabel: '消息正文',
+                        xtype: 'htmleditor',
+                        labelAlign: 'top',
+                        name: 'Content',
+                        flex: 1
+                    }, {
+                        xtype: 'filefield',
+                        fieldLabel: '附件',
+                        //buttonOnly: true,
+                        buttonText: '选择文件...',
+                        name: 'InfoFile',
+                        listeners: {
+                            change: function (FileUploadField, filename) {
+                                var clone = new Ext.form.field.File(this.cloneConfig());
+                                Ext.getCmp('formNewMsg').add(clone);
+                                Ext.getCmp('formNewMsg').doLayout();
+                                //debugger;
+                            }
+                        }
+                    }
+                    ],
+                    buttons: [
+                        { text: '发送', handler: function () {
+                            this.up('form').getForm().submit({
+                                url: '/office/myOffice/MsgSend',
+                                success: function (form, action) {  alert('success') },
+                                failure: function (form, action) { alert('failure') }
+                            }
+                            );
+                        }
+                        },
+                        { text: '取消', handler: function () {} }
+                    ]
+                }]
+            });
+        });
+    </script>
+}
