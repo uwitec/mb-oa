@@ -84,7 +84,7 @@ namespace BuizApp.Areas.system.Controllers
         }
 
         /// <summary>
-        /// 对操作重新排序
+        /// 对模块和功能的从属关系调整进行保存和重新排序
         /// 使用本地实体集，参考：http://blogs.msdn.com/b/adonet/archive/2011/02/01/using-dbcontext-in-ef-feature-ctp5-part-7-local-data.aspx
         /// </summary>
         /// <returns></returns>

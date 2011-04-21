@@ -29,7 +29,7 @@
                 { xtype: 'button', iconCls: 'iconEdit', text: '', tooltip: '编辑', tooltipType: 'title', handler: function (source, e) { treepNodeNewOrEdit(treep.selModel.selected.items[0].get("id")); } },
                 { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { treeqRemoveNode(treep.selModel.selected.items[0].get("id")) } },
                 { xtype: 'tbseparator' },
-                { xtype: 'button', iconCls: 'iconSave', text: '', tooltip: '保存排序', tooltipType: 'title', handler: function (source, e) { treeqReorderNodes(treep.getView()) } },
+                { xtype: 'button', iconCls: 'iconSave', text: '', tooltip: '保存调整排序', tooltipType: 'title', handler: function (source, e) { treeqReorderNodes(treep.getView()) } },
                 { xtype: 'tbfill' },
                 { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { treep.getView().getTreeStore().load() } }
              ],
