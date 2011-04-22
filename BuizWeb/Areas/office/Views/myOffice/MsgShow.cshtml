@@ -1,48 +1,94 @@
-锘緻{
+@{
     Layout = null;
 }
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-
+transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
     <title>@ViewBag.Title</title>
     <link href='@Url.Content("~/Content/Site.css")' rel="stylesheet" type="text/css" />
     <style type="text/css">
-        span
+        table, tr, td, th
         {
-            display: inline-block;
-            width: 80px;
-            height: 20px;
-            margin: 10px 0;
+            border: solid 1px #999999;
+            border-collapse: collapse;
+            height: 28px;
         }
-        .content
+        th
         {
-            font-weight: bold;
-            width: auto;
-            border-bottom: solid 1px;
+            background: #cceeff;
+            text-align: right;
+            padding-right: 3px;
+            font-weight: normal;
+        }
+        td
+        {
+            color: #0000FF;
+            padding-left: 3px;
+        }
+        body
+        {
+            padding: 10px 30px;
         }
     </style>
 </head>
-<body style="margin: 10px 10%;">
-    <div style="margin-top: 50px;" id="ddd">
-        <div>
-            <span>鏍囬:</span><span class="content">@ViewBag.info.Title</span></div>
-        <div>
-            <span>鍙戜欢浜�:</span><span class="content"></span><span class="content">@ViewBag.Creator</span>
-            <span style="margin-left: 100px">鍙戜欢鏃堕棿:</span><span class="content">@ViewBag.info.SendDate</span>
-        </div>
-        <div>
-            <span>鏀朵欢浜�:</span><span class="content">@ViewBag.Receivers</span></div>
-        <div>
-            <span>鍐呭:</span><span class="content">@ViewBag.info.Content</span></div>
-        <div>
-            <span>闄勪欢:</span>
+<body>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-size: 12px;
+        border-collapse: collapse; table-layout: fixed;">
+        <colgroup>
+            <col width="100px"></col>
+            <col></col>
+            <col width="100px"></col>
+            <col></col>
+        </colgroup>
+        <tr>
+            <th>
+                标题：
+            </th>
+            <td colspan="3">@ViewBag.info.Title
+            </td>
+        </tr>
+        <tr>
+            <th>
+                发件人：
+            </th>
+            <td>@ViewBag.Creator
+            </td>
+            <th>
+                发件时间：
+            </th>
+            <td>@ViewBag.info.SendDate
+            </td>
+        </tr>
+        <tr>
+            <th>
+                收件人：
+            </th>
+            <td colspan="3">@ViewBag.Receivers
+            </td>
+        </tr>
+        <tr>
+            <th>
+                内容：
+            </th>
+            <td colspan="3">@ViewBag.info.Content
+            </td>
+        </tr>
+        <tr>
+            <th>
+                附件：
+            </th>
+            <td colspan="3">
+                &nbsp;
                 <ul>
                     @foreach (var item in ViewBag.files)
                     {
                         <li>@Html.Raw(@item)</li>
                     }
                 </ul>
-        </div>
-    </div>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
