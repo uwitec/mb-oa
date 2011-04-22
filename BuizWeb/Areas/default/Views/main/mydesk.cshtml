@@ -146,6 +146,7 @@
                                 draggable: true,
                                 cls: 'x-portlet',
                                 frame:true,
+                                closable: true,
                                 bodyPadding:2,
                                 columns: [
                                     {header: '标题',  dataIndex: 'title',flex:1,
@@ -235,7 +236,7 @@
                                 html: '<div class="portlet-content"> Ext.example.bogusMarkup </div>',
                                 listeners: {
                                     'close': Ext.bind(this.onPortletClose, this)
-                                },
+                                }
                             }]
                         }, {
                             id: 'col-3',
