@@ -63,28 +63,61 @@ namespace BuizApp.Areas.data.Controllers
 
         public JsonResult roleByUser()
         {
+            string area = "system";
+            string controller = "auth";
+            string action = "user";
+
             string userID = Request.Params["userID"];
             using (MyDB mydb = new MyDB())
             {
-                object[] userRoles =
-                    mydb.Roles.GroupJoin(
-                        mydb.Users.Find(userID).Roles.Select(r => r.ID)
-                        , r => r.ID
-                        , ru => ru
-                        , (r, ru) => new { r.ID, r.roleCode, r.roleName, r.roleDescription, @checked = ru.Count() > 0, userID = userID }
-                    ).ToArray();
+                EntityObjectLib.User user = mydb.Users.Find(HttpContext.User.Identity.Name);
 
-                // 下面报错
-                //    Unable to create a constant value of type 'EntityLib.Role '. Only primitive types ('such as Int32, String, and Guid') are supported in this context.
-                //object[] userRoles =
-                //    mydb.Roles.GroupJoin(
-                //        mydb.Users.Find(userID).Roles //是这句上的问题，对比PrivilegeModel的rolePrivilege
-                //        , r => r.ID
-                //        , ru => ru.ID
-                //        , (r, ru) => new { r.ID, r.roleCode, r.roleName, r.roleDescription, @checked = ru.Count() > 0, userID = userID }
-                //    ).ToArray();
+                EntityObjectLib.RolePrivilege p = user.Roles.SelectMany(r => r.RolePrivileges)
+                    .First(rp => rp.Privilege.privilegeCode.ToLower().Equals(action.ToLower())
+                        && rp.Privilege.resource.resourceCode.ToLower().Equals(controller.ToLower())
+                        && rp.Privilege.resource.module.moduleCode.ToLower().Equals(area.ToLower())
+                        );
 
-                return Json(userRoles, JsonRequestBehavior.AllowGet);
+                string param = p.Parameters;
+
+                if (string.IsNullOrEmpty(param))
+                {
+                    object[] userRoles =
+                        mydb.Roles.GroupJoin(
+                            mydb.Users.Find(userID).Roles.Select(r => r.ID)
+                            , r => r.ID
+                            , ru => ru
+                            , (r, ru) => new { r.ID, r.roleCode, r.roleName, r.roleDescription, @checked = ru.Count() > 0, userID = userID }
+                        ).ToArray();
+
+                    // 下面报错
+                    //    Unable to create a constant value of type 'EntityLib.Role '. Only primitive types ('such as Int32, String, and Guid') are supported in this context.
+                    //object[] userRoles =
+                    //    mydb.Roles.GroupJoin(
+                    //        mydb.Users.Find(userID).Roles //是这句上的问题，对比PrivilegeModel的rolePrivilege
+                    //        , r => r.ID
+                    //        , ru => ru.ID
+                    //        , (r, ru) => new { r.ID, r.roleCode, r.roleName, r.roleDescription, @checked = ru.Count() > 0, userID = userID }
+                    //    ).ToArray();
+
+                    return Json(userRoles, JsonRequestBehavior.AllowGet);
+                }
+                else if (param.Equals("本部门"))
+                {
+                    IEnumerable<EntityObjectLib.Role> orgRoles = user.Organization.Users.SelectMany(u => u.Roles);
+                    object[] userRoles =
+                        orgRoles.GroupJoin(
+                            mydb.Users.Find(userID).Roles
+                            //.Where(r => orgRoles.Contains(r))
+                            .Select(r => r.ID)
+                            , r => r.ID
+                            , ru => ru
+                            , (r, ru) => new { r.ID, r.roleCode, r.roleName, r.roleDescription, @checked = ru.Count() > 0, userID = userID }
+                        ).ToArray();
+
+                    return Json(userRoles, JsonRequestBehavior.AllowGet);
+                }
+                return null;
             }
         }
 
@@ -151,10 +184,73 @@ namespace BuizApp.Areas.data.Controllers
 
         public JsonResult user()
         {
+            // 查看当前用户获得该权限的角色来源
+            // 取角色权限参数
+            // 如果空,则取全部用户
+            // 如果是"本部门",只取本部门用户
+
+            string area = "system";
+            string controller = "auth";
+            string action = "user";
+
+            //////////////////////////
+
             using (MyDB mydb = new MyDB())
             {
-                return
-                Json(mydb.Users.OrderBy(u => u.Code).Select(u => new { u.ID, u.Code, u.Name, u.Password, OrgID = u.Organization.ID, Organization=u.Organization.Name }).ToArray(), JsonRequestBehavior.AllowGet);
+                EntityObjectLib.User user = mydb.Users.Find(HttpContext.User.Identity.Name);
+                //EntityObjectLib.RolePrivilege p = mydb.RolePrivileges
+                //    .Where(rp => rp.Privilege.privilegeCode.ToLower().Equals(action.ToLower())
+                //        && rp.Privilege.resource.resourceCode.ToLower().Equals(controller.ToLower())
+                //        && rp.Privilege.resource.module.moduleCode.ToLower().Equals(area.ToLower())
+                //        ).First(rp => rp.Role.Subjects.OfType<EntityObjectLib.User>().Contains(user));
+                        //&& rp.Role.Subjects.OfType<EntityObjectLib.User>().Contains(user));
+                        //&& mydb.Users.Find(HttpContext.User.Identity.Name).Roles.Contains(rp.Role));
+
+                EntityObjectLib.RolePrivilege p = user.Roles.SelectMany(r => r.RolePrivileges)
+                    .First(rp => rp.Privilege.privilegeCode.ToLower().Equals(action.ToLower())
+                        && rp.Privilege.resource.resourceCode.ToLower().Equals(controller.ToLower())
+                        && rp.Privilege.resource.module.moduleCode.ToLower().Equals(area.ToLower())
+                        );
+
+                string param = p.Parameters;
+
+                if (string.IsNullOrEmpty(param))
+                {
+                    return
+                    Json(mydb.Users
+                    .OrderBy(u => u.Code)
+                    .Select(u =>
+                        new
+                        {
+                            u.ID,
+                            u.Code,
+                            u.Name,
+                            u.Password,
+                            OrgID = u.Organization.ID,
+                            Organization = u.Organization.Name
+                        }).ToArray()
+                        , JsonRequestBehavior.AllowGet
+                    );
+                }
+                else if (param.Equals("本部门"))
+                {
+                    return Json(
+                        mydb.Users
+                        .Where(u => u.Organization.ID.Equals(user.Organization.ID))
+                        .OrderBy(u => u.Code)
+                        .Select(u => new
+                        {
+                            u.ID,
+                            u.Code,
+                            u.Name,
+                            u.Password,
+                            OrgID = u.Organization.ID,
+                            Organization = u.Organization.Name
+                        }).ToArray()
+                        , JsonRequestBehavior.AllowGet);
+                }
+
+                return null;
             }
         }
 
