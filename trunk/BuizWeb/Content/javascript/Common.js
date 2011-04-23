@@ -1,5 +1,5 @@
 ﻿function addTab(url, text) {
-    var Id = "tab" + hashCode(url); // Ext.id([Mixed el], [String prefix])
+    var Id = Ext.id();//"tab" + hashCode(url); // Ext.id([Mixed el], [String prefix])
     var mainTabPanel = Ext.getCmp('mainTabPanel');
     var tab = Ext.getCmp(Id);
     if (tab) {
