@@ -92,8 +92,6 @@
     <Compile Include="Areas\default\Controllers\MainController.cs" />
     <Compile Include="App_Code\ActionFilters\AuthoritionFilter.cs" />
     <Compile Include="Areas\default\Controllers\LoginController.cs" />
-    <Compile Include="Areas\workflow\Controllers\workflowManageController.cs" />
-    <Compile Include="Areas\workflow\workflowAreaRegistration.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -188,8 +186,6 @@
     <Folder Include="Areas\resource\Models\" />
     <Folder Include="Areas\system\Models\" />
     <Folder Include="Areas\test\Models\" />
-    <Folder Include="Areas\workflow\Models\" />
-    <Folder Include="Areas\workflow\Views\Shared\" />
     <Folder Include="Content\ExtJS\" />
   </ItemGroup>
   <ItemGroup>
@@ -283,12 +279,6 @@
     <Content Include="Areas\resource\Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\workflow\Views\Web.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Areas\workflow\Views\define.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Areas\resource\Views\equipment\account.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -324,6 +314,9 @@
   <ItemGroup>
     <Content Include="Areas\system\Views\Auth\Organization.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\office\Views\myOffice\mySubscription.cshtml" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -341,7 +334,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>1452</DevelopmentServerPort>
+          <DevelopmentServerPort>12480</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

@@ -1,5 +1,6 @@
-﻿function addTab(url, text) {
-    var Id = Ext.id();//"tab" + hashCode(url); // Ext.id([Mixed el], [String prefix])
+﻿var tabActiveOrders = new Array();
+function addTab(url, text) {
+    var Id = "tab" + hashCode(url); // Ext.id([Mixed el], [String prefix])
     var mainTabPanel = Ext.getCmp('mainTabPanel');
     var tab = Ext.getCmp(Id);
     if (tab) {
@@ -37,9 +38,20 @@
 //            }
 //        }));
 
-        //tab.show();
-        //mainTabPanel.doLayout();
         mainTabPanel.setActiveTab(tab);
+        //mainTabPanel.doLayout();
+        tab.on("deactivate", function (t) {
+            tabActiveOrders.push(t.id);
+        });
+        tab.on("removed", function (t, ownerCt) {
+            //debugger;
+            var tab = Ext.getCmp(tabActiveOrders.pop());
+            while (!tab) {
+                tab = Ext.getCmp(tabActiveOrders.pop());
+            }
+            if (tab)
+                ownerCt.setActiveTab(tab);
+        });
     }
 }
 
@@ -52,7 +64,7 @@ function closeMe(iframe) {
 function hashCode(str) {
     //同一URL返回不同的值
     var now = new Date();
-    str = str + now.toTimeString() + now.getMilliseconds();
+    //str = str + now.toTimeString() + now.getMilliseconds();
 
     var hash = 18951163698;
 

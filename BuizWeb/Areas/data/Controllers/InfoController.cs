@@ -98,5 +98,42 @@ namespace BuizApp.Areas.data.Controllers
                 return count.ToString();
             }
         }
+
+        public ActionResult mySubscription()
+        {
+            string UserID = this.User.Identity.Name;
+            using (MyDB mydb = new MyDB())
+            {
+                var mySubscriptions =
+                    mydb.Infos.Where(i => i.Board != null)
+                    .GroupJoin(mydb.Subscriptions.Where(s => s.Owner.ID.Equals(UserID)),
+                    i => i.ID,
+                    s => s.Title.ID,
+                    (i, s) => new { i.ID, i.Title, Creator = i.Creator.Name, CreateDate = i.CreateDate, @checked = s.Count() > 0 })
+                    .ToArray()
+                    ;
+
+
+                return Json(
+                    mySubscriptions.Select(x => new { x.ID, x.Creator, CreateDate = x.CreateDate.ToString("yyyy-M-d H:m:s"), x.Title, x.@checked })
+                    , JsonRequestBehavior.AllowGet
+                    );
+            }
+        }
+
+        public ActionResult selfSubscription()
+        {
+            string UserID = this.User.Identity.Name;
+            using (MyDB mydb = new MyDB())
+            {
+                object[] mySubscriptions = mydb.Subscriptions.Where(s => s.Owner.ID.Equals(this.User.Identity.Name))
+                    .Select(s => new { s.Title.ID, s.Title.Title }).ToArray();
+
+                return Json(
+                    mySubscriptions
+                    , JsonRequestBehavior.AllowGet
+                    );
+            }
+        }
     }
 }

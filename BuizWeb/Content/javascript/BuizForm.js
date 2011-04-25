@@ -281,6 +281,7 @@ MB.form.Privilege= function (config) {
 
 MB.form.Role = function (config) {
     this.name = "角色表单";
+    this.container = config.container;
     this.form = new Ext.form.FormPanel({
         params: { sid: config.id, jid: 'ssss' },
         layout: 'column',

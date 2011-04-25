@@ -13,12 +13,12 @@
     <script type="text/javascript">
         var msgShow = function (id, text) {
             this.parent.addTab('/office/myOffice/MsgShow?id=' + id, '消息:' + text);
-            window.setTimeout(refreshMsg, 3000);
+            window.setTimeout(getUnReadCount, 3000);
         };
 
         var msgNew = function () {
             this.parent.addTab('/office/myOffice/MsgNew', '新建消息');
-            window.setTimeout(refreshMsg, 3000);
+            window.setTimeout(getUnReadCount, 3000);
         }
 
         var refreshMsg;
@@ -126,6 +126,9 @@
             }],
             listeners: {
                 itemdblclick: function (view, record, el, index, e) {
+                },
+                selectionchange: function( view, selections) {
+//                    debugger;
                 }
             }
         });
@@ -143,19 +146,35 @@
             html: '<ul class="MBmenu"><li><a href="javascript:msgNew()">新建消息</a></li><li><a href="javascript:refreshMsg(\'unread\',\'未读消息\')">未读消息<span id="unRead">(10)</span></a></li><li><a href="javascript:refreshMsg(\'all\',\'收件箱\')">收件箱</a></li><li><a href="javascript:refreshMsg(\'outbox\',\'发件箱\')">发件箱</a></li><li><a>回收站</a></li></ul>'
         });
 
-        var subPanel = new Ext.panel.Panel({
+        var subPanel = new Ext.grid.Panel({
+            store: new Ext.data.Store({
+                fields: ['ID', 'Title'],
+                proxy: {
+                    type: 'ajax',
+                    url: '/data/Info/selfSubscription'
+                },
+                autoLoad: true
+            }),
             title: '我的订阅',
             bodyPadding: 0,
             width: '100%',
             flex: 1,
             margin: '6 0 0 0',
             tbar: [
-                { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '增加', tooltipType: 'title', handler: function (source, e) { privilegeNewOrEdit(null) } },
+                { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '增加', tooltipType: 'title', handler: function (source, e) { window.parent.addTab('/office/myoffice/mySubscription', '我的订阅') } },
                 { xtype: 'tbseparator' },
                 { xtype: 'tbfill' },
-                { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { privilegeGridRefresh() } }
+                { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { subPanel.store.load(); } }
             ],
-            html: '<ul class="MBmenu"><li><a>新消息</a></li><li><a>未读消息</a></li><li><a>收件箱</a></li><li><a>发件箱</a></li><li><a>回收站</a></li></ul>'
+            columns: [
+            new Ext.grid.RowNumberer(),
+            {
+                text: '标题',
+                dataIndex: 'Title',
+                flex: 1,
+                renderer: function (v) { return '<a href="">' + v + '</a>' }
+            }
+            ]
         });
 
         var leftContainer = new Ext.container.Container({
@@ -201,12 +220,3 @@
     });
     </script>
 }
-<a href="javascript:this.parent.addTab('/system/auth/privilege','test')">parent.addTab</a>
-<a href="javascript:this.parent.closeMe(window)">parent.closeme()</a> 发送消息给其他用户和组织,和接收确认<br />
-发送消息到讨论板<br />
-接收消息,来自于用户消息或订阅或系统消息<br />
-查看消息<br />
-回复消息<br />
-自定义消息接收途径<br />
-订阅主题和系统事件和取消订阅<br />
-提醒也用消息实现<br />

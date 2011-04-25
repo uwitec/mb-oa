@@ -71,7 +71,7 @@
 {
     /*font-weight: bold; */
     padding: 6px 10px;
-    font-size: 11px;
+    font-size: 12px;
 }
 
 
@@ -88,9 +88,9 @@
 }*/
 
 
-body
+*
 {
-    font-size: 11px;
+    font-size: 14px;
 }
 .MBmenu li
 {

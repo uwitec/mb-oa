@@ -33,6 +33,11 @@ namespace BuizApp.Areas.office.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 显示消息
+        /// Request.QueryString["id"]： 消息id
+        /// </summary>
+        /// <returns></returns>
         public ActionResult MsgShow()
         {
             string id = Request.QueryString["id"];
@@ -88,14 +93,16 @@ namespace BuizApp.Areas.office.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
-        public JsonResult MsgSend()
+        public ActionResult MsgSend()
         {
+            // 如果字符串含双引号，则将截断双引号及后面的字符，但在其他表单里是没有的，可能与
+            // 该表单含文件上传有关
             string Receivers = Request.Form["Receivers"];
-            string Title = Server.HtmlEncode(Request.Form["Title"]);
-            string Content = Server.HtmlEncode(Request.Form["Content"]);
-            string ParentID = Request.Form["ParentID"];
+            string Title = Request.Form["Title"];
+            string Content = Request.Form["Content"];
+            string ParentID = Server.HtmlEncode(Request.Form["ParentID"]);
 
-
+            string infoID = Guid.NewGuid().ToString();
             using (MyDB mydb = new MyDB())
             {
                 List<EntityObjectLib.File> files = new List<File>();
@@ -121,14 +128,14 @@ namespace BuizApp.Areas.office.Controllers
 
                 EntityObjectLib.Info info = new Info
                 {
-                    ID = Guid.NewGuid().ToString(),
+                    ID = infoID,
                     Title = Title,
                     Content = Content,
                     CreateDate = DateTime.Now,
                     SendDate = DateTime.Now,
                     Creator = mydb.Users.Find(HttpContext.User.Identity.Name),
                     SendTypes = "",
-                    Receivers = Receivers.Split(",".ToCharArray()).Select(r => new EntityObjectLib.MyInfo
+                    Receivers = string.IsNullOrEmpty(Receivers)?null:Receivers.Split(",".ToCharArray()).Select(r => new EntityObjectLib.MyInfo
                     {
                         ID = Guid.NewGuid().ToString(),
                         Receiver = mydb.Users.FirstOrDefault(u => r.Equals(u.Name + "(" + u.Code + ")")),
@@ -141,7 +148,8 @@ namespace BuizApp.Areas.office.Controllers
                         UploadDate = DateTime.Now,
                         File = f
                     }).ToArray(),
-                    Parent = mydb.Infos.Find(ParentID)
+                    Parent = mydb.Infos.Find(ParentID),
+                    Board = mydb.InfoBoards.First()
                 };
 
                 mydb.Infos.Add(info);
@@ -150,7 +158,41 @@ namespace BuizApp.Areas.office.Controllers
             }
 
             Response.Clear();
-            return Json(new { success = true }, "text/html");
+            return Json(new { success = true, ID = infoID }, "text/html");
+        }
+
+        public ActionResult mySubscription()
+        {
+            return View();
+        }
+
+        public ActionResult updateMySubscriptions()
+        {
+            IEnumerable<string> Ids = Request.Params["IDs"].Split(",".ToArray()).AsEnumerable(); //新的角色ID串
+            string userID = this.User.Identity.Name;
+            using (MyDB mydb = new MyDB())
+            {
+                IQueryable<Subscription> subscriptions = mydb.Subscriptions.Where(s => s.Owner.ID.Equals(userID));
+
+                foreach (Subscription s in subscriptions)
+                {
+                    if(!Ids.Contains(s.Title.ID))
+                    mydb.Subscriptions.Remove(s);
+                }
+
+                string[] appendIDS = Ids.Except(subscriptions.Select(s=>s.Title.ID)).ToArray();
+                foreach (string s in appendIDS)
+                {
+                    Subscription sub = new Subscription();
+                    sub.ID = Guid.NewGuid().ToString();
+                    sub.Owner = mydb.Users.Find(userID);
+                    sub.Title = mydb.Infos.Find(s);
+
+                    mydb.Subscriptions.Add(sub);
+                }
+                mydb.SaveChanges();
+            }
+            return Json(new { success = true });
         }
     }
 }
