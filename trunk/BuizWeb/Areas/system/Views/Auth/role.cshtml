@@ -244,14 +244,15 @@
                 //height: 500,
                 layout: 'fit',
                 bodyStyle: 'padding: 5px;',
-                items: [
-                    new MB.form.Role({
-                        id: id,
-                        close: function () { Ext.getCmp('fwin').destroy(); },
-                        submitSccess: function (form, action) { Ext.getCmp('fwin').destroy(); roleGrid.getView().getStore().load(); alert("submitSccess"); },
-                        submitFailure: function (form, action) { alert("submitFailure"); }
-                    })
-                ]
+//                items: [
+//                    new MB.form.Role({
+//                        id: id,
+//                        close: function () { var fwin = Ext.getCmp('fwin'); fwin.close(); fwin = null; },
+//                        submitSccess: function (form, action) { roleGrid.get().getStore().load(); alert("submitSccess"); Ext.getCmp('fwin').close(); },
+//                        submitFailure: function (form, action) { alert("submitFailure"); }
+//                    })
+//                ]
+                buttons :[{ text: 'Button 1', handler: function() { this.up('window').close();}}]
             }).show();
         }
 
@@ -316,7 +317,7 @@
                 ]
             }).show();
         }
-    });                                      // Ext.onReady
+    });                                       // Ext.onReady
 
             
     </script>

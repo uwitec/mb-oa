@@ -1,0 +1,102 @@
+﻿@section header {
+    <script type="text/javascript">
+        Ext.onReady(function () {
+            var store = new Ext.data.Store({
+                fields: ['ID', 'Title', 'Creator', 'CreateDate', { name: 'checked', type: 'boolean'}],
+                proxy: {
+                    type: 'ajax',
+                    url: '/data/Info/mySubscription'
+                },
+                //autoLoad: true,
+                listeners: {
+                    datachanged: function (store, records, success) {
+                        var index = 0;
+                        store.each(function (record) {
+                            if (record.data.checked) {
+                                grid.selModel.select(index, true);
+                            };
+                            index++;
+                        })
+                    }
+                }
+            });
+
+            var grid = new Ext.grid.Panel({
+                store: store,
+                selModel: new Ext.selection.CheckboxModel({
+                    checkOnly: true,
+                    listeners: {
+                    //                        select: function (RowSelectionModel, record, index) { alert(index) },
+                    //                        deselect: function (RowSelectionModel, record, index) { alert(index) }
+                }
+            }),
+            columns: [
+            new Ext.grid.RowNumberer(),
+            {
+                text: '标题',
+                dataIndex: 'Title',
+                flex: 1
+            },
+            {
+                text: '创建人',
+                dataIndex: 'Creator',
+                width: 80
+            },
+            {
+                text: '创建时间',
+                dataIndex: 'CreateDate',
+                width: 160
+            }
+            ],
+            tbar: [{
+                xtype: 'button', iconCls: 'iconSave', tooltip: '保存', tooltipType: 'title',
+                handler: function (source, e) {
+                    var records = grid.getView().selModel.getSelection();
+                    var Ids = new Array();
+                    for (var i = 0; i < records.length; i++) {
+                        Ids.push(records[i].data.ID);
+                    }
+                    Ext.Ajax.request({
+                        url: '/office/myoffice/updateMySubscriptions',
+                        params: {
+                            IDs: Ids.join(',')
+                        },
+                        success: function (response) {
+                            alert("success");
+                            store.load();
+                        },
+                        failure: function (response) {
+                            alert("failure");
+                        }
+                    });
+                }
+            }]
+        });
+
+        store.load();
+
+        var panel = Ext.create('Ext.panel.Panel', {
+            region: 'center',
+            layout: 'fit',
+            autoScroll: true,
+            bodyPadding: 0,
+            border: 0,
+            padding: 0,
+            margin: 0,
+            tbar: [
+                    { xtype: 'label', text: '个人办公 -> 我的订阅', cls: 'formNav' },
+                    { xtype: 'tbfill' },
+                    { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }
+                    ]
+        });
+
+        panel.add(grid);
+
+        new Ext.container.Viewport({
+            layout: 'border',
+            border: 0,
+            items: [panel]
+        });
+    });
+    </script>
+}

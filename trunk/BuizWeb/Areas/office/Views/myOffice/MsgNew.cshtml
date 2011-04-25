@@ -77,6 +77,7 @@
                     split: true,
                     autoScroll: true,
                     width: '100%',
+                    //standardSubmit: true,
                     //bodyPadding: 20,
                     margin: 0,
                     tbar: [
@@ -117,7 +118,8 @@
                             }
                         }]
                     }, {
-                        fieldLabel: '消息主题',
+                        xtype: 'textfield',
+                        fieldLabel: '消息标题',
                         name: 'Title',
                         value: '@ViewBag.Title'
                     }, {
@@ -130,15 +132,27 @@
                     }, {
                         xtype: 'filefield',
                         fieldLabel: '附件',
-                        //buttonOnly: true,
+                        buttonOnly: true,
                         buttonText: '选择...',
                         name: 'InfoFile',
                         listeners: {
                             change: function (FileUploadField, filename) {
                                 var clone = new Ext.form.field.File(this.cloneConfig());
-                                Ext.getCmp('formNewMsg').add(clone);
-                                Ext.getCmp('formNewMsg').doLayout();
-                                //debugger;
+                                this.setVisible(false);
+
+                                var filesList = Ext.getCmp('filesList')
+                                if (filesList == null) {
+                                    Ext.getCmp('formNewMsg').add({
+                                        id: 'filesList',
+                                        xtype: 'displayfield',
+                                        html: 'ddddd'
+                                    });
+                                }
+                                else {
+                                    filesList.setValue(filesList.getValue + 'sssssssss');
+                                }
+                                this.up('form').add(clone);
+                                this.up('form').doLayout();
                             }
                         }
                     }
@@ -147,13 +161,13 @@
                         { text: '发送', handler: function () {
                             this.up('form').getForm().submit({
                                 url: '/office/myOffice/MsgSend',
-                                success: function (form, action) {  alert('success') },
+                                success: function (form, action) { alert('消息发送成功!'); self.parent.closeMe(window); },
                                 failure: function (form, action) { alert('failure') }
                             }
                             );
                         }
                         },
-                        { text: '取消', handler: function () {} }
+                        { text: '取消', handler: function () { } }
                     ]
                 }]
             });
