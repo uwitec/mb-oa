@@ -1,7 +1,8 @@
 @{
     Layout = null;
 }
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-
+
 transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -32,15 +33,23 @@ transitional.dtd">
             padding: 10px 30px;
         }
     </style>
+    <script type="text/javascript">
+        function reply() {
+            this.parent.addTab('/office/myOffice/MsgNew?type=reply&id=@ViewBag.info.ID', '回复:@ViewBag.info.Title')
+        }
+        function transmit() {
+            this.parent.addTab('/office/myOffice/MsgNew?type=transmit&id=@ViewBag.info.ID', '转发:@ViewBag.info.Title')
+        }
+    </script>
 </head>
 <body>
     <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-size: 12px;
         border-collapse: collapse; table-layout: fixed;">
         <colgroup>
             <col width="100px"></col>
-            <col></col>
+            <col />
             <col width="100px"></col>
-            <col></col>
+            <col />
         </colgroup>
         <tr>
             <th>
@@ -72,7 +81,7 @@ transitional.dtd">
             <th>
                 内容：
             </th>
-            <td colspan="3">@ViewBag.info.Content
+            <td colspan="3">@Html.Raw(@ViewBag.info.Content)
             </td>
         </tr>
         <tr>
@@ -80,15 +89,34 @@ transitional.dtd">
                 附件：
             </th>
             <td colspan="3">
-                &nbsp;
-                <ul>
+                <ul style="display:block; margin:10px; padding: 1px;">
                     @foreach (var item in ViewBag.files)
+                    {
+                        <li style="float:left; margin:1px; margin-right:20px; padding: 1px;">@Html.Raw(@item)</li>
+                    }
+                </ul>
+            </td>
+        </tr>
+        @if (ViewBag.IsSender)
+        {
+        <tr>
+            <th>
+                回复：
+            </th>
+            <td colspan="3">
+                <ul style="display:block; margin:10px; padding: 1px;">
+                    @foreach (var item in ViewBag.children)
                     {
                         <li>@Html.Raw(@item)</li>
                     }
                 </ul>
             </td>
         </tr>
+        }
+        <tfoot valign="bottom">
+            <input type="button" onclick='reply()' value='回复'/>
+            <input type="button" onclick='transmit()' value='转发'/>
+        </tfoot>
     </table>
 </body>
 </html>
