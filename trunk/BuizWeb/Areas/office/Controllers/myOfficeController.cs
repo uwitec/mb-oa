@@ -91,8 +91,8 @@ namespace BuizApp.Areas.office.Controllers
         public JsonResult MsgSend()
         {
             string Receivers = Request.Form["Receivers"];
-            string Title = Request.Form["Title"];
-            string Content = Request.Form["Content"];
+            string Title = Server.HtmlEncode(Request.Form["Title"]);
+            string Content = Server.HtmlEncode(Request.Form["Content"]);
             string ParentID = Request.Form["ParentID"];
 
 
