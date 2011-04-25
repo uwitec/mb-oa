@@ -47,26 +47,53 @@ namespace BuizApp.Areas.office.Controllers
                     mydb.SaveChanges();
                 }
 
+                ViewBag.IsSender = UserID.Equals(info.Creator.ID);
                 ViewBag.info = info;
                 ViewBag.Creator = info.Creator.Name;
                 ViewBag.Receivers = string.Join(",", info.Receivers.Select(r => r.Receiver.Name).ToArray());
                 ViewBag.files = info.InfoFiles.Select(f => string.Format("<a href='/{1}' target='_blank'>{0}</a>", f.File.Name, f.File.Name)).ToArray();
+                ViewBag.children = info.Children.Select(inf => string.Format("<a href=javascript:this.parent.addTab('/office/myOffice/MsgShow?ID={0}','消息:{3}') target='_blank'>[{1}]{2}:{3}</a>", inf.ID, inf.CreateDate, inf.Creator.Name, inf.Title)).ToArray();
             }
-
             return View();
         }
 
         public ActionResult MsgNew()
         {
+            string type = Request.QueryString["type"];
+            string id = Request.QueryString["id"];
+
+            Info info;
+            using (MyDB mydb = new MyDB())
+            {
+                info = mydb.Infos.Find(id);
+                switch (type)
+                {
+                    case "reply":
+                        ViewBag.Receiver = string.Format("{0}({1})", info.Creator.Name, info.Creator.Code);
+                        ViewBag.ParentID = id;
+                        ViewBag.Title = string.Format("回复:{0}", info.Title);
+                        ViewBag.Content = string.Format("<br/><br/><hr/>{0}", info.Content);
+                        break;
+                    case "transmit":
+                        ViewBag.parentID = id;
+                        ViewBag.Title = string.Format("转发:{0}", info.Title);
+                        ViewBag.Content = string.Format("<br/><br/><hr/>{0}", info.Content);
+                        break;
+                    default:
+                        break;
+                }
+            }
             return View();
         }
 
         [HttpPost]
-        public ActionResult MsgSend()
+        [ValidateInput(false)]
+        public JsonResult MsgSend()
         {
             string Receivers = Request.Form["Receivers"];
             string Title = Request.Form["Title"];
             string Content = Request.Form["Content"];
+            string ParentID = Request.Form["ParentID"];
 
 
             using (MyDB mydb = new MyDB())
@@ -113,7 +140,8 @@ namespace BuizApp.Areas.office.Controllers
                         FileName = f.Name,
                         UploadDate = DateTime.Now,
                         File = f
-                    }).ToArray()
+                    }).ToArray(),
+                    Parent = mydb.Infos.Find(ParentID)
                 };
 
                 mydb.Infos.Add(info);

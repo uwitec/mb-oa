@@ -91,9 +91,10 @@
                     defaults: { labelWidth: 80, layout: 'anchor', anchor: '100%', xtype: 'textfield' },
                     fieldDefaults: { labelAlign: 'left', msgTarget: 'none', margin: "4px 10px" },
                     items: [{
+                        fieldLabel: '来源消息ID',
                         xtype: 'hiddenfield',
-                        name: 'ReveiverIDs',  //收件人ID列表,逗号分隔
-                        hidden: true
+                        name: 'ParentID',
+                        value: '@ViewBag.ParentID'
                     }, {
                         xtype: 'fieldcontainer',
                         //anchor: '100%',
@@ -103,30 +104,34 @@
                             xtype: 'textareafield',
                             name: 'Receivers',
                             flex: 1,
-                            height: 'auto'
+                            height: 40,
+                            value: '@ViewBag.Receiver'
                         }, {
                             xtype: 'splitter'
                         }, {
                             xtype: 'button',
                             text: '选择用户...',
+                            height: 40,
                             handler: function () {
                                 win.show();
                             }
                         }]
                     }, {
                         fieldLabel: '消息主题',
-                        name: 'Title'
+                        name: 'Title',
+                        value: '@ViewBag.Title'
                     }, {
                         fieldLabel: '消息正文',
                         xtype: 'htmleditor',
                         labelAlign: 'top',
                         name: 'Content',
-                        flex: 1
+                        flex: 1,
+                        value: '@Html.Raw(@ViewBag.Content)'
                     }, {
                         xtype: 'filefield',
                         fieldLabel: '附件',
                         //buttonOnly: true,
-                        buttonText: '选择文件...',
+                        buttonText: '选择...',
                         name: 'InfoFile',
                         listeners: {
                             change: function (FileUploadField, filename) {
