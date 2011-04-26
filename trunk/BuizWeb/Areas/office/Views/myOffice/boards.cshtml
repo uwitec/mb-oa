@@ -1,6 +1,6 @@
 ﻿@section header {
     <script type="text/javascript">
-        alert(eval(new Date(1303735436223)));
+//        alert(eval(new Date(1303735436223)));
         Ext.onReady(function () {
 
             var bookTplMarkup = [
@@ -24,16 +24,25 @@
                     new Ext.grid.Panel({
                         id: 'titlegrid',
                         store: new Ext.data.Store({
-                            fields: ['ID', 'Title', 'Name', { name: 'SendDate',type:'date'}, 'Content'],
+                            fields: ['ID', 'Title', 'Name', { name: 'SendDate', type: 'date', dateFormat: 'MS' }, 'Content'],
                             proxy: {
                                 type: 'ajax',
                                 url: '/data/info/Subscriptions'
                             },
                             autoLoad: true,
                             listeners: {
-                                load: function (store, records, successful) { debugger; }
+                                load: function (store, records, successful) {
+                                    if (!successful) {
+                                        alert('数据加载失败');
+                                    }
+                                }
                             }
                         }),
+                        tbar: [
+                          { xtype: 'tbseparator' },
+                          { xtype: 'tbfill' },
+                          { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { this.up('panel').getStore().load(); } }
+                        ],
                         region: 'center',
                         width: '100%',
                         columns: [
@@ -42,15 +51,20 @@
                                 text: '标题',
                                 dataIndex: 'Title',
                                 flex: 1
+                            }, {
+                                text: '创建时间',
+                                dataIndex: 'SendDate',
+                                width: 140,
+                                renderer: Ext.util.Format.dateRenderer('y-m-d')
                             }],
                         listeners: {
                             selectionchange: function (sm, selectedRecords) {
-                                debugger;
+                                //debugger;
                                 if (selectedRecords.length) {
                                     var detailPanel = Ext.getCmp('detailPanel');
                                     bookTpl.overwrite(detailPanel.body, selectedRecords[0].data);
                                 }
-                                debugger;
+                                //debugger;
                             }
                         }
                     }), // 

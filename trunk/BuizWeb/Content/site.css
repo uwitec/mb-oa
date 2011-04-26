@@ -93,10 +93,6 @@
 }*/
 
 
-*
-{
-    font-size: 14px;
-}
 .MBmenu li
 {
     margin: 2px;
@@ -155,3 +151,18 @@
 
 .icon-user{background-image: url(/content/images/user.png)}  
 
+.iconReply
+{
+    background: url(/content/images/reply.gif) top left no-repeat !important;
+    display: inline-block;
+    cursor: pointer;
+    border: 0;
+}
+
+.iconTransmit
+{
+    background: url(/content/images/transmit.gif) top left no-repeat !important;
+    display: inline-block;
+    cursor: pointer;
+    border: 0;
+}
