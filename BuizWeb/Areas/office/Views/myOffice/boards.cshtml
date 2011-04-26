@@ -1,0 +1,123 @@
+﻿@section header {
+    <script type="text/javascript">
+        alert(eval(new Date(1303735436223)));
+        Ext.onReady(function () {
+
+            var bookTplMarkup = [
+                'Title: {Title}<br>',
+                '<strong>ID: {ID}</strong> <br>',
+                'Name: {Name}',
+                'Content: {Content}',
+            ];
+
+            var bookTpl = Ext.create('Ext.Template', bookTplMarkup);
+
+
+            var boardpanel = Ext.create('Ext.panel.Panel', {
+                title: '主题列表',
+                flex: 0,
+                margin: 10,
+                flex: 1,
+                layout: 'border',
+                frame: true,
+                items: [
+                    new Ext.grid.Panel({
+                        id: 'titlegrid',
+                        store: new Ext.data.Store({
+                            fields: ['ID', 'Title', 'Name', { name: 'SendDate',type:'date'}, 'Content'],
+                            proxy: {
+                                type: 'ajax',
+                                url: '/data/info/Subscriptions'
+                            },
+                            autoLoad: true,
+                            listeners: {
+                                load: function (store, records, successful) { debugger; }
+                            }
+                        }),
+                        region: 'center',
+                        width: '100%',
+                        columns: [
+                            new Ext.grid.RowNumberer(),
+                            {
+                                text: '标题',
+                                dataIndex: 'Title',
+                                flex: 1
+                            }],
+                        listeners: {
+                            selectionchange: function (sm, selectedRecords) {
+                                debugger;
+                                if (selectedRecords.length) {
+                                    var detailPanel = Ext.getCmp('detailPanel');
+                                    bookTpl.overwrite(detailPanel.body, selectedRecords[0].data);
+                                }
+                                debugger;
+                            }
+                        }
+                    }), // 
+                    new Ext.panel.Panel({
+                        id: 'detailPanel',
+                        height: 200,
+                        region: 'south',
+                        split: true
+                    })
+                ]
+            });
+            var contentpanel = Ext.create('Ext.panel.Panel', {
+                title: '内容列表',
+                margin: 10,
+                flex: 1,
+                items: [
+                    new Ext.grid.Panel({
+                        store: new Ext.data.Store({
+                            fields: ['ID', 'Title'],
+                            proxy: {
+                                type: 'ajax',
+                                url: 'data/info/Subscriptions'
+                            },
+                            autoLoad: true
+                        }),
+                        flex: 1,
+                        columns: [
+                            new Ext.grid.RowNumberer(),
+                            {
+                                text: '标题',
+                                dataIndex: 'Title',
+                                flex: 1
+                            }]
+                    }),
+                    new Ext.panel.Panel({ height: 200 })
+                ]
+            });
+            Ext.create('Ext.container.Viewport', {
+                layout: 'fit',
+                border: 0,
+                items: [{
+                    layout: {
+                        type: 'hbox',
+                        align: 'stretch'
+                        //pack: 'start'
+                    },
+                    defaults: {
+                        flex: 1 //子元素平均分配宽度
+                    },
+                    split: true,
+                    autoScroll: true,
+                    bodyPadding: 0,
+                    padding: 0,
+                    margin: 0,
+                    tbar: [
+                        { xtype: 'label', text: '个人办公 -> 公告板', cls: 'formNav' },
+                        { xtype: 'button', iconCls: 'iconRefresh', tooltip: '刷新，尚未实现！', tooltipType: 'title', handle: function (source, e) { window.location.href = window.location.href; } },
+                        { xtype: 'tbfill' },
+                        { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } },
+                        { xtype: 'button', iconCls: 'iconClose', text: '', tooltip: '关闭', tooltipType: 'title', handler: function (source, e) { window.parent.closeMe(window) } }
+                    ],
+                    bbar: [
+                    { xtype: 'button', text: 'Button 1', handler: function (source, e) { openWindow(); } }
+                    ],
+                    items: [boardpanel, contentpanel]
+                }]
+            });
+        });
+    </script>
+}

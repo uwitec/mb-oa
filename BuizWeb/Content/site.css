@@ -8,6 +8,11 @@
     background: url(/content/images/help.png) top left no-repeat !important;
 }
 
+.iconGo
+{
+    background: url(/content/images/application_go.png) top left no-repeat !important;
+}
+
 .iconRSS
 {
     background: url(/content/images/rss.png) top left no-repeat !important;

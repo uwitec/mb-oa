@@ -162,6 +162,7 @@
             margin: '6 0 0 0',
             tbar: [
                 { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '增加', tooltipType: 'title', handler: function (source, e) { window.parent.addTab('/office/myoffice/mySubscription', '我的订阅') } },
+                { xtype: 'button', iconCls: 'iconGo', text: '', tooltip: '到讨论板', tooltipType: 'title', handler: function (source, e) { window.parent.addTab('/office/myoffice/boards', '查看讨论板') } },
                 { xtype: 'tbseparator' },
                 { xtype: 'tbfill' },
                 { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { subPanel.store.load(); } }
