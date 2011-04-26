@@ -1,54 +1,74 @@
-@{
-    Layout = null;
-}
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-
-
-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
-    <title>@ViewBag.Title</title>
-    <link href='@Url.Content("~/Content/Site.css")' rel="stylesheet" type="text/css" />
+@section header {
     <style type="text/css">
-        table, tr, td, th
+        .msg table,.msg tr,.msg td,.msg th
         {
             border: solid 1px #999999;
             border-collapse: collapse;
             height: 28px;
         }
-        th
+        .msg th
         {
             background: #cceeff;
             text-align: right;
             padding-right: 3px;
             font-weight: normal;
         }
-        td
+        .msg td
         {
             color: #0000FF;
             padding-left: 3px;
         }
-        body
-        {
-            padding: 10px 30px;
-        }
     </style>
     <script type="text/javascript">
         function reply() {
-            this.parent.addTab('/office/myOffice/MsgNew?type=reply&id=@ViewBag.info.ID', '回复:@ViewBag.info.Title')
+            
         }
         function transmit() {
-            this.parent.addTab('/office/myOffice/MsgNew?type=transmit&id=@ViewBag.info.ID', '转发:@ViewBag.info.Title')
+            
         }
+        Ext.onReady(function () {
+            Ext.create('Ext.container.Viewport', {
+                layout: 'fit',
+                border: 0,
+                items: [{
+                    layout: {
+                        type: 'hbox',
+                        align: 'stretch'
+                        //pack: 'start'
+                    },
+                    defaults: {
+                        flex: 1 //子元素平均分配宽度
+                    },
+                    autoScroll: true,
+                    bodyPadding: 20,
+                    padding: 0,
+                    margin: 0,
+                    tbar: [
+                        { xtype: 'label', text: '个人办公 -> 公告板', cls: 'formNav' },
+                        { xtype: 'tbseparator' },
+                        { xtype: 'button', iconCls: 'iconReply', tooltip: '回复', tooltipType: 'title', handler: function (source, e) { debugger; window.parent.addTab('/office/myOffice/MsgNew?type=reply&id=@ViewBag.info.ID', '回复:@ViewBag.info.Title'); } },
+                        { xtype: 'button', iconCls: 'iconTransmit', tooltip: '转发', tooltipType: 'title', handler: function (source, e) { window.parent.addTab('/office/myOffice/MsgNew?type=transmit&id=@ViewBag.info.ID', '转发:@ViewBag.info.Title'); } },
+                        { xtype: 'button', iconCls: 'iconRefresh', tooltip: '刷新，尚未实现！', tooltipType: 'title', handler: function (source, e) { window.location.href = window.location.href; } },
+                        { xtype: 'tbfill' },
+                        { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handler: function (source, e) { alert('帮助!') } },
+                        { xtype: 'button', iconCls: 'iconClose', text: '', tooltip: '关闭', tooltipType: 'title', handler: function (source, e) { window.parent.closeMe(window) } }
+                    ],
+                    bbar: [
+                    { xtype: 'button', text: 'Button 1', handler: function (source, e) { openWindow(); } }
+                    ],
+                    contentEl: 'mainDiv'
+                }]
+            });
+        });
     </script>
-</head>
-<body>
-    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-size: 12px;
+}
+<div id='mainDiv'style="margin:0; padding:0">
+    <table class='msg' width="100%" border="0" cellspacing="0" cellpadding="0" style="font-size: 12px;
         border-collapse: collapse; table-layout: fixed;">
         <colgroup>
-            <col width="100px"></col>
+            <col width="100px" />
             <col />
-            <col width="100px"></col>
+            <col width="100px" />
             <col />
         </colgroup>
         <tr>
@@ -118,5 +138,4 @@ transitional.dtd">
             <input type="button" onclick='transmit()' value='转发'/>
         </tfoot>
     </table>
-</body>
-</html>
+</div>
