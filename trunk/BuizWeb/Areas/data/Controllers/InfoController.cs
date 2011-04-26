@@ -121,6 +121,19 @@ namespace BuizApp.Areas.data.Controllers
             }
         }
 
+        public ActionResult Subscriptions()
+        {
+            string UserID = this.User.Identity.Name;
+            using (MyDB mydb = new MyDB())
+            {
+                object[] result = mydb.Infos.Where(i => i.Board != null).Select(x => new { x.ID, x.Title,x.SendDate,x.Creator.Name,x.Content }).ToArray();
+                return Json(
+                    result
+                    , JsonRequestBehavior.AllowGet
+                    );
+            }
+        }
+
         public ActionResult selfSubscription()
         {
             string UserID = this.User.Identity.Name;

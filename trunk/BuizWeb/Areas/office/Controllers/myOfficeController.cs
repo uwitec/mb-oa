@@ -194,5 +194,10 @@ namespace BuizApp.Areas.office.Controllers
             }
             return Json(new { success = true });
         }
+
+        public ActionResult boards()
+        {
+            return View();
+        }
     }
 }
