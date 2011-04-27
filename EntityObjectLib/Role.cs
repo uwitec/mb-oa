@@ -35,6 +35,8 @@ namespace EntityObjectLib
             }
         }
 
+        //public virtual ICollection<User> Users;
+
         [NotMapped]
         public ICollection<Organization> Organizations
         {

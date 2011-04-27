@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using EntityObjectContext;
+using System.Data.Entity;
 
 namespace BuizApp.Areas.data.Controllers
 {
@@ -27,7 +28,8 @@ namespace BuizApp.Areas.data.Controllers
                     {
                         List<EntityObjectLib.Info> infoes =
                             mydb.MyInfos.Where(info => info.Receiver.ID.Equals(UserID))
-                            .Select(info => info.Info).OrderBy(info => info.SendDate).ToList();//ToList不能少,要本地化,才能执行后面的string.Join
+                            .OrderByDescending(info=>info.Info.SendDate)
+                            .Select(info => info.Info).ToList();//ToList不能少,要本地化,才能执行后面的string.Join
                         object[] data = infoes.AsQueryable().Select(info => new
                             {
                                 info.ID,
@@ -45,7 +47,8 @@ namespace BuizApp.Areas.data.Controllers
                     {
                         List<EntityObjectLib.Info> infoes =
                             mydb.MyInfos.Where(info => info.Receiver.ID.Equals(UserID) && info.ReadDate==null)
-                            .Select(info => info.Info).OrderBy(info => info.SendDate).ToList();//ToList不能少,要本地化,才能执行后面的string.Join
+                            .OrderByDescending(info => info.Info.SendDate)
+                            .Select(info => info.Info).ToList();//ToList不能少,要本地化,才能执行后面的string.Join
                         object[] data = infoes.AsQueryable().Select(info => new
                         {
                             info.ID,
@@ -63,7 +66,8 @@ namespace BuizApp.Areas.data.Controllers
                     {
                         List<EntityObjectLib.Info> infoes =
                             mydb.Infos.Where(info => info.Creator.ID.Equals(UserID))
-                            .OrderBy(info => info.SendDate).ToList();//ToList不能少,要本地化,才能执行后面的string.Join
+                            .OrderByDescending(info => info.SendDate)
+                            .ToList();//ToList不能少,要本地化,才能执行后面的string.Join
                         object[] data = infoes.AsQueryable().Select(info => new
                         {
                             info.ID,
@@ -105,7 +109,7 @@ namespace BuizApp.Areas.data.Controllers
             using (MyDB mydb = new MyDB())
             {
                 var mySubscriptions =
-                    mydb.Infos.Where(i => i.Board != null)
+                    mydb.Infos.Where(i => i.Board != null && i.Parent==null)
                     .GroupJoin(mydb.Subscriptions.Where(s => s.Owner.ID.Equals(UserID)),
                     i => i.ID,
                     s => s.Title.ID,
@@ -115,7 +119,7 @@ namespace BuizApp.Areas.data.Controllers
 
 
                 return Json(
-                    mySubscriptions.Select(x => new { x.ID, x.Creator, CreateDate = x.CreateDate.ToString("yyyy-M-d H:m:s"), x.Title, x.@checked })
+                    mySubscriptions.Select(x => new { x.ID, x.Creator, x.CreateDate, x.Title, x.@checked })
                     , JsonRequestBehavior.AllowGet
                     );
             }
@@ -126,7 +130,11 @@ namespace BuizApp.Areas.data.Controllers
             string UserID = this.User.Identity.Name;
             using (MyDB mydb = new MyDB())
             {
-                object[] result = mydb.Infos.Where(i => i.Board != null).Select(x => new { x.ID, x.Title,x.SendDate,x.Creator.Name,x.Content }).ToArray();
+                object[] result = mydb.Infos
+                    .Where(i => i.Board != null && i.Parent==null)
+                    .OrderBy(i => i.SendDate)
+                    .Select(x => new { x.ID, x.Title, x.SendDate, Sender = x.Creator.Name, x.Content })
+                    .ToArray();
                 return Json(
                     result
                     , JsonRequestBehavior.AllowGet
@@ -139,7 +147,8 @@ namespace BuizApp.Areas.data.Controllers
             string UserID = this.User.Identity.Name;
             using (MyDB mydb = new MyDB())
             {
-                object[] mySubscriptions = mydb.Subscriptions.Where(s => s.Owner.ID.Equals(this.User.Identity.Name))
+                object[] mySubscriptions = mydb.Subscriptions
+                    .Where(s => s.Owner.ID.Equals(this.User.Identity.Name))
                     .Select(s => new { s.Title.ID, s.Title.Title }).ToArray();
 
                 return Json(
@@ -147,6 +156,55 @@ namespace BuizApp.Areas.data.Controllers
                     , JsonRequestBehavior.AllowGet
                     );
             }
+        }
+
+        public ActionResult replyInfos()
+        {
+            string titleID = Request.Params["titleID"];
+            using (MyDB mydb = new MyDB())
+            {
+                object[] infos = mydb.Infos
+                    .Where(s => s.Parent.ID.Equals(titleID))
+                    .OrderBy(i => i.SendDate)
+                    .Select(x => new { x.ID, x.Title, Sender=x.Creator.Name, x.SendDate, x.Content })
+                    .ToArray();
+
+                return Json(
+                    infos
+                    , JsonRequestBehavior.AllowGet
+                    );
+            }
+        }
+
+        public JsonResult replyInfosTree()
+        {
+            string titleID = Request.Params["titleID"];
+            using (MyDB mydb = new MyDB())
+            {
+                mydb.Infos.Load();
+                object[] result = mydb.Infos.Local.OrderBy(i => i.SendDate)
+                    .Where(o => o.Parent!=null&&o.Parent.ID.Equals(titleID)).Select(o => getOrg(o.ID, mydb)).ToArray();
+                return Json(new { text = ",", children = result }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        private object getOrg(string infoID, MyDB mydb)
+        {
+            //EntityObjectLib.Organization org = mydb.Organizations.Local.FirstOrDefault(o => o.ID.Equals(OrgID));
+            EntityObjectLib.Info info = mydb.Infos.Local.FirstOrDefault(o => o.ID.Equals(infoID));
+            return new
+            {
+                ID = info.ID,
+                info.Title,
+                Sender = info.Creator.Name,
+                info.SendDate,
+                info.Content,
+                expanded = true,
+                leaf = info.Children.Count == 0/*org.Children.Count() == 0*/,
+                //@checked = false,
+                //iconCls = "icon-org",
+                children = info.Children.Select(o => getOrg(o.ID, mydb)).ToArray()
+            };
         }
     }
 }

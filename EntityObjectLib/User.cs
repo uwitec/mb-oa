@@ -31,6 +31,8 @@ namespace EntityObjectLib
 
         public string Description { get; set; }
 
+        public string InfoReceiveTypes { get; set; }
+
         public virtual Organization Organization { get; set; }
 
         /// <summary>

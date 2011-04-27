@@ -135,11 +135,11 @@ namespace EntityObjectContext
                 .HasMany(p => p.Subjects)
                 .WithMany(t => t.Roles)
                 .Map(m =>
-                {
-                    m.ToTable("Subjects_Roles");
-                    m.MapLeftKey("RoleID");
-                    m.MapRightKey("SubjectID");
-                });
+                    {
+                        m.ToTable("Subjects_Roles");
+                        m.MapLeftKey("RoleID");
+                        m.MapRightKey("SubjectID");
+                    });
 
             modelBuilder.Entity<User>()
                 .HasOptional(u => u.Organization)

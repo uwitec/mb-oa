@@ -101,6 +101,7 @@
                         //anchor: '100%',
                         layout: 'hbox',
                         fieldLabel: '收件人',
+                        hidden: @ViewBag.hideReceiver,
                         items: [{
                             xtype: 'textareafield',
                             name: 'Receivers',
@@ -128,7 +129,7 @@
                         labelAlign: 'top',
                         name: 'Content',
                         flex: 1,
-                        value: '@Html.Raw(@ViewBag.Content)'
+                        value: '@Html.Raw(@ViewBag.Content)' //直接写不行
                     }, {
                         xtype: 'filefield',
                         fieldLabel: '附件',

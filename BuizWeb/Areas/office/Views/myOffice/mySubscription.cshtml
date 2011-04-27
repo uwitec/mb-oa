@@ -2,7 +2,7 @@
     <script type="text/javascript">
         Ext.onReady(function () {
             var store = new Ext.data.Store({
-                fields: ['ID', 'Title', 'Creator', 'CreateDate', { name: 'checked', type: 'boolean'}],
+                fields: ['ID', 'Title', 'Creator', { name: 'CreateDate', type: 'date', dateFormat: 'MS' }, { name: 'checked', type: 'boolean'}],
                 proxy: {
                     type: 'ajax',
                     url: '/data/Info/mySubscription'
@@ -45,7 +45,8 @@
             {
                 text: '创建时间',
                 dataIndex: 'CreateDate',
-                width: 160
+                width: 160,
+                renderer: Ext.util.Format.dateRenderer('Y-m-d h:i:s')
             }
             ],
             tbar: [{
@@ -63,7 +64,8 @@
                         },
                         success: function (response) {
                             alert("success");
-                            store.load();
+                            //store.load();
+                            window.parent.closeMe(window);
                         },
                         failure: function (response) {
                             alert("failure");

@@ -73,23 +73,47 @@ namespace BuizApp.Areas.office.Controllers
                 info = mydb.Infos.Find(id);
                 switch (type)
                 {
-                    case "reply":
+                    case "reply": // 消息回复
                         ViewBag.Receiver = string.Format("{0}({1})", info.Creator.Name, info.Creator.Code);
                         ViewBag.ParentID = id;
                         ViewBag.Title = string.Format("回复:{0}", info.Title);
-                        ViewBag.Content = string.Format("<br/><br/><hr/>{0}", info.Content);
+                        ViewBag.Content = string.Format("<br/><br/><hr>{0}", info.Content);
+                        ViewBag.hideReceiver = "false";
                         break;
-                    case "transmit":
+                    case "transmit": // 消息转发
                         ViewBag.parentID = id;
                         ViewBag.Title = string.Format("转发:{0}", info.Title);
                         ViewBag.Content = string.Format("<br/><br/><hr/>{0}", info.Content);
+                        ViewBag.hideReceiver = "false";
                         break;
-                    default:
+                    case "board": // 新建公告板主题
+                        ViewBag.hideReceiver = "true";
+                        break;
+                    case "boardReply": // 新建公告板回复
+                        //找到订阅此内容所有主题的用户,将其置为收件人
+                        Info root = info;
+                        while (root.Parent != null)
+                        {
+                            root = root.Parent;
+                        }
+
+                        ViewBag.Receiver = string.Join(",", root.Subscriptions.Select(s => s.Owner).Select(u => string.Format("{0}({1})", u.Name, u.Code)).ToArray());
+                        //////////
+                        
+                        ViewBag.parentID = id;
+                        ViewBag.Title = string.Format("回复:{0}", info.Title);
+                        ViewBag.Content = string.Format("<br/><br/><hr/>{0}", info.Content);
+                        ViewBag.hideReceiver = "true";
+                        break;
+                    default: // 新建消息
+                        ViewBag.hideReceiver = "false";
                         break;
                 }
             }
             return View();
         }
+
+
 
         [HttpPost]
         [ValidateInput(false)]
@@ -99,7 +123,7 @@ namespace BuizApp.Areas.office.Controllers
             // 该表单含文件上传有关
             string Receivers = Request.Form["Receivers"];
             string Title = Request.Form["Title"];
-            string Content = Request.Form["Content"];
+            string Content = Request.Form["Content"].Replace("\r\n",""); //去掉回车
             string ParentID = Server.HtmlEncode(Request.Form["ParentID"]);
 
             string infoID = Guid.NewGuid().ToString();
@@ -198,6 +222,32 @@ namespace BuizApp.Areas.office.Controllers
         public ActionResult boards()
         {
             return View();
+        }
+
+        public ActionResult loadReceiverType()
+        {
+            string userID = this.User.Identity.Name;
+            using (MyDB mydb = new MyDB())
+            {
+                User user = mydb.Users.Find(userID);
+                return Json(new
+                {
+                    success = true,
+                    data = new {path="sms,email"}
+                });
+            }
+        }
+
+        public ActionResult saveReceiverType()
+        {
+            string userID = this.User.Identity.Name;
+            using (MyDB mydb = new MyDB())
+            {
+                User user = mydb.Users.Find(userID);
+                user.InfoReceiveTypes = Request.Form["path"];
+                mydb.SaveChanges();
+            }
+            return Json(new { success = true });
         }
     }
 }
