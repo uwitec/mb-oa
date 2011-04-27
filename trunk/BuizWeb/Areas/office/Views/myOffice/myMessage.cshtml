@@ -43,6 +43,7 @@
 
             var store = new Ext.data.Store({
                 model: 'info',
+                groupDir: 'DESC',
                 groupField: 'SendDate',
                 proxy: {
                     type: 'ajax',
@@ -89,7 +90,6 @@
                 margin: 6,
                 //selModel: new Ext.selection.CheckboxModel({}),
                 tbar: [
-                { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '增加', tooltipType: 'title', handler: function (source, e) { privilegeNewOrEdit(null) } },
                 { xtype: 'tbseparator' },
                 { xtype: 'tbfill' },
                 { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { privilegeGridRefresh() } }
@@ -127,8 +127,8 @@
             listeners: {
                 itemdblclick: function (view, record, el, index, e) {
                 },
-                selectionchange: function( view, selections) {
-//                    debugger;
+                selectionchange: function (view, selections) {
+                    //                    debugger;
                 }
             }
         });
@@ -138,7 +138,6 @@
             bodyPadding: 0,
             width: '100%',
             tbar: [
-                { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '增加', tooltipType: 'title', handler: function (source, e) { privilegeNewOrEdit(null) } },
                 { xtype: 'tbseparator' },
                 { xtype: 'tbfill' },
                 { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { privilegeGridRefresh() } }
@@ -159,10 +158,10 @@
             bodyPadding: 0,
             width: '100%',
             flex: 1,
-            margin: '6 0 0 0',
+            margin: '6 0 6 0',
             tbar: [
-                { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '增加', tooltipType: 'title', handler: function (source, e) { window.parent.addTab('/office/myoffice/mySubscription', '我的订阅') } },
-                { xtype: 'button', iconCls: 'iconGo', text: '', tooltip: '到讨论板', tooltipType: 'title', handler: function (source, e) { window.parent.addTab('/office/myoffice/boards', '查看讨论板') } },
+                { xtype: 'button', iconCls: 'iconEdit', text: '', tooltip: '修改订阅', tooltipType: 'title', handler: function (source, e) { window.parent.addTab('/office/myoffice/mySubscription', '我的订阅') } },
+                { xtype: 'button', iconCls: 'iconGo', text: '', tooltip: '到公告板', tooltipType: 'title', handler: function (source, e) { window.parent.addTab('/office/myoffice/boards', '公告板') } },
                 { xtype: 'tbseparator' },
                 { xtype: 'tbfill' },
                 { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { subPanel.store.load(); } }
@@ -173,7 +172,7 @@
                 text: '标题',
                 dataIndex: 'Title',
                 flex: 1,
-                renderer: function (v) { return '<a href="">' + v + '</a>' }
+                renderer: function (v) { return '<a href="javascript:window.parent.addTab(\'/office/myoffice/boards\',\'公告板\')">' + v + '</a>' }
             }
             ]
         });
@@ -183,7 +182,55 @@
             width: 200,
             layout: 'vbox',
             margin: '6 0 6 6', bodyPadding: 0, padding: 0, autoScroll: true,
-            items: [msgPanel, subPanel]
+            items: [
+                msgPanel,
+                subPanel,
+                {
+                    xtype: 'form',
+                    title: '消息通道设置',
+                    //height: 100,
+                    layout: 'anchor',
+                    width: '100%',
+                    bodyPadding: 6,
+                    defaults: { labelWidth: 60 },
+                    items: [{
+                        xtype: 'checkboxfield',
+                        name: 'sms',
+                        fieldLabel: '手机短信',
+                        anchor: '100%'
+                        }, {
+                        xtype: 'checkboxfield',
+                        name: 'email',
+                        fieldLabel: '电子邮件',
+                        anchor: '100%'
+                    }],
+                    tbar: [{
+                        xtype: 'button',
+                        iconCls: 'iconSave',
+                        text: '已保存,不加载',
+                        tooltip: '保存设置',
+                        tooltipType: 'title',
+                        handler: function (source, e) {
+                            //debugger;
+                            this.up('form').getForm().submit({
+                                url: '/office/myOffice/saveReceiverType',
+                                success: function (form, action) { alert('保存成功!'); },
+                                failure: function (form, action) { alert('failure') }
+                            }
+                            );
+                        }
+                    }],
+                    listeners: {
+                        afterrender: function (cmp) {
+                            //debugger;
+                            cmp.getForm().load({
+                                url: '/office/myOffice/loadReceiverType'
+                            }
+                            );
+                        }
+                    }
+                }
+            ]
         });
 
         Ext.create('Ext.container.Viewport', {

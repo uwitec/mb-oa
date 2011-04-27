@@ -2,43 +2,27 @@
     <style type="text/css">
         .msg table,.msg tr,.msg td,.msg th
         {
-            border: solid 1px #999999;
+            border: solid 1px #CCC;
             border-collapse: collapse;
-            height: 28px;
         }
         .msg th
         {
-            background: #cceeff;
+            background: #dfe8f6;
             text-align: right;
-            padding-right: 3px;
+            padding:6px;
             font-weight: normal;
         }
         .msg td
         {
-            color: #0000FF;
-            padding-left: 3px;
+            padding:6px;
         }
     </style>
     <script type="text/javascript">
-        function reply() {
-            
-        }
-        function transmit() {
-            
-        }
         Ext.onReady(function () {
             Ext.create('Ext.container.Viewport', {
                 layout: 'fit',
                 border: 0,
                 items: [{
-                    layout: {
-                        type: 'hbox',
-                        align: 'stretch'
-                        //pack: 'start'
-                    },
-                    defaults: {
-                        flex: 1 //子元素平均分配宽度
-                    },
                     autoScroll: true,
                     bodyPadding: 20,
                     padding: 0,
@@ -46,7 +30,7 @@
                     tbar: [
                         { xtype: 'label', text: '个人办公 -> 公告板', cls: 'formNav' },
                         { xtype: 'tbseparator' },
-                        { xtype: 'button', iconCls: 'iconReply', tooltip: '回复', tooltipType: 'title', handler: function (source, e) { debugger; window.parent.addTab('/office/myOffice/MsgNew?type=reply&id=@ViewBag.info.ID', '回复:@ViewBag.info.Title'); } },
+                        { xtype: 'button', iconCls: 'iconReply', tooltip: '回复', tooltipType: 'title', handler: function (source, e) { window.parent.addTab('/office/myOffice/MsgNew?type=reply&id=@ViewBag.info.ID', '回复:@ViewBag.info.Title'); } },
                         { xtype: 'button', iconCls: 'iconTransmit', tooltip: '转发', tooltipType: 'title', handler: function (source, e) { window.parent.addTab('/office/myOffice/MsgNew?type=transmit&id=@ViewBag.info.ID', '转发:@ViewBag.info.Title'); } },
                         { xtype: 'button', iconCls: 'iconRefresh', tooltip: '刷新，尚未实现！', tooltipType: 'title', handler: function (source, e) { window.location.href = window.location.href; } },
                         { xtype: 'tbfill' },
@@ -62,7 +46,7 @@
         });
     </script>
 }
-<div id='mainDiv'style="margin:0; padding:0">
+<div id='mainDiv'style="margin:0; padding:0" class="x-hide-display">
     <table class='msg' width="100%" border="0" cellspacing="0" cellpadding="0" style="font-size: 12px;
         border-collapse: collapse; table-layout: fixed;">
         <colgroup>
@@ -133,9 +117,5 @@
             </td>
         </tr>
         }
-        <tfoot valign="bottom">
-            <input type="button" onclick='reply()' value='回复'/>
-            <input type="button" onclick='transmit()' value='转发'/>
-        </tfoot>
     </table>
 </div>

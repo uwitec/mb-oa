@@ -1,30 +1,62 @@
 ﻿@section header {
     <script type="text/javascript">
-//        alert(eval(new Date(1303735436223)));
+        //        alert(eval(new Date(1303735436223)));
         Ext.onReady(function () {
-
             var bookTplMarkup = [
-                'Title: {Title}<br>',
-                '<strong>ID: {ID}</strong> <br>',
-                'Name: {Name}',
-                'Content: {Content}',
+                '<div style="border:solid 1px #CCC;background-color:#EEE;"><span style="display:block;padding:4;">标题:&nbsp;&nbsp;{Title}</span>',
+                '<span style="display:block;padding:4;">时间:&nbsp;&nbsp;{SendDate:date(\"Y-m-d h:i:s\")}</span>',
+                '<span style="display:block;padding:4;">作者:&nbsp;&nbsp;{Sender}</span></div>',
+                '<div style="border:solid 1px #CCC;padding:4;">{Content}</div>',
             ];
 
             var bookTpl = Ext.create('Ext.Template', bookTplMarkup);
 
+            var replyStore = new Ext.data.TreeStore({
+                fields: [
+                    { name: 'ID', type: 'string' },
+                    { name: 'Title', type: 'string' },
+                    { name: 'Sender', type: 'string' },
+                    { name: 'Content', type: 'string' },
+                    { name: 'SendDate', type: 'date', dateFormat: 'MS' },
+                    { name: 'Receivers', type: 'string' }
+                ],
+                proxy: {
+                    type: 'ajax',
+                    url: '/data/info/replyInfosTree'
+                },
+                listeners: {
+                    load: function (store, records, successful) {
+                        if (!successful) {
+                            alert('数据加载失败');
+                        }
+                        else {
+                            if (records.childNodes.length)
+                                Ext.getCmp('replyGrid').selModel.select(0);
+                        }
+                    }
+                }
+            });
 
             var boardpanel = Ext.create('Ext.panel.Panel', {
-                title: '主题列表',
-                flex: 0,
-                margin: 10,
-                flex: 1,
+                //title: '主题列表',
+                padding: 0,
+                margin: 0,
+                border: 0,
                 layout: 'border',
-                frame: true,
-                items: [
+                items: [{
+                    xtype: 'container',
+                    region: 'west',
+                    autoScroll: true,
+                    bodyPadding: 10,
+                    layout: 'border',
+                    split: true,
+                    border: 0,
+                    width: '40%',
+                    items: [
                     new Ext.grid.Panel({
                         id: 'titlegrid',
                         store: new Ext.data.Store({
-                            fields: ['ID', 'Title', 'Name', { name: 'SendDate', type: 'date', dateFormat: 'MS' }, 'Content'],
+                            fields: ['ID', 'Title', 'Sender', { name: 'SendDate', type: 'date', dateFormat: 'MS' }, 'Content'],
                             proxy: {
                                 type: 'ajax',
                                 url: '/data/info/Subscriptions'
@@ -35,16 +67,23 @@
                                     if (!successful) {
                                         alert('数据加载失败');
                                     }
+                                    else {
+                                        if (records.length > 0)
+                                            Ext.getCmp('titlegrid').selModel.select(0);
+                                        //replyStore.load({ params: { titleID: Ext.getCmp('titlegrid').selModel.getSelection()[0].data.ID} });
+                                        //debugger;
+                                    }
                                 }
                             }
                         }),
                         tbar: [
-                          { xtype: 'tbseparator' },
-                          { xtype: 'tbfill' },
-                          { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { this.up('panel').getStore().load(); } }
+                            { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '增加', tooltipType: 'title', handler: function (source, e) { window.parent.addTab('/office/myOffice/MsgNew?type=board','新建主题'); } },
+                            { xtype: 'tbseparator' },
+                            { xtype: 'tbfill' },
+                            { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { this.up('panel').getStore().load(); } }
                         ],
                         region: 'center',
-                        width: '100%',
+                        split: true,
                         columns: [
                             new Ext.grid.RowNumberer(),
                             {
@@ -52,65 +91,110 @@
                                 dataIndex: 'Title',
                                 flex: 1
                             }, {
-                                text: '创建时间',
+                                text: '时间',
                                 dataIndex: 'SendDate',
-                                width: 140,
-                                renderer: Ext.util.Format.dateRenderer('y-m-d')
+                                width: 120,
+                                renderer: Ext.util.Format.dateRenderer('Y-m-d h:i:s')
                             }],
                         listeners: {
                             selectionchange: function (sm, selectedRecords) {
-                                //debugger;
                                 if (selectedRecords.length) {
                                     var detailPanel = Ext.getCmp('detailPanel');
+                                    detailPanel.body.dom.innerHTML = "";
+                                    Ext.getCmp('replyDetailPanel').body.dom.innerHTML = "";
                                     bookTpl.overwrite(detailPanel.body, selectedRecords[0].data);
+                                    replyStore.load({ params: { titleID: Ext.getCmp('titlegrid').selModel.getSelection()[0].data.ID} });
                                 }
                                 //debugger;
                             }
                         }
-                    }), // 
-                    new Ext.panel.Panel({
-                        id: 'detailPanel',
-                        height: 200,
+                    }), {
                         region: 'south',
-                        split: true
-                    })
-                ]
-            });
-            var contentpanel = Ext.create('Ext.panel.Panel', {
-                title: '内容列表',
-                margin: 10,
-                flex: 1,
-                items: [
-                    new Ext.grid.Panel({
-                        store: new Ext.data.Store({
-                            fields: ['ID', 'Title'],
-                            proxy: {
-                                type: 'ajax',
-                                url: 'data/info/Subscriptions'
-                            },
-                            autoLoad: true
-                        }),
-                        flex: 1,
-                        columns: [
-                            new Ext.grid.RowNumberer(),
-                            {
+                        height: '40%',
+                        xtype: 'panel',
+                        autoScroll: true,
+                        id: 'detailPanel',
+                        bodyPadding: 10,
+                        split: true,
+                        tbar: [
+                            { xtype: 'button', iconCls: 'iconReply', text: '', tooltip: '回复', tooltipType: 'title', handler: function (source, e) { window.parent.addTab('/office/myOffice/MsgNew?type=boardReply&id=' + Ext.getCmp('titlegrid').selModel.getSelection()[0].data.ID, '回复:' + Ext.getCmp('titlegrid').selModel.getSelection()[0].data.Title); } },
+                            { xtype: 'tbseparator' },
+                            { xtype: 'tbfill' },
+                            { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { this.up('panel').getStore().load(); } }
+                            ]
+                    }]
+                }, // 
+                    new Ext.container.Container({
+                        region: 'center',
+                        autoScroll: true,
+                        bodyPadding: 10,
+                        layout: 'border',
+                        border: 0,
+                        width: '100%',
+                        items: [{
+                            region: 'center',
+                            xtype: 'treepanel',
+                            id: 'replyGrid',
+                            store: replyStore,
+                            rootVisible: false,
+                            tbar: [
+                                { xtype: 'tbseparator' },
+                                { xtype: 'tbfill' },
+                                { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { replyStore.load({ params: { titleID: Ext.getCmp('titlegrid').selModel.getSelection()[0].data.ID} }); } }
+                            ],
+                            columns: [
+                            //new Ext.grid.RowNumberer(),
+                                {
+                                xtype: 'treecolumn',
                                 text: '标题',
                                 dataIndex: 'Title',
                                 flex: 1
-                            }]
-                    }),
-                    new Ext.panel.Panel({ height: 200 })
+                            }, {
+                                text: '作者',
+                                dataIndex: 'Sender',
+                                width: 70
+                            }, {
+                                text: '时间',
+                                dataIndex: 'SendDate',
+                                width: 120,
+                                renderer: Ext.util.Format.dateRenderer('Y-m-d h:i:s')
+                            }],
+                            listeners: {
+                                selectionchange: function (sm, selectedRecords) {
+                                    //debugger;
+                                    if (selectedRecords.length) {
+                                        var detailPanel = Ext.getCmp('replyDetailPanel');
+                                        detailPanel.body.dom.innerHTML = "";
+                                        bookTpl.overwrite(detailPanel.body, selectedRecords[0].data);
+                                    }
+                                    //debugger;
+                                }
+                            }
+                        }, {
+                            region: 'south',
+                            xtype: 'panel',
+                            autoScroll: true,
+                            id: 'replyDetailPanel',
+                            bodyPadding: 10,
+                            height: '40%',
+                            padding: 0,
+                            split: true,
+                            tbar: [
+                                { xtype: 'button', iconCls: 'iconReply', text: '', tooltip: '回复', tooltipType: 'title', handler: function (source, e) { window.parent.addTab('/office/myOffice/MsgNew?type=reply&id=' + Ext.getCmp('replyGrid').selModel.getSelection()[0].data.ID, '回复:' + Ext.getCmp('replyGrid').selModel.getSelection()[0].data.Title); } },
+                                { xtype: 'tbseparator' },
+                                { xtype: 'tbfill' },
+                                { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { this.up('panel').getStore().load(); } }
+                            ]
+                        }
+                        ]
+                    })
                 ]
             });
             Ext.create('Ext.container.Viewport', {
                 layout: 'fit',
                 border: 0,
                 items: [{
-                    layout: {
-                        type: 'hbox',
-                        align: 'stretch'
-                        //pack: 'start'
-                    },
+                    layout: 'fit',
                     defaults: {
                         flex: 1 //子元素平均分配宽度
                     },
@@ -119,17 +203,18 @@
                     bodyPadding: 0,
                     padding: 0,
                     margin: 0,
+                    border: 0,
                     tbar: [
                         { xtype: 'label', text: '个人办公 -> 公告板', cls: 'formNav' },
-                        { xtype: 'button', iconCls: 'iconRefresh', tooltip: '刷新，尚未实现！', tooltipType: 'title', handle: function (source, e) { window.location.href = window.location.href; } },
+                        { xtype: 'button', iconCls: 'iconRefresh', tooltip: '刷新，尚未实现！', tooltipType: 'title', handler: function (source, e) { location.reload(); } },
                         { xtype: 'tbfill' },
-                        { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } },
+                        { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handler: function (source, e) { alert('帮助!') } },
                         { xtype: 'button', iconCls: 'iconClose', text: '', tooltip: '关闭', tooltipType: 'title', handler: function (source, e) { window.parent.closeMe(window) } }
                     ],
                     bbar: [
                     { xtype: 'button', text: 'Button 1', handler: function (source, e) { openWindow(); } }
                     ],
-                    items: [boardpanel, contentpanel]
+                    items: [boardpanel]
                 }]
             });
         });
