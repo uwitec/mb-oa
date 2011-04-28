@@ -133,25 +133,25 @@
                     }, {
                         xtype: 'filefield',
                         fieldLabel: '附件',
-                        buttonOnly: true,
+                        //buttonOnly: true,
                         buttonText: '选择...',
                         name: 'InfoFile',
                         listeners: {
                             change: function (FileUploadField, filename) {
                                 var clone = new Ext.form.field.File(this.cloneConfig());
-                                this.setVisible(false);
+//                                this.setVisible(false);
 
-                                var filesList = Ext.getCmp('filesList')
-                                if (filesList == null) {
-                                    Ext.getCmp('formNewMsg').add({
-                                        id: 'filesList',
-                                        xtype: 'displayfield',
-                                        html: 'ddddd'
-                                    });
-                                }
-                                else {
-                                    filesList.setValue(filesList.getValue + 'sssssssss');
-                                }
+//                                var filesList = Ext.getCmp('filesList')
+//                                if (filesList == null) {
+//                                    Ext.getCmp('formNewMsg').add({
+//                                        id: 'filesList',
+//                                        xtype: 'displayfield',
+//                                        html: 'ddddd'
+//                                    });
+//                                }
+//                                else {
+//                                    filesList.setValue(filesList.getValue + 'sssssssss');
+//                                }
                                 this.up('form').add(clone);
                                 this.up('form').doLayout();
                             }
