@@ -230,10 +230,11 @@ namespace BuizApp.Areas.office.Controllers
             using (MyDB mydb = new MyDB())
             {
                 User user = mydb.Users.Find(userID);
+                string[] ss = user.InfoReceiveTypes == null ? new string[] { } : user.InfoReceiveTypes.Split(",".ToCharArray());
                 return Json(new
                 {
                     success = true,
-                    data = new {path="sms,email"}
+                    data = new { sms = ss.Contains("sms") ? "on" : "", email = ss.Contains("email") ? "on" : "" }
                 });
             }
         }
@@ -244,7 +245,12 @@ namespace BuizApp.Areas.office.Controllers
             using (MyDB mydb = new MyDB())
             {
                 User user = mydb.Users.Find(userID);
-                user.InfoReceiveTypes = Request.Form["path"];
+                List<string> ss = new List<string>();
+                if (Request.Form["sms"] != null && Request.Form["sms"].Equals("on"))
+                    ss.Add("sms");
+                if (Request.Form["email"] != null && Request.Form["email"].Equals("on"))
+                    ss.Add("email");
+                user.InfoReceiveTypes = string.Join(",",ss.ToArray());
                 mydb.SaveChanges();
             }
             return Json(new { success = true });
