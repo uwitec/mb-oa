@@ -24,6 +24,7 @@ namespace EntityObjectContext
             PrivilegeModelCreate(modelBuilder);
             InfoModelCreate(modelBuilder);
             EventModelCreate(modelBuilder);
+            AddressBookModelCreate(modelBuilder);
         }
     }
 }

@@ -71,6 +71,7 @@
     <Compile Include="MenuInit.cs" />
     <Compile Include="UnitTestForT4.cs" />
     <Compile Include="UT2.cs" />
+    <Compile Include="AddressBookTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
