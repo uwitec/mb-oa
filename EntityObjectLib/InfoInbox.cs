@@ -7,7 +7,7 @@ namespace EntityObjectLib
     /// <summary>
     /// 收件箱
     /// </summary>
-    public class MyInfo
+    public class InfoInbox
     {
         [Key]
         public string ID { get; set; }
@@ -25,5 +25,13 @@ namespace EntityObjectLib
         /// 接收人
         /// </summary>
         public virtual User Receiver { get; set; }
+    }
+
+    public partial class User
+    {
+        /// <summary>
+        /// 用户接收的消息
+        /// </summary>
+        public virtual ICollection<InfoInbox> InfoInboxs { get; set; }
     }
 }

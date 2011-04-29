@@ -33,4 +33,12 @@ namespace EntityObjectLib
         /// </summary>
         public virtual ICollection<Info> Infos { get; set; }
     }
+
+    public partial class User
+    {        
+        /// <summary>
+        /// 用户管理的公告板
+        /// </summary>
+        public virtual ICollection<InfoBoard> InfoBoards { get; set; }
+    }
 }

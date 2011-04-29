@@ -5,11 +5,12 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using EntityObjectContext;
 using EntityObjectLib;
+using System.Data.Entity;
 
 namespace TestProject1
 {
     [TestClass]
-    public class InfoDataInit
+    public class InfoTest
     {
         [TestMethod]
         public void TestMethod1()
@@ -58,16 +59,16 @@ namespace TestProject1
                              }
                         }
                     },
-                    Receivers = new MyInfo[]
+                    Receivers = new InfoInbox[]
                     {
-                        new MyInfo
+                        new InfoInbox
                         {
                             ID=Guid.NewGuid().ToString(),
                             Receiver = mydb.Users.FirstOrDefault(u=>u.Code=="chw"),
                             ReadDate = DateTime.Now,
                             ReceiveTypes =  "SMS,Msg,Email"
                         },
-                        new MyInfo
+                        new InfoInbox
                         {
                             ID=Guid.NewGuid().ToString(),
                             Receiver = mydb.Users.FirstOrDefault(u=>u.Code=="lilin"),
@@ -86,7 +87,7 @@ namespace TestProject1
                     Infos = new []{info}
                 };
 
-                Subscription sub = new Subscription
+                InfoSubscription sub = new InfoSubscription
                 {
                     ID= Guid.NewGuid().ToString(),
                     Owner = mydb.Users.FirstOrDefault(u => u.Code == "lilin"),
@@ -98,7 +99,23 @@ namespace TestProject1
 
                 mydb.Infos.Add(info);
                 mydb.InfoBoards.Add(board);
-                mydb.Subscriptions.Add(sub);
+                mydb.InfoSubscriptions.Add(sub);
+
+                mydb.SaveChanges();
+            }
+        }
+
+        [TestMethod]
+        public void clear()
+        {
+            using (MyDB mydb = new MyDB())
+            {
+                mydb.Files.Load(); mydb.Files.Local.Clear();
+                mydb.InfoFiles.Load(); mydb.InfoFiles.Local.Clear();
+                mydb.InfoInboxs.Load(); mydb.InfoInboxs.Local.Clear();
+                mydb.InfoSubscriptions.Load(); mydb.InfoSubscriptions.Local.Clear();
+                mydb.Infos.Load(); mydb.Infos.Local.Clear();
+                mydb.InfoBoards.Load(); mydb.InfoBoards.Local.Clear();             
 
                 mydb.SaveChanges();
             }

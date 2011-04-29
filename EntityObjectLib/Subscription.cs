@@ -7,7 +7,7 @@ namespace EntityObjectLib
     /// <summary>
     /// 消息订阅
     /// </summary>
-    public class Subscription
+    public class InfoSubscription
     {
         [Key]
         public string ID { get; set; }
@@ -32,5 +32,13 @@ namespace EntityObjectLib
         /// 是否可用,对应订阅和取消订阅
         /// </summary>
         public bool Enable { get; set; }
+    }
+
+    public partial class User
+    {
+        /// <summary>
+        /// 用户的订阅
+        /// </summary>
+        public virtual ICollection<InfoSubscription> InfoSubscriptions { get; set; }
     }
 }

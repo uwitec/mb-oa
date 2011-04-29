@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EntityObjectLib
 {
-    public class User : Subject
+    public partial class User : Subject
     {
         //[Key]
         //public string ID { get; set; }
@@ -34,31 +34,6 @@ namespace EntityObjectLib
         public string InfoReceiveTypes { get; set; }
 
         public virtual Organization Organization { get; set; }
-
-        /// <summary>
-        /// 用户创建的消息
-        /// </summary>
-        public virtual ICollection<Info> Infos { get; set; }
-
-        /// <summary>
-        /// 用户接收的消息
-        /// </summary>
-        public virtual ICollection<MyInfo> ReceiveInfos { get; set; }
-
-        /// <summary>
-        /// 用户管理的公告板
-        /// </summary>
-        public virtual ICollection<InfoBoard> InfoBoards { get; set; }
-
-        /// <summary>
-        /// 用户的订阅
-        /// </summary>
-        public virtual ICollection<Subscription> Subscriptions { get; set; }
-
-        /// <summary>
-        /// 用户上传的文件
-        /// </summary>
-        public virtual ICollection<File> Files { get; set; }
 
         [NotMapped]
         public string FullName

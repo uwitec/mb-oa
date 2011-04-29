@@ -30,4 +30,12 @@ namespace EntityObjectLib
         /// </summary>
         public virtual ICollection<InfoFile> InfoFiles { get; set; }
     }
+
+    public partial class User
+    {
+        /// <summary>
+        /// 用户上传的文件
+        /// </summary>
+        public virtual ICollection<File> Files { get; set; }
+    }
 }

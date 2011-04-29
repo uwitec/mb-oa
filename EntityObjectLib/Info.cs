@@ -50,12 +50,20 @@ namespace EntityObjectLib
         /// <summary>
         /// 收件
         /// </summary>
-        public virtual ICollection<MyInfo> Receivers { get; set; }
+        public virtual ICollection<InfoInbox> Receivers { get; set; }
 
         /// <summary>
         /// 参与的订阅
         /// </summary>
-        public virtual ICollection<Subscription> Subscriptions { get; set; }
+        public virtual ICollection<InfoSubscription> Subscriptions { get; set; }
         
+    }
+
+    public partial class User
+    {
+        /// <summary>
+        /// 用户创建的消息
+        /// </summary>
+        public virtual ICollection<Info> Infos { get; set; }
     }
 }
