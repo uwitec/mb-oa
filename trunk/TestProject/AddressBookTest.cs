@@ -17,7 +17,7 @@ namespace TestProject1
         {
             using (MyDB mydb = new MyDB())
             {
-                #region "创建事件"
+                #region "创建通讯录记录"
                 AddressBook AddressBook = new AddressBook
                 {
                     ID = Guid.NewGuid().ToString(),
