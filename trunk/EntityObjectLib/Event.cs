@@ -70,17 +70,17 @@ namespace EntityObjectLib
         /// <summary>
         /// 事件共享
         /// </summary>
-        public ICollection<EventShare> EventShares { get; set; }
+        public virtual ICollection<EventShare> EventShares { get; set; }
 
         /// <summary>
         /// 事件状态集
         /// </summary>
-        public ICollection<EventState> EventStates { get; set; }
+        public virtual ICollection<EventState> EventStates { get; set; }
 
         /// <summary>
         /// 事件提醒
         /// </summary>
-        public ICollection<EventRemind> EventReminds { get; set; }
+        public virtual ICollection<EventRemind> EventReminds { get; set; }
     }
 
     public partial class User
