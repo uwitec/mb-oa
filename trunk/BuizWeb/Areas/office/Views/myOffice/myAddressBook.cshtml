@@ -1,0 +1,125 @@
+﻿@section header {
+    <script type="text/javascript">
+        Ext.onReady(function () {
+            Ext.regModel('Addressbook', {
+                fields: [
+                    { name: 'ID', type: 'string' },
+                    { name: 'Name', type: 'string' },
+                    { name: 'sex', type: 'string' },
+                    { name: 'Company', type: 'string' },
+                    { name: 'Department', type: 'string' },
+                    { name: 'Job', type: 'string' },
+                    { name: 'Address', type: 'string' },
+                    { name: 'HomePhone', type: 'string' },
+                    { name: 'OfficePhone', type: 'string' },
+                    { name: 'Mobile', type: 'string' },
+                    { name: 'QQ', type: 'string' },
+                    { name: 'MSN', type: 'string' },
+                    { name: 'Email', type: 'string' },
+                    { name: 'BirthDay', type: 'date', dateFormat: 'MS' },
+                    { name: 'Remark', type: 'string' },
+                    { name: 'Creator', type: 'string' },
+                    { name: 'CreateTime', type: 'date', dateFormat: 'MS' },
+                    { name: 'Owner', type: 'string' },
+                    { name: 'LastUpdateTime', type: 'date', dateFormat: 'MS' }
+            ]
+            });
+
+            var selfStore = new Ext.data.Store({
+                model: 'Addressbook',
+                proxy: {
+                    type: 'ajax',
+                    url: '/data/Addressbook/self'
+                },
+                listeners: {
+                    load: function (store, records, successful) {
+                        debugger;
+                        if (!successful) {
+                            alert('数据加载失败');
+                        }
+                        else {
+                            alert('数据加载成功');
+                        }
+                    }
+                },
+                autoLoad: true
+            });
+
+            var shareStore = new Ext.data.Store({
+                model: 'Addressbook',
+                proxy: {
+                    type: 'ajax',
+                    url: '/data/Addressbook/share'
+                },
+                listeners: {
+                    load: function (store, records, successful) {
+                        if (!successful) {
+                            alert('数据加载失败');
+                        }
+                        else {
+                            alert('数据加载失败');
+                        }
+                    }
+                },
+                autoLoad: true
+            });
+
+            var selfGrid = new Ext.grid.Panel({
+                store: shareStore,
+                selModel: new Ext.selection.CheckboxModel({
+                    checkOnly: true,
+                    listeners: {
+                        select: function (RowSelectionModel, record, index) { alert(index) },
+                        deselect: function (RowSelectionModel, record, index) { alert(index) }
+                    }
+                }),
+                columns: [
+                    new Ext.grid.RowNumberer(),
+                    {
+                        text: '姓名',
+                        dataIndex: 'Name',
+                        flex: 1
+                    },
+                    {
+                        text: '创建人',
+                        dataIndex: 'Creator',
+                        width: 80
+                    },
+                    {
+                        text: '创建时间',
+                        dataIndex: 'CreateTime',
+                        width: 160,
+                        renderer: Ext.util.Format.dateRenderer('Y-m-d h:i:s')
+                    }
+                    ],
+                tbar: [{
+                    xtype: 'button', iconCls: 'iconSave', tooltip: '保存', tooltipType: 'title',
+                    handler: function (source, e) { }
+                }]
+            });
+
+            var panel = Ext.create('Ext.panel.Panel', {
+                region: 'center',
+                layout: 'fit',
+                autoScroll: true,
+                bodyPadding: 0,
+                border: 0,
+                padding: 0,
+                margin: 0,
+                tbar: [
+                    { xtype: 'label', text: '个人办公 -> 我的订阅', cls: 'formNav' },
+                    { xtype: 'tbfill' },
+                    { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }
+                    ]
+            });
+
+            panel.add(selfGrid);
+
+            new Ext.container.Viewport({
+                layout: 'border',
+                border: 0,
+                items: [panel]
+            });
+        });
+    </script>
+}

@@ -91,7 +91,7 @@ namespace EntityObjectLib
         /// <summary>
         /// 创建人
         /// </summary>
-        public User Creator { get; set; }
+        public virtual User Creator { get; set; }
 
         /// <summary>
         /// 创建时间
@@ -101,7 +101,7 @@ namespace EntityObjectLib
         /// <summary>
         /// 拥有者,拥有者可以管理此记录
         /// </summary>
-        public User Owner { get; set; }
+        public virtual User Owner { get; set; }
 
         /// <summary>
         /// 最近一次更新时间

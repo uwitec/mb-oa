@@ -28,7 +28,7 @@ namespace TestProject1
                     Department = "R&D",
                     Job = "developer",
                     Creator = mydb.Users.First(s => s.Code.Equals("lilin")),
-                    Owner = mydb.Users.First(s => s.Code.Equals("chw")),
+                    Owner = mydb.Users.First(s => s.Code.Equals("lilin")),
                     AddressBookShares = new AddressBookShare[] {
                         new AddressBookShare
                         {
