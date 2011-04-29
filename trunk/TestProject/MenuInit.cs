@@ -304,8 +304,8 @@ namespace TestProject1
                                     },
                                     new Privilege {
                                         ID = Guid.NewGuid().ToString(),
-                                        privilegeName = "我的文件柜",
-                                        privilegeCode = "myDocument",
+                                        privilegeName = "公告板",
+                                        privilegeCode = "boards",
                                         needAuth = true,
                                         isMenuEntry = true,
                                         createdTime = DateTime.Now,

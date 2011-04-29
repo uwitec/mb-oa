@@ -8,7 +8,7 @@ namespace EntityObjectLib
     /// 权限主体，用户、用户组、组织均由此继承
     /// Subject在这里是“主体”
     /// </summary>
-    public class Subject
+    public partial class Subject
     {
         [Key]
         public string ID { get; set; }

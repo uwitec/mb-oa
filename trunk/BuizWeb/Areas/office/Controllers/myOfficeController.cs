@@ -45,7 +45,7 @@ namespace BuizApp.Areas.office.Controllers
             using (MyDB mydb = new MyDB())
             {
                 Info info = mydb.Infos.Find(id);
-                EntityObjectLib.MyInfo mi = info.Receivers.FirstOrDefault(r => r.Receiver.ID.Equals(UserID));
+                EntityObjectLib.InfoInbox mi = info.Receivers.FirstOrDefault(r => r.Receiver.ID.Equals(UserID));
                 if (mi != null)
                 {
                     info.Receivers.FirstOrDefault(r => r.Receiver.ID.Equals(UserID)).ReadDate = DateTime.Now;
@@ -159,7 +159,7 @@ namespace BuizApp.Areas.office.Controllers
                     SendDate = DateTime.Now,
                     Creator = mydb.Users.Find(HttpContext.User.Identity.Name),
                     SendTypes = "",
-                    Receivers = string.IsNullOrEmpty(Receivers)?null:Receivers.Split(",".ToCharArray()).Select(r => new EntityObjectLib.MyInfo
+                    Receivers = string.IsNullOrEmpty(Receivers)?null:Receivers.Split(",".ToCharArray()).Select(r => new EntityObjectLib.InfoInbox
                     {
                         ID = Guid.NewGuid().ToString(),
                         Receiver = mydb.Users.FirstOrDefault(u => r.Equals(u.Name + "(" + u.Code + ")")),
@@ -196,23 +196,23 @@ namespace BuizApp.Areas.office.Controllers
             string userID = this.User.Identity.Name;
             using (MyDB mydb = new MyDB())
             {
-                IQueryable<Subscription> subscriptions = mydb.Subscriptions.Where(s => s.Owner.ID.Equals(userID));
+                IQueryable<InfoSubscription> subscriptions = mydb.InfoSubscriptions.Where(s => s.Owner.ID.Equals(userID));
 
-                foreach (Subscription s in subscriptions)
+                foreach (InfoSubscription s in subscriptions)
                 {
                     if(!Ids.Contains(s.Title.ID))
-                    mydb.Subscriptions.Remove(s);
+                        mydb.InfoSubscriptions.Remove(s);
                 }
 
                 string[] appendIDS = Ids.Except(subscriptions.Select(s=>s.Title.ID)).ToArray();
                 foreach (string s in appendIDS)
                 {
-                    Subscription sub = new Subscription();
+                    InfoSubscription sub = new InfoSubscription();
                     sub.ID = Guid.NewGuid().ToString();
                     sub.Owner = mydb.Users.Find(userID);
                     sub.Title = mydb.Infos.Find(s);
 
-                    mydb.Subscriptions.Add(sub);
+                    mydb.InfoSubscriptions.Add(sub);
                 }
                 mydb.SaveChanges();
             }

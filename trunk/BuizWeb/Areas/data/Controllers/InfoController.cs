@@ -27,7 +27,7 @@ namespace BuizApp.Areas.data.Controllers
                     using (MyDB mydb = new MyDB())
                     {
                         List<EntityObjectLib.Info> infoes =
-                            mydb.MyInfos.Where(info => info.Receiver.ID.Equals(UserID))
+                            mydb.InfoInboxs.Where(info => info.Receiver.ID.Equals(UserID))
                             .OrderByDescending(info=>info.Info.SendDate)
                             .Select(info => info.Info).ToList();//ToList不能少,要本地化,才能执行后面的string.Join
                         object[] data = infoes.AsQueryable().Select(info => new
@@ -46,7 +46,7 @@ namespace BuizApp.Areas.data.Controllers
                     using (MyDB mydb = new MyDB())
                     {
                         List<EntityObjectLib.Info> infoes =
-                            mydb.MyInfos.Where(info => info.Receiver.ID.Equals(UserID) && info.ReadDate==null)
+                            mydb.InfoInboxs.Where(info => info.Receiver.ID.Equals(UserID) && info.ReadDate==null)
                             .OrderByDescending(info => info.Info.SendDate)
                             .Select(info => info.Info).ToList();//ToList不能少,要本地化,才能执行后面的string.Join
                         object[] data = infoes.AsQueryable().Select(info => new
@@ -96,7 +96,7 @@ namespace BuizApp.Areas.data.Controllers
             using (MyDB mydb = new MyDB())
             {
                 int count =
-                    mydb.MyInfos.Where(info => info.Receiver.ID.Equals(UserID) && info.ReadDate == null)
+                    mydb.InfoInboxs.Where(info => info.Receiver.ID.Equals(UserID) && info.ReadDate == null)
                     .Count();
 
                 return count.ToString();
@@ -110,7 +110,7 @@ namespace BuizApp.Areas.data.Controllers
             {
                 var mySubscriptions =
                     mydb.Infos.Where(i => i.Board != null && i.Parent==null)
-                    .GroupJoin(mydb.Subscriptions.Where(s => s.Owner.ID.Equals(UserID)),
+                    .GroupJoin(mydb.InfoSubscriptions.Where(s => s.Owner.ID.Equals(UserID)),
                     i => i.ID,
                     s => s.Title.ID,
                     (i, s) => new { i.ID, i.Title, Creator = i.Creator.Name, CreateDate = i.CreateDate, @checked = s.Count() > 0 })
@@ -147,7 +147,7 @@ namespace BuizApp.Areas.data.Controllers
             string UserID = this.User.Identity.Name;
             using (MyDB mydb = new MyDB())
             {
-                object[] mySubscriptions = mydb.Subscriptions
+                object[] mySubscriptions = mydb.InfoSubscriptions
                     .Where(s => s.Owner.ID.Equals(this.User.Identity.Name))
                     .Select(s => new { s.Title.ID, s.Title.Title }).ToArray();
 
