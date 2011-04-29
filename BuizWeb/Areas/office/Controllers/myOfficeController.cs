@@ -255,5 +255,14 @@ namespace BuizApp.Areas.office.Controllers
             }
             return Json(new { success = true });
         }
+
+        /// <summary>
+        /// 我的通讯录
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult myAddressBook()
+        {
+            return View();
+        }
     }
 }
