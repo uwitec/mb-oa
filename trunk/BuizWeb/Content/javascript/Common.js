@@ -217,3 +217,30 @@ Ext.define('Ext.ux.SimpleIFrame', {
         }
     }
 });
+
+function toLocalWeekDay(en) {
+    switch (en.toLowerCase()) {
+        case 'sunday':
+            return '星期天';
+            break;
+        case 'monday':
+            return '星期一';
+            break;
+        case 'tuesday':
+            return '星期二';
+            break;
+        case 'wednesday':
+            return '星期三';
+            break;
+        case 'thursday':
+            return '星期四';
+            break;
+        case 'friday':
+            return '星期五';
+            break;
+        case 'saturday':
+            return '星期六';
+            break;
+        default: break;
+    }
+}

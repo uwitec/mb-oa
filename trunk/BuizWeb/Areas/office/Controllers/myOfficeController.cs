@@ -10,6 +10,7 @@ namespace BuizApp.Areas.office.Controllers
 {
     public class myOfficeController : Controller
     {
+
         //
         // GET: /office/myOffice/
 
@@ -20,7 +21,10 @@ namespace BuizApp.Areas.office.Controllers
 
         public ActionResult myCarlendar()
         {
-            return this.Redirect("/content/extensible-1.0/examples/calendar/test-app.html");
+
+
+            return View();
+            //return this.Redirect("/content/extensible-1.0/examples/calendar/test-app.html");
         }
 
         public ActionResult myRemind()

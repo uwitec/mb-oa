@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="App_Code\ActionFilters\TimerActionFilter.cs" />
     <Compile Include="Areas\data\Controllers\AddressbookController.cs" />
+    <Compile Include="Areas\data\Controllers\CarlendarController.cs" />
     <Compile Include="Areas\data\Controllers\InfoController.cs" />
     <Compile Include="Areas\data\Controllers\RSSController.cs" />
     <Compile Include="Areas\data\dataAreaRegistration.cs" />
@@ -1124,6 +1125,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\office\Views\myOffice\myAddressBook.cshtml" />
+    <Content Include="Areas\office\Views\myOffice\myCarlendar.cshtml" />
     <None Include="Content\ExtJS\resources\sass\config.rb" />
     <None Include="Content\ExtJS\resources\sass\ext-all-access.scss" />
     <None Include="Content\ExtJS\resources\sass\ext-all-scoped.scss" />
