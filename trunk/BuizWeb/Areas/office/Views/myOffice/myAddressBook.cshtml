@@ -33,12 +33,9 @@
                 },
                 listeners: {
                     load: function (store, records, successful) {
-                        debugger;
                         if (!successful) {
-                            alert('数据加载失败');
                         }
                         else {
-                            alert('数据加载成功');
                         }
                     }
                 },
@@ -54,10 +51,8 @@
                 listeners: {
                     load: function (store, records, successful) {
                         if (!successful) {
-                            alert('数据加载失败');
                         }
                         else {
-                            alert('数据加载失败');
                         }
                     }
                 },
@@ -65,6 +60,104 @@
             });
 
             var selfGrid = new Ext.grid.Panel({
+                region: 'north',
+                flex: 1,
+                split: true,
+                title: '我的通讯录',
+                store: selfStore,
+                selModel: new Ext.selection.CheckboxModel({
+                    checkOnly: true,
+                    listeners: {
+                        select: function (RowSelectionModel, record, index) { alert(index) },
+                        deselect: function (RowSelectionModel, record, index) { alert(index) }
+                    }
+                }),
+                columns: [
+                    new Ext.grid.RowNumberer(),
+                    {
+                        text: '姓名',
+                        dataIndex: 'Name',
+                        width: 80,
+                        renderer: function (v, meta, record) { return '<a href="#">' + v + '</a>'; }
+                    },
+                    {
+                        text: '性别',
+                        dataIndex: 'sex',
+                        width: 40
+                    },
+                    {
+                        text: '所在单位',
+                        dataIndex: 'Company',
+                        flex: 1
+                    },
+                    {
+                        text: '部门',
+                        dataIndex: 'Department',
+                        flex: 1
+                    },
+                    {
+                        text: '手机号码',
+                        dataIndex: 'Mobile',
+                        width: 100
+                    },
+                    {
+                        text: '电子邮件',
+                        dataIndex: 'Email',
+                        width: 100
+                    },
+                    {
+                        text: '创建人',
+                        dataIndex: 'Creator',
+                        width: 80
+                    },
+                    {
+                        text: '创建时间',
+                        dataIndex: 'CreateTime',
+                        width: 140,
+                        renderer: Ext.util.Format.dateRenderer('Y-m-d h:i:s')
+                    }
+                    ],
+                tbar: [
+                    { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) { } },
+                    { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { } },
+                    { xtype: 'tbseparator' },
+                    { xtype: 'tbfill' },
+                    { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { this.up('panel').getStore().load(); } }
+                    ],
+                listeners: {
+                    itemclick: function (view, record, item, index, e) {
+                        if (record) {
+                            var detailGrid = Ext.getCmp('detailGrid');
+                            detailGrid.setSource(trans(record.data));
+                            detailGrid.setTitle(record.data.ID);
+                        }
+                    }
+                }
+            });
+
+            var trans = function (record) {
+                return {
+                    '姓名': record.Name,
+                    '性别': record.sex,
+                    '所在单位': record.Company,
+                    '部门': record.Department,
+                    '岗位': record.Job,
+                    '地址': record.Address,
+                    '家庭电话': record.HomePhone,
+                    '办公电话': record.OfficePhone,
+                    '手机号码': record.Mobile,
+                    'QQ': record.QQ,
+                    'MSN': record.MSN,
+                    'Email': record.Email,
+                    '出生日期': record.BirthDay,
+                    '备注': record.Remark
+                }
+            }
+
+            var shareGrid = new Ext.grid.Panel({
+                region: 'center',
+                flex: 1,
+                title: '共享的通讯录',
                 store: shareStore,
                 selModel: new Ext.selection.CheckboxModel({
                     checkOnly: true,
@@ -78,42 +171,181 @@
                     {
                         text: '姓名',
                         dataIndex: 'Name',
+                        width: 80,
+                        renderer: function (v, meta, record) { return '<a href="#">' + v + '</a>'; }
+                    },
+                    {
+                        text: '性别',
+                        dataIndex: 'sex',
+                        width: 40
+                    },
+                    {
+                        text: '所在单位',
+                        dataIndex: 'Company',
                         flex: 1
                     },
                     {
-                        text: '创建人',
-                        dataIndex: 'Creator',
+                        text: '部门',
+                        dataIndex: 'Department',
+                        flex: 1
+                    },
+                    {
+                        text: '手机号码',
+                        dataIndex: 'Mobile',
+                        width: 100
+                    },
+                    {
+                        text: '电子邮件',
+                        dataIndex: 'Email',
+                        width: 100
+                    },
+                    {
+                        text: '所有人',
+                        dataIndex: 'Owner',
                         width: 80
                     },
                     {
                         text: '创建时间',
                         dataIndex: 'CreateTime',
-                        width: 160,
+                        width: 140,
                         renderer: Ext.util.Format.dateRenderer('Y-m-d h:i:s')
                     }
                     ],
-                tbar: [{
-                    xtype: 'button', iconCls: 'iconSave', tooltip: '保存', tooltipType: 'title',
-                    handler: function (source, e) { }
-                }]
+                    tbar: [
+                    { xtype: 'tbseparator' },
+                    { xtype: 'tbfill' },
+                    { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { this.up('panel').getStore().load(); } }
+                    ],
+                listeners: {
+                    itemclick: function (view, record, item, index, e) {
+                        if (record) {
+                            var detailGrid = Ext.getCmp('detailGrid');
+                            detailGrid.setSource(trans(record.data));
+                            detailGrid.setTitle(record.data.ID);
+                        }
+                    }
+                }
             });
 
-            var panel = Ext.create('Ext.panel.Panel', {
-                region: 'center',
+
+            var rightPanel = Ext.create('Ext.container.Container', {
+                region: 'east',
                 layout: 'fit',
+                split: true,
                 autoScroll: true,
                 bodyPadding: 0,
-                border: 0,
                 padding: 0,
+                width: 300,
                 margin: 0,
                 tbar: [
                     { xtype: 'label', text: '个人办公 -> 我的订阅', cls: 'formNav' },
                     { xtype: 'tbfill' },
                     { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }
                     ]
+                , items: [
+                    new Ext.grid.property.Grid({
+                        id: 'detailGrid',
+                        title: '详细信息',
+                        width: 300,
+                        hideHeaders: true,
+                        sortableColumns: false,
+                        source: {},
+                        listeners: {
+                            propertychange: function (source, recordId, value, oldValue) {
+                                //debugger;
+                                var field;
+                                if (value != (oldValue === undefined ? "" : oldValue)) {
+                                    switch (recordId.split('-')[1]) {
+                                        case '姓名':
+                                            field = "Name";
+                                            break;
+                                        case '性别':
+                                            field = "sex";
+                                            break;
+                                        case '所在单位':
+                                            field = "Company";
+                                            break;
+                                        case '部门':
+                                            field = "Department";
+                                            break;
+                                        case '岗位':
+                                            field = "Job";
+                                            break;
+                                        case '地址':
+                                            field = "Address";
+                                            break;
+                                        case '家庭电话':
+                                            field = "HomePhone";
+                                            break;
+                                        case '办公电话':
+                                            field = "OfficePhone";
+                                            break;
+                                        case '手机号码':
+                                            field = "Mobile";
+                                            break;
+                                        case 'QQ':
+                                            field = "QQ";
+                                            break;
+                                        case 'MSN':
+                                            field = "MSN";
+                                            break;
+                                        case 'Email':
+                                            field = "Email";
+                                            break;
+                                        case '出生日期':
+                                            field = "BirthDay";
+                                            break;
+                                        case '备注':
+                                            field = "Remark";
+                                            break;
+                                        default:
+                                            return;
+                                            break;
+                                    }
+
+                                    Ext.Ajax.request({
+                                        url: '/office/myOffice/updateAddress',
+                                        params: {
+                                            id: this.title,
+                                            field: field,
+                                            value: value
+                                        },
+                                        success: function (response) {
+                                            alert('success');
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    })
+                ]
             });
 
-            panel.add(selfGrid);
+
+
+            var panel = Ext.create('Ext.panel.Panel', {
+                region: 'center',
+                layout: 'border',
+                autoScroll: true,
+                bodyPadding: 0,
+                border: 0,
+                padding: 0,
+                margin: 0,
+                items: [
+                    rightPanel,
+                    {
+                        xtype: 'container',
+                        region: 'center',
+                        layout: 'border',
+                        items: [selfGrid, shareGrid]
+                    }
+                ],
+                tbar: [
+                    { xtype: 'label', text: '个人办公 -> 我的订阅', cls: 'formNav' },
+                    { xtype: 'tbfill' },
+                    { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }
+                    ]
+            });
 
             new Ext.container.Viewport({
                 layout: 'border',

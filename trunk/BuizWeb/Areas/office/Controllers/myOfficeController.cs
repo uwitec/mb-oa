@@ -264,5 +264,24 @@ namespace BuizApp.Areas.office.Controllers
         {
             return View();
         }
+
+        /// <summary>
+        /// 更新通讯录
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult updateAddress()
+        {
+            string id = Request.Params["id"];
+            string field = Request.Params["field"];
+            string value = Request.Params["value"];
+            string userID = this.User.Identity.Name;
+            using (MyDB mydb = new MyDB())
+            {
+                AddressBook ab = mydb.AddressBooks.Find(id);
+                mydb.Entry<AddressBook>(ab).Property(field).CurrentValue = value; //需要类型转换
+                mydb.SaveChanges();
+                return Json(new { success = true });
+            }
+        }
     }
 }
