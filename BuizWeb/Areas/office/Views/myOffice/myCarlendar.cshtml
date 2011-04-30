@@ -1,0 +1,222 @@
+﻿@section header {
+    <script type="text/javascript">
+        Ext.onReady(function () {
+            Ext.regModel('Carlendar', {
+                fields: [
+                    { name: 'ID', type: 'string' },
+                    { name: 'day', type: 'date', dateFormat: 'MS' },
+                    { name: 'Name', type: 'string' },
+                    { name: 'Content', type: 'string' },
+                    { name: 'StartTime', type: 'date', dateFormat: 'MS' },
+                    { name: 'FinishTime', type: 'date', dateFormat: 'MS' },
+                    { name: 'Type', type: 'string' },
+                    { name: 'Master', type: 'string' },
+                    { name: 'Proctor', type: 'string' }
+            ]
+            });
+
+            var store = new Ext.data.Store({
+                model: 'Carlendar',
+                proxy: {
+                    type: 'ajax',
+                    url: '/data/Carlendar/index',
+                    extraParams: {
+                        year: new Date().getYear(),
+                        month: new Date().getMonth() + 1
+                    }
+                },
+                listeners: {
+                    load: function (store, records, successful) {
+                        if (!successful) {
+                            alert("Error!");
+                        }
+                        else {
+                        }
+                    }
+                },
+                groupField: 'day',
+                autoLoad: true
+            });
+
+            var grid = new Ext.grid.Panel({
+                flex: 1,
+                store: store,
+                features: [{
+                    ftype: 'grouping',
+                    groupHeaderTpl: '日期: {name:date("Y年m月d日")} {name:date("l")}'
+                }],
+                //                selModel: new Ext.selection.CheckboxModel({
+                //                    checkOnly: true,
+                //                    listeners: {
+                //                        select: function (RowSelectionModel, record, index) { alert(index) },
+                //                        deselect: function (RowSelectionModel, record, index) { alert(index) }
+                //                    }
+                //                }),
+                columns: [
+                    new Ext.grid.RowNumberer(),
+                    {
+                        text: '日期',
+                        dataIndex: 'day',
+                        width: 100,
+                        renderer: Ext.util.Format.dateRenderer('Y-m-d')
+                    },
+                    {
+                        xtype: 'templatecolumn',
+                        text: '标题',
+                        tpl: '<a href="javascript:debugger;alert(\'{ID}\')">{Name}</a>',
+                        width: 80
+                    },
+                    {
+                        text: '内容',
+                        dataIndex: 'Content',
+                        flex: 1
+                    },
+                    {
+                        text: '开始时间',
+                        dataIndex: 'StartTime',
+                        width: 140,
+                        renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')
+                    },
+                    {
+                        text: '完成时间',
+                        dataIndex: 'FinishTime',
+                        width: 140,
+                        renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')
+                    },
+                    {
+                        text: '类型',
+                        dataIndex: 'Type',
+                        width: 100
+                    },
+                    {
+                        text: '责任人',
+                        dataIndex: 'Master',
+                        width: 80
+                    },
+                    {
+                        text: '督办人',
+                        dataIndex: 'Proctor',
+                        width: 80
+                    }
+                    ],
+                tbar: [
+                    { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) { } },
+                    { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { } },
+                    { xtype: 'tbseparator' },
+                    { xtype: 'tbfill' },
+                    {
+                        xtype: 'combo',
+                        id: 'comboYear',
+                        fieldLabel: 'Choose State',
+                        store: new Ext.data.Store({
+                            fields: ['year'],
+                            data: [
+                                { year: '2010' },
+                                { year: '2011' }
+                            ]
+                        }),
+                        queryMode: 'local',
+                        displayField: 'year',
+                        valueField: 'year',
+                        value: new Date().getYear().toString(),
+                        fieldLabel: '选择年份',
+                        labelWidth: 60,
+                        labelAlign: 'right',
+                        width: 130
+                    },
+                    {
+                        xtype: 'combo',
+                        id: 'comboMonth',
+                        fieldLabel: 'Choose State',
+                        margin: '0 0 0 10',
+                        store: new Ext.data.Store({
+                            fields: ['month'],
+                            data: [
+                                { month: '1月' },
+                                { month: '2月' },
+                                { month: '3月' },
+                                { month: '4月' },
+                                { month: '5月' },
+                                { month: '6月' },
+                                { month: '7月' },
+                                { month: '8月' },
+                                { month: '9月' },
+                                { month: '10月' },
+                                { month: '11月' },
+                                { month: '12月' }
+                            ]
+                        }),
+                        queryMode: 'local',
+                        displayField: 'month',
+                        valueField: 'month',
+                        value: (new Date().getMonth() + 1).toString() + '月',
+                        fieldLabel: '选择月份',
+                        labelWidth: 60,
+                        labelAlign: 'right',
+                        width: 120
+                    },
+                    {
+                        xtype: 'button',
+                        id: 'btnQuery',
+                        iconCls: 'iconSearch',
+                        margin: '0 0 0 10',
+                        text: '',
+                        tooltip: '查询',
+                        tooltipType: 'title',
+                        handler: function (source, e) {
+                            query(source);
+                        }
+                    },
+                    { xtype: 'tbseparator' },
+                    {
+                        xtype: 'button',
+                        iconCls: 'iconRefresh',
+                        text: '',
+                        tooltip: '刷新',
+                        tooltipType: 'title',
+                        handler: function (source, e) {
+                            query(source);
+                        }
+                    }
+                    ]
+            });
+
+            function query(source) {
+                var year = source.ownerCt.items.get('comboYear').value;
+                var month = source.ownerCt.items.get('comboMonth').value;
+                month = month.substring(0, month.length - 1);
+                //debugger;
+                //alert(source.ownerCt.items.get('selfGrid_name').value);
+                source.up('panel').getStore().load({ params: { year: year, month: month} });
+            }
+
+            var panel = Ext.create('Ext.panel.Panel', {
+                region: 'center',
+                layout: 'fit',
+                autoScroll: true,
+                bodyPadding: 0,
+                padding: 0,
+                margin: 0,
+                items: [
+                    grid
+                ],
+                tbar: [
+                    { xtype: 'label', text: '当前位置：个人办公 -> 我的日程(月视图)', cls: 'formNav' },
+                    { xtype: 'tbseparator' },
+                    { xtype: 'tbfill' },
+                    { xtype: 'button', iconCls: 'helpIcon', text: '月视图', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } },
+                    { xtype: 'button', iconCls: 'helpIcon', text: '周视图', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } },
+                    { xtype: 'button', iconCls: 'helpIcon', text: '日视图', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } },
+                    { xtype: 'tbseparator' },
+                    { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }
+                    ]
+            });
+
+            new Ext.container.Viewport({
+                layout: 'fit',
+                border: 0,
+                items: [panel]
+            });
+        });
+    </script>
+}
