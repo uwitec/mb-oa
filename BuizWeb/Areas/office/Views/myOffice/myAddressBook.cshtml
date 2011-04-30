@@ -1,5 +1,6 @@
 ﻿@section header {
     <script type="text/javascript">
+        var CurrentID;
         Ext.onReady(function () {
             Ext.regModel('Addressbook', {
                 fields: [
@@ -115,7 +116,25 @@
                         dataIndex: 'CreateTime',
                         width: 140,
                         renderer: Ext.util.Format.dateRenderer('Y-m-d h:i:s')
-                    }
+                    }, 
+                    {
+                        xtype: 'actioncolumn',
+                        width: 80,
+                        items: [{
+                            iconCls: 'iconEdit',  
+                            tooltip: 'Edit',
+                            handler: function (grid, rowIndex, colIndex) {
+                                //var rec = grid.getStore().getAt(rowIndex);
+                                //alert("Edit " + rec.get('firstname'));
+                            }
+                        }, {
+                            icon: 'iconDelete',
+                            tooltip: 'Delete',
+                            handler: function (grid, rowIndex, colIndex) {
+                            }
+                        }]
+                    } 
+
                     ],
                 tbar: [
                     { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) { } },
@@ -129,7 +148,7 @@
                         if (record) {
                             var detailGrid = Ext.getCmp('detailGrid');
                             detailGrid.setSource(trans(record.data));
-                            detailGrid.setTitle(record.data.ID);
+                            CurrentID = record.data.ID;
                         }
                     }
                 }
@@ -211,7 +230,7 @@
                         renderer: Ext.util.Format.dateRenderer('Y-m-d h:i:s')
                     }
                     ],
-                    tbar: [
+                tbar: [
                     { xtype: 'tbseparator' },
                     { xtype: 'tbfill' },
                     { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { this.up('panel').getStore().load(); } }
@@ -221,7 +240,7 @@
                         if (record) {
                             var detailGrid = Ext.getCmp('detailGrid');
                             detailGrid.setSource(trans(record.data));
-                            detailGrid.setTitle(record.data.ID);
+                            CurrentID = record.data.ID;
                         }
                     }
                 }
@@ -306,12 +325,15 @@
                                     Ext.Ajax.request({
                                         url: '/office/myOffice/updateAddress',
                                         params: {
-                                            id: this.title,
+                                            id: CurrentID,
                                             field: field,
                                             value: value
                                         },
-                                        success: function (response) {
-                                            alert('success');
+                                        success: function (response, opts) {
+                                            //alert('success');
+                                        },
+                                        failure: function (response, opts) {
+                                            alert('server-side failure with status code ' + response.status)
                                         }
                                     });
                                 }

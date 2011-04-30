@@ -274,11 +274,13 @@ namespace BuizApp.Areas.office.Controllers
             string id = Request.Params["id"];
             string field = Request.Params["field"];
             string value = Request.Params["value"];
+
             string userID = this.User.Identity.Name;
             using (MyDB mydb = new MyDB())
             {
                 AddressBook ab = mydb.AddressBooks.Find(id);
-                mydb.Entry<AddressBook>(ab).Property(field).CurrentValue = value; //需要类型转换
+                Type type =ab.GetType().GetProperty(field).PropertyType;
+                mydb.Entry<AddressBook>(ab).Property(field).CurrentValue = Convert.ChangeType(value, type); //需要类型转换
                 mydb.SaveChanges();
                 return Json(new { success = true });
             }
