@@ -22,7 +22,7 @@ namespace TestProject1
                 {
                     ID = Guid.NewGuid().ToString(),
                     Name = "陈宏伟",
-                    Male = true,
+                    Sex = "男",
                     BirthDay = new DateTime(1971, 9, 10),
                     Company = "manbuit",
                     Department = "R&D",

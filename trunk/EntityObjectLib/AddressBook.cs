@@ -18,9 +18,9 @@ namespace EntityObjectLib
         public string Name { get; set; }
 
         /// <summary>
-        /// 性别,是男性置为真
+        /// 性别
         /// </summary>
-        public bool Male { get; set; }
+        public string Sex { get; set; }
 
         /// <summary>
         /// 工作单位
