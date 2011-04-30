@@ -1,5 +1,7 @@
-﻿body
+﻿*
 {
+    margin:0;
+    padding:0;
 }
 
 .helpIcon
@@ -11,6 +13,11 @@
 .iconGo
 {
     background: url(/content/images/post_go.gif) top left no-repeat !important;
+}
+
+.iconSearch
+{
+    background: url(/content/images/search.gif) top left no-repeat !important;
 }
 
 .iconRSS
@@ -75,7 +82,7 @@
 .formNav
 {
     /*font-weight: bold; */
-    padding: 6px 10px;
+    padding-left:4px;
     font-size: 12px;
 }
 

@@ -76,10 +76,10 @@
                 columns: [
                     new Ext.grid.RowNumberer(),
                     {
+                        xtype: 'templatecolumn',
                         text: '姓名',
-                        dataIndex: 'Name',
-                        width: 80,
-                        renderer: function (v, meta, record) { return '<a href="#">' + v + '</a>'; }
+                        tpl: '<a href="javascript:alert(\'{ID}\')">{Name}</a>',
+                        width: 80
                     },
                     {
                         text: '性别',
@@ -116,31 +116,40 @@
                         dataIndex: 'CreateTime',
                         width: 140,
                         renderer: Ext.util.Format.dateRenderer('Y-m-d h:i:s')
-                    }, 
-                    {
-                        xtype: 'actioncolumn',
-                        width: 80,
-                        items: [{
-                            iconCls: 'iconEdit',  
-                            tooltip: 'Edit',
-                            handler: function (grid, rowIndex, colIndex) {
-                                //var rec = grid.getStore().getAt(rowIndex);
-                                //alert("Edit " + rec.get('firstname'));
-                            }
-                        }, {
-                            icon: 'iconDelete',
-                            tooltip: 'Delete',
-                            handler: function (grid, rowIndex, colIndex) {
-                            }
-                        }]
-                    } 
-
+                    }
                     ],
                 tbar: [
                     { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) { } },
                     { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { } },
                     { xtype: 'tbseparator' },
                     { xtype: 'tbfill' },
+                    {
+                        id: 'selfGrid_name',
+                        xtype: 'textfield',
+                        fieldLabel: '按姓名查询',
+                        labelAlign: 'right',
+                        listeners: {
+                            specialkey: function (source, e) {
+                                //debugger;
+                                if (e.getKey() == e.ENTER) {
+                                    alert(source.value);
+                                }
+                            }
+                        }
+                    },
+                    {
+                        xtype: 'button',
+                        iconCls: 'iconSearch',
+                        text: '',
+                        tooltip: '查询',
+                        tooltipType: 'title',
+                        handler: function (source, e) {
+                            // source.ownerCt.items.get('selfGrid_name') // 取文本框
+                            alert(source.ownerCt.items.get('selfGrid_name').value);
+                            this.up('panel').getStore().load(); 
+                        }
+                    },
+                    { xtype: 'tbseparator' },
                     { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { this.up('panel').getStore().load(); } }
                     ],
                 listeners: {
@@ -188,10 +197,10 @@
                 columns: [
                     new Ext.grid.RowNumberer(),
                     {
+                        xtype: 'templatecolumn',
                         text: '姓名',
-                        dataIndex: 'Name',
-                        width: 80,
-                        renderer: function (v, meta, record) { return '<a href="#">' + v + '</a>'; }
+                        tpl: '<a href="javascript:debugger;alert(\'{ID}\')">{Name}</a>',
+                        width: 80
                     },
                     {
                         text: '性别',
@@ -268,6 +277,9 @@
                         width: 300,
                         hideHeaders: true,
                         sortableColumns: false,
+                        tbar: [
+                            { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { } }
+                            ],
                         source: {},
                         listeners: {
                             propertychange: function (source, recordId, value, oldValue) {
@@ -350,7 +362,6 @@
                 layout: 'border',
                 autoScroll: true,
                 bodyPadding: 0,
-                border: 0,
                 padding: 0,
                 margin: 0,
                 items: [
@@ -363,14 +374,14 @@
                     }
                 ],
                 tbar: [
-                    { xtype: 'label', text: '个人办公 -> 我的订阅', cls: 'formNav' },
+                    { xtype: 'label', text: '当前位置：个人办公 -> 我的通讯录', cls: 'formNav' },
                     { xtype: 'tbfill' },
                     { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }
                     ]
             });
 
             new Ext.container.Viewport({
-                layout: 'border',
+                layout: 'fit',
                 border: 0,
                 items: [panel]
             });
