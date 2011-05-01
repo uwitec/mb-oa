@@ -45,7 +45,7 @@ namespace BuizApp.Areas.data.Controllers
                         e => 1,
                         (r, e) => new Day { ev = r, day = e.day }
                     )
-                    .Where(d => d.day >= d.ev.StartTime && d.day <= d.ev.FinishTime)
+                    .Where(d => d.day >= d.ev.StartTime.Date && d.day <= d.ev.FinishTime.Date)
                     .Select(d =>
                         new
                         {
@@ -68,5 +68,20 @@ namespace BuizApp.Areas.data.Controllers
             }
         }
 
+        public JsonResult list()
+        {
+            using (MyDB mydb = new MyDB())
+            {
+                object[] result =
+                    mydb.Events
+                    .Select(ev => new { ev.ID, ev.Name })
+                    .ToArray()
+                    ;
+                return Json(
+                        result.Union(new[] { new { ID = string.Empty, Name = "(空)" } })
+                        , JsonRequestBehavior.AllowGet
+                        );
+            }
+        }
     }
 }

@@ -100,7 +100,7 @@
                     }
                     ],
                 tbar: [
-                    { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) { } },
+                    { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) { EventNewOrEdit() } },
                     { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { } },
                     { xtype: 'tbseparator' },
                     { xtype: 'tbfill' },
@@ -180,6 +180,28 @@
                     }
                     ]
             });
+
+            EventNewOrEdit = function (id) {
+                new Ext.window.Window({
+                    id: 'fwin',
+                    title: '事件信息',
+                    modal: true,
+                    closable: true,
+                    //animateTarget: this,
+                    width: 600,
+                    //height: 500,
+                    layout: 'fit',
+                    bodyPadding: 0,
+                    items: [
+                    new MB.form.Event({
+                        id: id,
+                        close: function () { Ext.getCmp('fwin').close();},
+                        submitSccess: function (form, action) { grid.getView().getStore().load(); alert("submitSccess"); Ext.getCmp('fwin').close(); },
+                        submitFailure: function (form, action) { alert("submitFailure"); }
+                    })
+                ]
+                }).show();
+            }
 
             function query(source) {
                 var year = source.ownerCt.items.get('comboYear').value;

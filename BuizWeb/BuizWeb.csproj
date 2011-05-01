@@ -71,8 +71,10 @@
     <Compile Include="Areas\data\Controllers\CarlendarController.cs" />
     <Compile Include="Areas\data\Controllers\InfoController.cs" />
     <Compile Include="Areas\data\Controllers\RSSController.cs" />
+    <Compile Include="Areas\data\Controllers\UserController.cs" />
     <Compile Include="Areas\data\dataAreaRegistration.cs" />
     <Compile Include="Areas\office\Controllers\myOfficeController.cs" />
+    <Compile Include="Areas\office\Controllers\myOffice.Event.cs" />
     <Compile Include="Areas\office\officeAreaRegistration.cs" />
     <Compile Include="Areas\report\Controllers\reportController.cs" />
     <Compile Include="Areas\report\reportAreaRegistration.cs" />
