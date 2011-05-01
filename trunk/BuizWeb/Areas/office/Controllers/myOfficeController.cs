@@ -8,7 +8,7 @@ using EntityObjectLib;
 
 namespace BuizApp.Areas.office.Controllers
 {
-    public class myOfficeController : Controller
+    public partial class myOfficeController : Controller
     {
 
         //

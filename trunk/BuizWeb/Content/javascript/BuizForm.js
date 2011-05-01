@@ -225,7 +225,7 @@ MB.form.Privilege= function (config) {
             { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
             { xtype: 'textfield', name: 'privilegeCode', fieldLabel: '操作编码', value: '' },
             { xtype: 'textfield', name: 'privilegeName', fieldLabel: '操作名称', value: ''  },
-            { xtype: 'checkboxfield', name: 'needAuth', boxLabel: '是否需要授权', checked: true, },
+            { xtype: 'checkboxfield', name: 'needAuth', boxLabel: '是否需要授权', checked: true },
             { xtype: 'checkboxfield', name: 'isMenuEntry', boxLabel: '是否菜单入口', checked:false },
             { xtype: 'combo', name: 'resourceID', fieldLabel: '所属功能', 
                 forceSelection: true,
@@ -360,3 +360,173 @@ MB.form.RolePrivilegeParam = function (config) {
     return this.form;
 }
 
+MB.form.Event = function (config) {
+    this.name = "事件管理";
+    this.container = config.container;
+    this.form = new Ext.form.FormPanel({
+        params: { sid: config.id, jid: 'ssss' },
+        layout: {
+            type: 'vbox',
+            align: 'stretch'
+        },
+        height: 400,
+        width: '100%',
+        autoHeight: true,
+        stateful: false,
+        fieldDefaults: { labelAlign: 'top', msgTarget: 'none', anchor: '100%', margin: "4px 10px" },
+        items: [
+            { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
+            { xtype: 'textfield', name: 'Name', width: '100%', fieldLabel: '标题' },
+            { xtype: 'textareafield', name: 'Content', flex: 1, fieldLabel: '内容' },
+            {
+                xtype: 'fieldcontainer',
+                layout: 'hbox',
+                fieldDefaults: { labelAlign: 'left', msgTarget: 'none', labelWidth: 60 },
+                items: [
+                    { xtype: 'combo', flex: 1, name: 'Type', fieldLabel: '事件类型',
+                        store: new Ext.data.Store({
+                            fields: ['type'],
+                            data: [
+                                    { type: '计划任务' },
+                                    { type: '工作日志' },
+                                    { type: '其他' }
+                                ]
+                        }),
+                        queryMode: 'local',
+                        displayField: 'type',
+                        valueField: 'type',
+                        value: '计划任务'
+                    },
+                    { xtype: 'splitter', width: 40 },
+                    { xtype: 'combo', flex: 1, name: 'Parent', fieldLabel: '父事件',
+                        forceSelection: true,
+                        blankText: '请选择',
+                        emptyText: '请选择',
+                        valueField: 'ID',
+                        displayField: 'Name',
+                        editable: false,
+                        queryMode: 'local',
+                        store: new Ext.data.Store({
+                            fields: ['ID', 'Name'],
+                            proxy: {
+                                type: 'ajax',
+                                url: '/data/Carlendar/list'
+                            },
+                            autoLoad: true,
+                            listeners: {
+                                load: function (store, records, successful) {
+                                    //debugger;
+                                    if (!successful) {
+                                        alert("Error!");
+                                    }
+                                    else {
+                                    }
+                                }
+                            }
+                        })
+                    }
+                ]
+            },
+            {
+                xtype: 'fieldcontainer',
+                layout: 'hbox',
+                fieldDefaults: { labelAlign: 'left', msgTarget: 'none', labelWidth: 60 },
+                items: [
+                    { xtype: 'datefield', flex: 1, name: 'StartDate', fieldLabel: '开始时间' },
+                    { xtype: 'splitter', width: 10 },
+                    { xtype: 'timefield', name: 'StartTime', width: 80 },
+                    { xtype: 'splitter', width: 40 },
+                    { xtype: 'datefield', flex: 1, name: 'FinishDate', fieldLabel: '结束时间' },
+                    { xtype: 'splitter', width: 10 },
+                    { xtype: 'timefield', name: 'FinishTime', width: 80 }
+                ]
+            },
+            {
+                xtype: 'fieldcontainer',
+                layout: 'hbox',
+                fieldDefaults: { labelAlign: 'left', msgTarget: 'none', labelWidth: 60 },
+                items: [
+                    { xtype: 'combo', flex: 1, name: 'Master', fieldLabel: '责任人',
+                        forceSelection: true,
+                        blankText: '请选择',
+                        emptyText: '请选择',
+                        valueField: 'ID',
+                        displayField: 'Name',
+                        editable: false,
+                        queryMode: 'local',
+                        store: new Ext.data.Store({
+                            fields: ['ID', 'Name'],
+                            proxy: {
+                                type: 'ajax',
+                                url: '/data/user/list'
+                            },
+                            autoLoad: true,
+                            listeners: {
+                                load: function (store, records, successful) {
+                                    //debugger;
+                                    if (!successful) {
+                                        alert("Error!");
+                                    }
+                                    else {
+                                    }
+                                }
+                            }
+                        })
+                    },
+                    { xtype: 'splitter', width: 40 },
+                    { xtype: 'combo', flex: 1, name: 'Proctor', fieldLabel: '督办人',
+                        forceSelection: true,
+                        blankText: '请选择',
+                        emptyText: '请选择',
+                        valueField: 'ID',
+                        displayField: 'Name',
+                        editable: false,
+                        queryMode: 'local',
+                        store: new Ext.data.Store({
+                            fields: ['ID', 'Name'],
+                            proxy: {
+                                type: 'ajax',
+                                url: '/data/user/list'
+                            },
+                            autoLoad: true,
+                            listeners: {
+                                load: function (store, records, successful) {
+                                    //debugger;
+                                    if (!successful) {
+                                        alert("Error!");
+                                    }
+                                    else {
+                                    }
+                                }
+                            }
+                        })
+                    }
+                ]
+            }
+        ],
+        buttons: [
+            { text: '保存', handler: function () {
+                this.up('form').getForm().submit({
+                    url: config.id ? '/office/myOffice/UpdateEvent' : '/office/myOffice/saveEvent',
+                    success: function (form, action) { if (config && config.submitSccess) config.submitSccess(form, action) },
+                    failure: function (form, action) { if (config && config.submitFailure) config.submitFailure(form, action) }
+                }
+                );
+            }
+            },
+            { text: '取消', handler: function () { if (config && config.close) config.close() } }
+        ]
+    })
+
+    //debugger;
+
+    if (config.id) {
+        this.form.getForm().load({
+            url: '/office/myOffice/getEvent',
+            params: { id: config.id }
+        }
+        );
+    }
+
+    return this.form;
+}
