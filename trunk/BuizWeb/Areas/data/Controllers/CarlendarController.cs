@@ -17,11 +17,11 @@ namespace BuizApp.Areas.data.Controllers
 
         public JsonResult Index()
         {
-            int year = Convert.ToInt16(Request.Params["year"]);
-            int month = Convert.ToInt16(Request.Params["month"]);
+            DateTime monthBegin = DateTime.Parse(Request.Params["from"]);
+            DateTime monthEnd = DateTime.Parse(Request.Params["to"]);
             // 当前只取当前月的,以后要改为根据用户指定年月生成
-            DateTime monthBegin = new DateTime(year, month, 1);
-            DateTime monthEnd = monthBegin.AddMonths(1).AddDays(-1);
+            //DateTime monthBegin = new DateTime(year, month, 1);
+            //DateTime monthEnd = monthBegin.AddMonths(1).AddDays(-1);
 
             List<Day> monthDays = new List<Day>();
             DateTime i = monthBegin;

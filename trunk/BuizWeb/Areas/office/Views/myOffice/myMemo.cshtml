@@ -1,0 +1,140 @@
+﻿@section header {
+    <script type="text/javascript">
+        Ext.onReady(function () {
+            Ext.regModel('memoModel', {
+                fields: [
+                    { name: 'ID', type: 'string' },
+                    { name: 'Name', type: 'string' },
+                    { name: 'Content', type: 'string' },
+                    { name: 'CreateTime', type: 'date', dateFormat: 'MS' }
+                ]
+            });
+
+            Ext.create('Ext.data.Store', {
+                id: 'memoStore',
+                model: 'memoModel',
+                //                data: [
+                //                    { Name: 'http://www.sencha.com/img/20110215-feat-drawing.png', Content: 'Drawing & Charts' },
+                //                    { Name: 'http://www.sencha.com/img/20110215-feat-data.png', Content: 'Advanced Data' },
+                //                    { Name: 'http://www.sencha.com/img/20110215-feat-html5.png', Content: 'Overhauled Theme' },
+                //                    { Name: 'http://www.sencha.com/img/20110215-feat-perf.png', Content: 'Performance Tuned' }
+                //                ]
+                proxy: {
+                    type: 'ajax',
+                    url: '/data/Memo/index'
+                },
+                listeners: {
+                    load: function (store, records, successful) {
+                        //debugger;
+                        if (!successful) {
+                            alert("Error!");
+                        }
+                        else {
+
+                        }
+                    }
+                },
+                autoLoad: true
+            });
+
+
+            var grid = Ext.create('Ext.grid.Panel', {
+                region: 'center',
+                store: Ext.data.StoreManager.lookup('memoStore'),
+                border: 1,
+                columns: [
+                    new Ext.grid.RowNumberer(),
+                    {
+                        header: '创建时间',
+                        dataIndex: 'CreateTime',
+                        width: 120,
+                        renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')
+                    },
+                    {
+                        xtype: 'templatecolumn',
+                        header: '标题',
+                        tpl: '<a href="javascript:debugger;alert(\'{ID}\')">{Name}</a>',
+                        flex: 1
+                    },
+                    {
+                        header: '内容',
+                        dataIndex: 'Content',
+                        flex: 3
+                    }
+                    ],
+                tbar: [
+                    { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) { EventNewOrEdit() } },
+                    { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { } },
+                    { xtype: 'tbseparator' },
+                    { xtype: 'tbfill' },
+                    {
+                        xtype: 'button',
+                        iconCls: 'iconRefresh',
+                        text: '',
+                        tooltip: '刷新',
+                        tooltipType: 'title',
+                        handler: function (source, e) {
+                            query(source);
+                        }
+                    }
+                    ],
+                listeners: {
+                    selectionchange: function (sm, selectedRecords) {
+                        if (selectedRecords.length) {
+                            Ext.getCmp('DetailPanel').setTitle(selectedRecords[0].data.Name + ' - 详细内容');
+                            bookTpl.overwrite(Ext.getCmp('DetailPanel').body, selectedRecords[0].data);
+                        }
+                    }
+                }
+            });
+
+            var panel = Ext.create('Ext.panel.Panel', {
+                region: 'center',
+                layout: 'border',
+                autoScroll: true,
+                bodyPadding: 4,
+                padding: 0,
+                margin: 0,
+                items: [
+                    grid,
+                    {
+                        id: 'DetailPanel',
+                        region: 'south',
+                        bodyPadding: 10,
+                        title: '便笺内容',
+                        height: 300,
+                        split: true,
+                        border: 1
+                    }
+                ],
+                tbar: [
+                    { xtype: 'label', text: '当前位置：个人办公 -> 我的日程(月视图)', cls: 'formNav' },
+                    { xtype: 'tbseparator' },
+                    { xtype: 'tbfill' },
+                    { xtype: 'button', iconCls: 'helpIcon', text: '月视图', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } },
+                    { xtype: 'button', iconCls: 'helpIcon', text: '周视图', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } },
+                    { xtype: 'button', iconCls: 'helpIcon', text: '日视图', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } },
+                    { xtype: 'tbseparator' },
+                    { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }
+                    ]
+            });
+
+            var bookTplMarkup = [
+                '<div style="border:solid 1px #EEE;background-color:#EFEFEF;padding:4px;">',
+                '<span style="display:block; padding:4px;">标题:&nbsp;&nbsp;{Name}</span>',
+                '<span style="display:block; padding:4px;">时间:&nbsp;&nbsp;{CreateTime:date(\"Y-m-d H:i:s\")}</span>',
+                '</div>',
+                '<div style="border:solid 0px #CCC;padding:4; margin-top: 10px;">{Content}</div>',
+            ];
+
+            var bookTpl = Ext.create('Ext.Template', bookTplMarkup);
+
+
+            new Ext.container.Viewport({
+                layout: 'fit',
+                border: 0,
+                items: [panel]
+            });
+        });
+    </script>
+}
