@@ -530,3 +530,188 @@ MB.form.Event = function (config) {
 
     return this.form;
 }
+
+MB.form.EventShare = function (config) {
+    this.name = "事件共享";
+    this.container = config.container;
+    this.form = new Ext.form.FormPanel({
+        params: { sid: config.id, jid: 'ssss' },
+        layout: {
+            type: 'vbox',
+            align: 'stretch'
+        },
+        height: 200,
+        width: '100%',
+        autoHeight: true,
+        stateful: false,
+        fieldDefaults: { labelAlign: 'top', msgTarget: 'none', anchor: '100%', margin: "4px 10px" },
+        items: [
+            { xtype: 'hiddenfield', name: 'eventId', value: config.eventId, hidden: true },
+            { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
+            { xtype: 'combo', name: 'Proctor', fieldLabel: '共享给',
+                forceSelection: true,
+                blankText: '请选择',
+                emptyText: '请选择',
+                valueField: 'ID',
+                displayField: 'Name',
+                editable: false,
+                queryMode: 'local',
+                store: new Ext.data.Store({
+                    fields: ['ID', 'Name'],
+                    proxy: {
+                        type: 'ajax',
+                        url: '/data/user/list'
+                    },
+                    autoLoad: true,
+                    listeners: {
+                        load: function (store, records, successful) {
+                            //debugger;
+                            if (!successful) {
+                                alert("Error!");
+                            }
+                            else {
+                            }
+                        }
+                    }
+                })
+            },
+            { xtype: 'checkboxfield', name: 'NeedRemind', boxLabel: '是否参与提醒', checked: true }
+        ],
+        buttons: [
+            { text: '保存', handler: function () {
+                this.up('form').getForm().submit({
+                    url: config.id ? '/office/myOffice/UpdateEvent' : '/office/myOffice/saveEvent',
+                    success: function (form, action) { if (config && config.submitSccess) config.submitSccess(form, action) },
+                    failure: function (form, action) { if (config && config.submitFailure) config.submitFailure(form, action) }
+                }
+                );
+            }
+            },
+            { text: '取消', handler: function () { if (config && config.close) config.close() } }
+        ]
+    })
+
+    //debugger;
+
+    if (config.id) {
+        this.form.getForm().load({
+            url: '/office/myOffice/getEvent',
+            params: { id: config.id }
+        }
+        );
+    }
+
+    return this.form;
+}
+
+MB.form.EventRemind = function (config) {
+    this.name = "事件提醒";
+    this.container = config.container;
+    this.form = new Ext.form.FormPanel({
+        params: { sid: config.id, jid: 'ssss' },
+        layout: {
+            type: 'vbox',
+            align: 'stretch'
+        },
+        height: 400,
+        width: '100%',
+        autoHeight: true,
+        stateful: false,
+        fieldDefaults: { labelAlign: 'top', msgTarget: 'none', anchor: '100%', margin: "4px 10px" },
+        items: [
+            { xtype: 'hiddenfield', name: 'eventId', value: config.eventId, hidden: true },
+            { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
+            { xtype: 'datefield', name: 'Name', width: 200, fieldLabel: '提醒时间' },
+            { xtype: 'textareafield', name: 'Content', flex: 1, fieldLabel: '内容' },
+            {
+                xtype: 'fieldcontainer', 
+                layout: 'hbox',
+                items: [
+                    { xtype: 'checkboxfield', flex: 1, name: 'ReceiverType', boxLabel: '提醒责任人', checked: true },
+                    { xtype: 'checkboxfield', flex: 1, name: 'ReceiverType', boxLabel: '提醒督办人', checked: true },
+                    { xtype: 'checkboxfield', flex: 1, name: 'ReceiverType', boxLabel: '提醒共享人', checked: true}]
+            }
+        ],
+        buttons: [
+            { text: '保存', handler: function () {
+                this.up('form').getForm().submit({
+                    url: config.id ? '/office/myOffice/UpdateEvent' : '/office/myOffice/saveEvent',
+                    success: function (form, action) { if (config && config.submitSccess) config.submitSccess(form, action) },
+                    failure: function (form, action) { if (config && config.submitFailure) config.submitFailure(form, action) }
+                }
+                );
+            }
+            },
+            { text: '取消', handler: function () { if (config && config.close) config.close() } }
+        ]
+    })
+
+    //debugger;
+
+    if (config.id) {
+        this.form.getForm().load({
+            url: '/office/myOffice/getEvent',
+            params: { id: config.id }
+        }
+        );
+    }
+
+    return this.form;
+}
+
+MB.form.EventState = function (config) {
+    this.name = "事件状态";
+    this.container = config.container;
+    this.form = new Ext.form.FormPanel({
+        params: { sid: config.id, jid: 'ssss' },
+        layout: {
+            type: 'vbox',
+            align: 'stretch'
+        },
+        height: 400,
+        width: '100%',
+        autoHeight: true,
+        stateful: false,
+        fieldDefaults: { labelAlign: 'top', msgTarget: 'none', anchor: '100%', margin: "4px 10px" },
+        items: [
+            { xtype: 'hiddenfield', name: 'eventId', value: config.eventId, hidden: true },
+            { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
+            { xtype: 'datefield', name: 'Name', width: 200, fieldLabel: '状态日期' },
+            {
+                xtype: 'fieldcontainer',
+                layout: 'hbox',
+                fieldDefaults: { labelAlign: 'left', msgTarget: 'none', labelWidth: 60 },
+                items: [
+                    { xtype: 'textfield', flex: 1, name: 'PlanRadio', fieldLabel: '计划完成率' },
+                    { xtype: 'splitter', width: 40 },
+                    { xtype: 'textfield', flex: 1, name: 'AcutalRadio', fieldLabel: '实际完成率' },
+                ]
+            },
+            { xtype: 'textareafield', name: 'Description', flex: 1, fieldLabel: '状态描述' }
+        ],
+        buttons: [
+            { text: '保存', handler: function () {
+                this.up('form').getForm().submit({
+                    url: config.id ? '/office/myOffice/UpdateEvent' : '/office/myOffice/saveEvent',
+                    success: function (form, action) { if (config && config.submitSccess) config.submitSccess(form, action) },
+                    failure: function (form, action) { if (config && config.submitFailure) config.submitFailure(form, action) }
+                }
+                );
+            }
+            },
+            { text: '取消', handler: function () { if (config && config.close) config.close() } }
+        ]
+    })
+
+    //debugger;
+
+    if (config.id) {
+        this.form.getForm().load({
+            url: '/office/myOffice/getEvent',
+            params: { id: config.id }
+        }
+        );
+    }
+
+    return this.form;
+}

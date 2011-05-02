@@ -83,5 +83,71 @@ namespace BuizApp.Areas.data.Controllers
                         );
             }
         }
+
+        public JsonResult state()
+        {
+            string ID = Request.Params["ID"];
+            using (MyDB mydb = new MyDB())
+            {
+                object[] result =
+                    mydb.Events.Find(ID)
+                    .EventStates
+                    .Select(es => new
+                    {
+                        es.ID,
+                        es.StateTime,
+                        es.PlanRadio,
+                        es.AcutalRadio,
+                        es.Description,
+                        es.CreateTime,
+                        Creator = es.Creator.Name
+                    })
+                    .ToArray()
+                    ;
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult share()
+        {
+            string ID = Request.Params["ID"];
+            using (MyDB mydb = new MyDB())
+            {
+                object[] result =
+                    mydb.Events.Find(ID)
+                    .EventShares
+                    .Select(es => new
+                    {
+                        es.ID,
+                        Subject = es.Subject.Category.Equals("User") ? ((EntityObjectLib.User)es.Subject).Name : ((EntityObjectLib.Organization)es.Subject).Name,
+                        es.NeedRemind
+                    })
+                    .ToArray()
+                    ;
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public JsonResult remind()
+        {
+            string ID = Request.Params["ID"];
+            using (MyDB mydb = new MyDB())
+            {
+                object[] result =
+                    mydb.Events.Find(ID)
+                    .EventReminds
+                    .Select(es => new
+                    {
+                        es.ID,
+                        es.RemindTime,
+                        es.RemindContent,
+                        es.ReceiverType,
+                        es.SendTime
+                    })
+                    .ToArray()
+                    ;
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

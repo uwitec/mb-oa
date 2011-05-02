@@ -40,7 +40,7 @@ namespace EntityObjectLib
         /// <summary>
         /// 创建人
         /// </summary>
-        public User Creator { get; set; }
+        public virtual User Creator { get; set; }
 
         /// <summary>
         /// 创建时间

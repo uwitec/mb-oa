@@ -15,6 +15,88 @@
             ]
             });
 
+            Ext.regModel('eventState', {
+                fields: [
+                    { name: 'ID', type: 'string' },
+                    { name: 'StateTime', type: 'date', dateFormat: 'MS' },
+                    { name: 'PlanRadio', type: 'float' },
+                    { name: 'AcutalRadio', type: 'float' },
+                    { name: 'Description', type: 'string' },
+                    { name: 'CreateTime', type: 'date', dateFormat: 'MS' },
+                    { name: 'Creator', type: 'string' }
+            ]
+            });
+
+            var stateStore = new Ext.data.Store({
+                model: 'eventState',
+                proxy: {
+                    type: 'ajax',
+                    url: '/data/Carlendar/state'
+                },
+                listeners: {
+                    load: function (store, records, successful) {
+                        if (!successful) {
+                            alert("Error!");
+                        }
+                        else {
+                        }
+                    }
+                }
+            });
+
+            Ext.regModel('eventRemind', {
+                fields: [
+                    { name: 'ID', type: 'string' },
+                    { name: 'RemindTime', type: 'date', dateFormat: 'MS' },
+                    { name: 'RemindContent', type: 'string' },
+                    { name: 'ReceiverType', type: 'string' },
+                    { name: 'SendTime', type: 'date', dateFormat: 'MS' }
+            ]
+            });
+
+            var remindStore = new Ext.data.Store({
+                model: 'eventRemind',
+                proxy: {
+                    type: 'ajax',
+                    url: '/data/Carlendar/remind'
+                },
+                listeners: {
+                    load: function (store, records, successful) {
+                        if (!successful) {
+                            alert("Error!");
+                        }
+                        else {
+                        }
+                    }
+                }
+            });
+
+            Ext.regModel('eventShare', {
+                fields: [
+                    { name: 'ID', type: 'string' },
+                    { name: 'Subject', type: 'string' },
+                    { name: 'NeedRemind', type: 'boolean' }
+            ]
+            });
+
+            var shareStore = new Ext.data.Store({
+                model: 'eventShare',
+                proxy: {
+                    type: 'ajax',
+                    url: '/data/Carlendar/share'
+                },
+                listeners: {
+                    load: function (store, records, successful) {
+                        //debugger;
+                        if (!successful) {
+                            alert("Error!");
+                        }
+                        else {
+                        }
+                    }
+                }
+            });
+
             var store = new Ext.data.Store({
                 model: 'Carlendar',
                 proxy: {
@@ -31,7 +113,7 @@
                             alert("Error!");
                         }
                         else {
-                            
+
                         }
                     }
                 },
@@ -40,7 +122,9 @@
             });
 
             var grid = new Ext.grid.Panel({
-                flex: 1,
+                region: 'center',
+                id: 'EventGrid',
+                flex: 2,
                 store: store,
                 features: [{
                     ftype: 'grouping',
@@ -64,7 +148,7 @@
                     {
                         xtype: 'templatecolumn',
                         text: '标题',
-                        tpl: '<a href="javascript:debugger;alert(\'{ID}\')">{Name}</a>',
+                        tpl: '<a href="javascript:alert(\'{ID}\')">{Name}</a>',
                         width: 80
                     },
                     {
@@ -100,6 +184,17 @@
                         width: 80
                     }
                     ],
+                listeners: {
+                    selectionchange: function (sm, selectedRecords) {
+                        if (selectedRecords.length) {
+                            //Ext.getCmp('DetailPanel').setTitle(selectedRecords[0].data.Name + ' - 详细内容');
+                            bookTpl.overwrite(Ext.getCmp('baseDetail').body, selectedRecords[0].data);
+                            stateStore.load({ params: { ID: selectedRecords[0].data.ID} });
+                            remindStore.load({ params: { ID: selectedRecords[0].data.ID} });
+                            shareStore.load({ params: { ID: selectedRecords[0].data.ID} });
+                        }
+                    }
+                },
                 tbar: [
                     { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) { EventNewOrEdit() } },
                     { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { } },
@@ -185,7 +280,7 @@
                     ]
             });
 
-            EventNewOrEdit = function (id) {
+            var EventNewOrEdit = function (id) {
                 new Ext.window.Window({
                     id: 'fwin',
                     title: '事件信息',
@@ -197,13 +292,82 @@
                     layout: 'fit',
                     bodyPadding: 0,
                     items: [
-                    new MB.form.Event({
-                        id: id,
-                        close: function () { Ext.getCmp('fwin').close(); },
-                        submitSccess: function (form, action) { grid.getView().getStore().load(); alert("submitSccess"); Ext.getCmp('fwin').close(); },
-                        submitFailure: function (form, action) { alert("submitFailure"); }
-                    })
-                ]
+                        new MB.form.Event({
+                            id: id,
+                            close: function () { Ext.getCmp('EventShareWin').close(); },
+                            submitSccess: function (form, action) { alert("submitSccess"); this.close(); },
+                            submitFailure: function (form, action) { alert("submitFailure"); }
+                        })
+                    ]
+                }).show();
+            }
+
+            var EventShareNewOrEdit = function (eventId,id) {
+                new Ext.window.Window({
+                    id: 'EventShareWin',
+                    title: '事件共享',
+                    modal: true,
+                    closable: true,
+                    //animateTarget: this,
+                    width: 400,
+                    //height: 500,
+                    layout: 'fit',
+                    bodyPadding: 0,
+                    items: [
+                        new MB.form.EventShare({
+                            eventId: eventId,
+                            id: id,
+                            close: function () { Ext.getCmp('EventShareWin').close(); },
+                            submitSccess: function (form, action) { alert("submitSccess"); this.close(); },
+                            submitFailure: function (form, action) { alert("submitFailure"); }
+                        })
+                    ]
+                }).show();
+            }
+
+            var EventRemindNewOrEdit = function (eventId,id) {
+                new Ext.window.Window({
+                    id: 'EventRemindWin',
+                    title: '事件提醒',
+                    modal: true,
+                    closable: true,
+                    //animateTarget: this,
+                    width: 600,
+                    //height: 500,
+                    layout: 'fit',
+                    bodyPadding: 0,
+                    items: [
+                        new MB.form.EventRemind({
+                            eventId: eventId,
+                            id: id,
+                            close: function () { Ext.getCmp('EventRemindWin').close(); },
+                            submitSccess: function (form, action) { alert("submitSccess"); this.up('window').close(); },
+                            submitFailure: function (form, action) { alert("submitFailure"); }
+                        })
+                    ]
+                }).show();
+            }
+
+            var EventStateNewOrEdit = function (eventId,id) {
+                new Ext.window.Window({
+                    id: 'EventStateWin',
+                    title: '事件状态',
+                    modal: true,
+                    closable: true,
+                    //animateTarget: this,
+                    width: 600,
+                    //height: 500,
+                    layout: 'fit',
+                    bodyPadding: 0,
+                    items: [
+                        new MB.form.EventState({
+                            eventId: eventId,
+                            id: id,
+                            close: function () { Ext.getCmp('EventStateWin').close();},
+                            submitSccess: function (form, action) { alert("submitSccess"); this.close(); },
+                            submitFailure: function (form, action) { alert("submitFailure"); }
+                        })
+                    ]
                 }).show();
             }
 
@@ -219,15 +383,190 @@
                 source.up('panel').getStore().load({ params: { from: from, to: to} });
             }
 
+            var bookTplMarkup = [
+                '<div style="border:solid 1px #EEE;background-color:#EFEFEF;padding:4px;">',
+                '<span style="display:block; padding:4px;">标题:&nbsp;&nbsp;{Name}</span>',
+                '<span style="display:block; padding:4px;">开始时间:&nbsp;&nbsp;{StartTime:date(\"Y-m-d H:i:s\")}</span>',
+                '<span style="display:block; padding:4px;">结束时间:&nbsp;&nbsp;{FinishTime:date(\"Y-m-d H:i:s\")}</span>',
+                '</div>',
+                '<div style="border:solid 0px #CCC;padding:4; margin-top: 10px;">{Content}</div>',
+            ];
+
+            var bookTpl = Ext.create('Ext.Template', bookTplMarkup);
+
             var panel = Ext.create('Ext.panel.Panel', {
                 region: 'center',
-                layout: 'fit',
+                layout: 'border',
                 autoScroll: true,
+                autoHeight: true,
                 bodyPadding: 0,
                 padding: 0,
                 margin: 0,
                 items: [
-                    grid
+                    {
+                        region: 'center',
+                        xtype: 'container',
+                        layout: 'border',
+                        flex: 3,
+                        items: [
+                            grid,
+                            {
+                                region: 'south',
+                                xtype: 'panel',
+                                id: 'baseDetail',
+                                title: '事件基本信息',
+                                flex: 1,
+                                split: true
+                            }]
+                    },
+                    {
+                        region: 'east',
+                        xtype: 'container',
+                        layout: 'border',
+                        flex: 1,
+                        split: true,
+                        items: [{
+                            region: 'north',
+                            xtype: 'grid',
+                            id: 'stateGrid',
+                            store: stateStore,
+                            flex: 1,
+                            title: '状态信息',
+                            split: true,
+                            columns: [{
+                                header: '状态时间',
+                                dataIndex: 'StateTime',
+                                flex: 3,
+                                renderer: Ext.util.Format.dateRenderer('Y-m-d')
+                            },
+                            {
+                                header: '计划完成%',
+                                dataIndex: 'PlanRadio',
+                                flex: 3
+                            },
+                            {
+                                header: '实际完成%',
+                                dataIndex: 'AcutalRadio',
+                                flex: 3
+                            },
+                            {
+                                header: '描述',
+                                dataIndex: 'Description',
+                                flex: 3
+                            }
+                            ],
+                            tbar: [
+                                { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) { EventStateNewOrEdit(Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID) } },
+                                { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { } },
+                                { xtype: 'tbseparator' },
+                                { xtype: 'tbfill' },
+                                { xtype: 'tbseparator' },
+                                {
+                                    xtype: 'button',
+                                    iconCls: 'iconRefresh',
+                                    text: '',
+                                    tooltip: '刷新',
+                                    tooltipType: 'title',
+                                    handler: function (source, e) {
+                                        this.up('panel').getStore().load({
+                                            params:{ ID:Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID }
+                                            });
+                                    }
+                                }
+                                ]
+                        },
+                        {
+                            region: 'center',
+                            xtype: 'grid',
+                            id: 'remindGrid',
+                            store: remindStore,
+                            flex: 1,
+                            title: '提醒信息',
+                            columns: [{
+                                header: '提醒时间',
+                                dataIndex: 'RemindTime',
+                                flex: 3,
+                                renderer: Ext.util.Format.dateRenderer('Y-m-d')
+                            },
+                            {
+                                header: '提醒内容',
+                                dataIndex: 'RemindContent',
+                                flex: 3
+                            },
+                            {
+                                header: '接收类型',
+                                dataIndex: 'ReceiverType',
+                                flex: 3
+                            },
+                            {
+                                header: '发送时间',
+                                dataIndex: 'SendTime',
+                                flex: 3,
+                                renderer: Ext.util.Format.dateRenderer('Y-m-d')
+                            }
+                            ],
+                            tbar: [
+                                { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) { EventRemindNewOrEdit(Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID) } },
+                                { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { } },
+                                { xtype: 'tbseparator' },
+                                { xtype: 'tbfill' },
+                                { xtype: 'tbseparator' },
+                                {
+                                    xtype: 'button',
+                                    iconCls: 'iconRefresh',
+                                    text: '',
+                                    tooltip: '刷新',
+                                    tooltipType: 'title',
+                                    handler: function (source, e) {
+                                        this.up('panel').getStore().load({
+                                            params:{ ID:Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID }
+                                            });
+                                    }
+                                }
+                                ]
+                        },
+                        {
+                            region: 'south',
+                            xtype: 'grid',
+                            id: 'shareGrid',
+                            store: shareStore,
+                            flex: 1,
+                            title: '共享信息',
+                            split: true,
+                            columns: [
+                            {
+                                header: '共享给',
+                                dataIndex: 'Subject',
+                                flex: 3
+                            },
+                            {
+                                header: '需要提醒',
+                                dataIndex: 'NeedRemind',
+                                flex: 3,
+                                renderer: function(v) { return v?'是':'否'; }
+                            }
+                            ],
+                            tbar: [
+                                { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) { EventShareNewOrEdit(Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID) } },
+                                { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { } },
+                                { xtype: 'tbseparator' },
+                                { xtype: 'tbfill' },
+                                { xtype: 'tbseparator' },
+                                {
+                                    xtype: 'button',
+                                    iconCls: 'iconRefresh',
+                                    text: '',
+                                    tooltip: '刷新',
+                                    tooltipType: 'title',
+                                    handler: function (source, e) {
+                                        this.up('panel').getStore().load({
+                                            params:{ ID:Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID }
+                                            });
+                                    }
+                                }
+                                ]
+                        }]
+                    }
                 ],
                 tbar: [
                     { xtype: 'label', text: '当前位置：个人办公 -> 我的日程(月视图)', cls: 'formNav' },
@@ -242,6 +581,7 @@
             });
 
             new Ext.container.Viewport({
+                xtype: 'panel',
                 layout: 'fit',
                 border: 0,
                 items: [panel]

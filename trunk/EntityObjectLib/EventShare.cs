@@ -20,7 +20,7 @@ namespace EntityObjectLib
         /// <summary>
         /// 共享目标,可以是用户或组织
         /// </summary>
-        public Subject Subject { get; set; }
+        public virtual Subject Subject { get; set; }
 
         /// <summary>
         /// 是否需要参与提醒
