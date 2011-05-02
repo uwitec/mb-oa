@@ -672,22 +672,31 @@ MB.form.EventState = function (config) {
         width: '100%',
         autoHeight: true,
         stateful: false,
-        fieldDefaults: { labelAlign: 'top', msgTarget: 'none', anchor: '100%', margin: "4px 10px" },
+        fieldDefaults: { labelAlign: 'left', msgTarget: 'none', margin: "4px 10px", labelWidth: 80 },
         items: [
             { xtype: 'hiddenfield', name: 'eventId', value: config.eventId, hidden: true },
             { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
-            { xtype: 'datefield', name: 'Name', width: 200, fieldLabel: '状态日期' },
             {
                 xtype: 'fieldcontainer',
                 layout: 'hbox',
-                fieldDefaults: { labelAlign: 'left', msgTarget: 'none', labelWidth: 60 },
+                fieldDefaults: { labelAlign: 'left', msgTarget: 'none', labelWidth: 80 },
+                items: [
+                    { xtype: 'datefield', flex: 1, name: 'Name', fieldLabel: '状态日期' },
+                    { xtype: 'splitter', width: 40 },
+                    { xtype: 'fieldcontainer',  flex: 1 }
+                    ]
+            },
+            {
+                xtype: 'fieldcontainer',
+                layout: 'hbox',
+                fieldDefaults: { labelAlign: 'left', msgTarget: 'none', labelWidth: 80 },
                 items: [
                     { xtype: 'textfield', flex: 1, name: 'PlanRadio', fieldLabel: '计划完成率' },
                     { xtype: 'splitter', width: 40 },
-                    { xtype: 'textfield', flex: 1, name: 'AcutalRadio', fieldLabel: '实际完成率' },
+                    { xtype: 'textfield', flex: 1, name: 'AcutalRadio', fieldLabel: '实际完成率' }
                 ]
             },
-            { xtype: 'textareafield', name: 'Description', flex: 1, fieldLabel: '状态描述' }
+            { xtype: 'textareafield', labelAlign: 'top', name: 'Description', flex: 1, fieldLabel: '状态描述' }
         ],
         buttons: [
             { text: '保存', handler: function () {
