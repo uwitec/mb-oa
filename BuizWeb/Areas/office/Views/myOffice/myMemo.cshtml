@@ -74,7 +74,7 @@
                         tooltip: '刷新',
                         tooltipType: 'title',
                         handler: function (source, e) {
-                            query(source);
+                            this.up('panel').getStore().load(); ;
                         }
                     }
                     ],

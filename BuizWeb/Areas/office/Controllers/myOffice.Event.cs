@@ -14,13 +14,8 @@ namespace BuizApp.Areas.office.Controllers
         {
             using (MyDB mydb = new MyDB())
             {
-                EntityObjectLib.Event p = mydb.Events.Find(Request.Form["ID"]);
-                return Json(new
-                {
-                    success = true,
-                    data = new { p.ID, p.Name, p.Content, p.Type }
-                }
-                );
+                EntityObjectLib.Event p = mydb.Events.Find(Request.Params["ID"]);
+                return Json(new { p.ID, p.Name, p.Content, p.Type });
             }
         }
 
@@ -65,8 +60,6 @@ namespace BuizApp.Areas.office.Controllers
                 }
                 );
             }
-
-            return View();
         }
 
         public ActionResult UpdateEvent()
