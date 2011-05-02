@@ -72,7 +72,7 @@
     <Compile Include="Areas\data\Controllers\InfoController.cs" />
     <Compile Include="Areas\data\Controllers\MemoController.cs" />
     <Compile Include="Areas\data\Controllers\RSSController.cs" />
-    <Compile Include="Areas\data\Controllers\UserController.cs" />
+    <Compile Include="Areas\data\Controllers\SubjectController.cs" />
     <Compile Include="Areas\data\dataAreaRegistration.cs" />
     <Compile Include="Areas\office\Controllers\myOfficeController.cs" />
     <Compile Include="Areas\office\Controllers\myOffice.Event.cs" />

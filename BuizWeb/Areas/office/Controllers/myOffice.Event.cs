@@ -155,5 +155,36 @@ namespace BuizApp.Areas.office.Controllers
                 );
             }
         }
+
+        //saveEventShare
+
+        public ActionResult saveEventShare()
+        {
+            string ID = Request.Form["ID"];
+            string eventId = Request.Form["eventId"];
+            string Subject = Request.Form["Subject"];
+            bool NeedRemind = Request.Form["NeedRemind"] != null;
+
+            using (MyDB mydb = new MyDB())
+            {
+                EntityObjectLib.EventShare p = new EventShare
+                {
+                    ID = Guid.NewGuid().ToString(),
+                    Event = mydb.Events.Find(eventId),
+                    Subject = mydb.Subjects.Find(Subject),
+                    NeedRemind = NeedRemind
+                };
+
+                mydb.EventShares.Add(p);
+
+                mydb.SaveChanges();
+
+                return Json(new
+                {
+                    success = true
+                }
+                );
+            }
+        }
     }
 }
