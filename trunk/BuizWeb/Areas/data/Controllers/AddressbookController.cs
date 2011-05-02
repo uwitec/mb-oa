@@ -22,7 +22,7 @@ namespace BuizApp.Areas.data.Controllers
                     {
                         ab.ID,
                         ab.Name,
-                        sex = "男",
+                        ab.Sex,
                         ab.Company,
                         ab.Department,
                         ab.Job,
@@ -60,7 +60,7 @@ namespace BuizApp.Areas.data.Controllers
                     {
                         ab.ID,
                         ab.Name,
-                        sex = ab.Sex,
+                        ab.Sex,
                         ab.Company,
                         ab.Department,
                         ab.Job,

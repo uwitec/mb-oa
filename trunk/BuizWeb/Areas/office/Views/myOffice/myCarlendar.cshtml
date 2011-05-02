@@ -151,17 +151,17 @@
                         tpl: '<a href="javascript:alert(\'{ID}\')">{Name}</a>',
                         width: 80
                     },
+                /*{
+                text: '内容',
+                dataIndex: 'Content',
+                flex: 1
+                },*/
                     {
-                        text: '内容',
-                        dataIndex: 'Content',
-                        flex: 1
-                    },
-                    {
-                        text: '开始时间',
-                        dataIndex: 'StartTime',
-                        width: 140,
-                        renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')
-                    },
+                    text: '开始时间',
+                    dataIndex: 'StartTime',
+                    width: 140,
+                    renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')
+                },
                     {
                         text: '完成时间',
                         dataIndex: 'FinishTime',
@@ -182,6 +182,31 @@
                         text: '督办人',
                         dataIndex: 'Proctor',
                         width: 80
+                    },
+                    {
+                        xtype: 'actioncolumn',
+                        header: '操作',
+                        width: 70,
+                        align: 'center',
+                        dataIndex: 'ID',
+                        items: [{
+                            icon: '/content/images/cog_edit.png',  // Use a URL in the icon config 
+                            tooltip: 'Edit',
+                            iconCls: 'actioncolumn',
+                            handler: function (grid, rowIndex, colIndex) {
+                                alert('暂未实现!');
+                                //debugger;
+                                //var rec = grid.getStore().getAt(rowIndex);
+                                //MemoNewOrEdit(rec.get('ID'));
+                            }
+                        }, {
+                            icon: '/content/images/delete.gif',
+                            tooltip: 'Delete',
+                            iconCls: 'actioncolumn',
+                            handler: function (grid, rowIndex, colIndex) {
+                                alert('暂未实现!');
+                            }
+                        }]
                     }
                     ],
                 listeners: {
@@ -294,7 +319,7 @@
                     items: [
                         new MB.form.Event({
                             id: id,
-                            close: function () { Ext.getCmp('EventShareWin').close(); },
+                            close: function () { Ext.getCmp('fwin').close(); },
                             submitSccess: function (form, action) { alert("submitSccess"); this.close(); },
                             submitFailure: function (form, action) { alert("submitFailure"); }
                         })
@@ -302,7 +327,7 @@
                 }).show();
             }
 
-            var EventShareNewOrEdit = function (eventId,id) {
+            var EventShareNewOrEdit = function (eventId, id) {
                 new Ext.window.Window({
                     id: 'EventShareWin',
                     title: '事件共享',
@@ -318,14 +343,21 @@
                             eventId: eventId,
                             id: id,
                             close: function () { Ext.getCmp('EventShareWin').close(); },
-                            submitSccess: function (form, action) { alert("submitSccess"); this.close(); },
+                            submitSccess: function (form, action) {
+                                Ext.getCmp('shareGrid').getStore().load({
+                                    params: {
+                                        ID: Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID
+                                    }
+                                });
+                                this.close();
+                            },
                             submitFailure: function (form, action) { alert("submitFailure"); }
                         })
                     ]
                 }).show();
             }
 
-            var EventRemindNewOrEdit = function (eventId,id) {
+            var EventRemindNewOrEdit = function (eventId, id) {
                 new Ext.window.Window({
                     id: 'EventRemindWin',
                     title: '事件提醒',
@@ -341,14 +373,21 @@
                             eventId: eventId,
                             id: id,
                             close: function () { Ext.getCmp('EventRemindWin').close(); },
-                            submitSccess: function (form, action) { alert("submitSccess"); this.up('window').close(); },
+                            submitSccess: function (form, action) {
+                                Ext.getCmp('remindGrid').getStore().load({
+                                    params: {
+                                        ID: Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID
+                                    }
+                                });
+                                this.close();
+                            },
                             submitFailure: function (form, action) { alert("submitFailure"); }
                         })
                     ]
                 }).show();
             }
 
-            var EventStateNewOrEdit = function (eventId,id) {
+            var EventStateNewOrEdit = function (eventId, id) {
                 new Ext.window.Window({
                     id: 'EventStateWin',
                     title: '事件状态',
@@ -363,8 +402,15 @@
                         new MB.form.EventState({
                             eventId: eventId,
                             id: id,
-                            close: function () { Ext.getCmp('EventStateWin').close();},
-                            submitSccess: function (form, action) { alert("submitSccess"); this.close(); },
+                            close: function () { Ext.getCmp('EventStateWin').close(); },
+                            submitSccess: function (form, action) {
+                                Ext.getCmp('stateGrid').getStore().load({
+                                    params: {
+                                        ID: Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID
+                                    }
+                                });
+                                this.close(); 
+                            },
                             submitFailure: function (form, action) { alert("submitFailure"); }
                         })
                     ]
@@ -384,10 +430,10 @@
             }
 
             var bookTplMarkup = [
-                '<div style="border:solid 1px #EEE;background-color:#EFEFEF;padding:4px;">',
+                '<div style="border:solid 1px #EEE;padding:4px; background:url(/content/images/event.png) no-repeat 4px 1px; padding-left:60px;background-color:#EFEFEF;">',
                 '<span style="display:block; padding:4px;">标题:&nbsp;&nbsp;{Name}</span>',
-                '<span style="display:block; padding:4px;">开始时间:&nbsp;&nbsp;{StartTime:date(\"Y-m-d H:i:s\")}</span>',
-                '<span style="display:block; padding:4px;">结束时间:&nbsp;&nbsp;{FinishTime:date(\"Y-m-d H:i:s\")}</span>',
+                '<span style="display:block; padding:4px;">开始时间:&nbsp;&nbsp;{StartTime:date(\"Y-m-d H:i:s\")}',
+                '<span style="display:inline-block; width:40px; padding:4px;"></span>结束时间:&nbsp;&nbsp;{FinishTime:date(\"Y-m-d H:i:s\")}</span>',
                 '</div>',
                 '<div style="border:solid 0px #CCC;padding:4; margin-top: 10px;">{Content}</div>',
             ];
@@ -416,6 +462,7 @@
                                 id: 'baseDetail',
                                 title: '事件基本信息',
                                 flex: 1,
+                                bodyPadding: 10,
                                 split: true
                             }]
                     },
@@ -436,8 +483,8 @@
                             columns: [{
                                 header: '状态时间',
                                 dataIndex: 'StateTime',
-                                flex: 3,
-                                renderer: Ext.util.Format.dateRenderer('Y-m-d')
+                                width: 100,
+                                renderer: Ext.util.Format.dateRenderer('Y-m-d H:i')
                             },
                             {
                                 header: '计划完成%',
@@ -469,8 +516,8 @@
                                     tooltipType: 'title',
                                     handler: function (source, e) {
                                         this.up('panel').getStore().load({
-                                            params:{ ID:Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID }
-                                            });
+                                            params: { ID: Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID }
+                                        });
                                     }
                                 }
                                 ]
@@ -485,8 +532,8 @@
                             columns: [{
                                 header: '提醒时间',
                                 dataIndex: 'RemindTime',
-                                flex: 3,
-                                renderer: Ext.util.Format.dateRenderer('Y-m-d')
+                                width: 100,
+                                renderer: Ext.util.Format.dateRenderer('Y-m-d H:i')
                             },
                             {
                                 header: '提醒内容',
@@ -519,8 +566,8 @@
                                     tooltipType: 'title',
                                     handler: function (source, e) {
                                         this.up('panel').getStore().load({
-                                            params:{ ID:Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID }
-                                            });
+                                            params: { ID: Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID }
+                                        });
                                     }
                                 }
                                 ]
@@ -543,7 +590,7 @@
                                 header: '需要提醒',
                                 dataIndex: 'NeedRemind',
                                 flex: 3,
-                                renderer: function(v) { return v?'是':'否'; }
+                                renderer: function (v) { return v ? '是' : '否'; }
                             }
                             ],
                             tbar: [
@@ -560,8 +607,8 @@
                                     tooltipType: 'title',
                                     handler: function (source, e) {
                                         this.up('panel').getStore().load({
-                                            params:{ ID:Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID }
-                                            });
+                                            params: { ID: Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID }
+                                        });
                                     }
                                 }
                                 ]
