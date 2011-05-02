@@ -548,7 +548,7 @@ MB.form.EventShare = function (config) {
         items: [
             { xtype: 'hiddenfield', name: 'eventId', value: config.eventId, hidden: true },
             { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
-            { xtype: 'combo', name: 'Proctor', fieldLabel: '共享给',
+            { xtype: 'combo', name: 'Subject', fieldLabel: '共享给',
                 forceSelection: true,
                 blankText: '请选择',
                 emptyText: '请选择',
@@ -560,7 +560,7 @@ MB.form.EventShare = function (config) {
                     fields: ['ID', 'Name'],
                     proxy: {
                         type: 'ajax',
-                        url: '/data/user/list'
+                        url: '/data/Subject/list'
                     },
                     autoLoad: true,
                     listeners: {
@@ -580,7 +580,7 @@ MB.form.EventShare = function (config) {
         buttons: [
             { text: '保存', handler: function () {
                 this.up('form').getForm().submit({
-                    url: config.id ? '/office/myOffice/UpdateEvent' : '/office/myOffice/saveEvent',
+                    url: '/office/myOffice/saveEventShare',
                     success: function (form, action) { if (config && config.submitSccess) config.submitSccess(form, action) },
                     failure: function (form, action) { if (config && config.submitFailure) config.submitFailure(form, action) }
                 }
@@ -595,7 +595,7 @@ MB.form.EventShare = function (config) {
 
     if (config.id) {
         this.form.getForm().load({
-            url: '/office/myOffice/getEvent',
+            url: '/office/myOffice/getEventShare',
             params: { id: config.id }
         }
         );
