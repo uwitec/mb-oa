@@ -45,12 +45,6 @@
                 columns: [
                     new Ext.grid.RowNumberer(),
                     {
-                        header: '创建时间',
-                        dataIndex: 'CreateTime',
-                        width: 120,
-                        renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')
-                    },
-                    {
                         xtype: 'templatecolumn',
                         header: '标题',
                         tpl: '<a href="javascript:debugger;alert(\'{ID}\')">{Name}</a>',
@@ -59,12 +53,44 @@
                     {
                         header: '内容',
                         dataIndex: 'Content',
-                        flex: 3
+                        flex: 3,
+                        renderer: function (v) {
+                            return '<div title="' + Ext.util.Format.stripTags(v) + '">' + Ext.String.ellipsis(Ext.util.Format.stripTags(v), 10) + '</div> ';
+                        }
+                    },
+                    {
+                        header: '创建时间',
+                        dataIndex: 'CreateTime',
+                        width: 120,
+                        renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')
+                    },
+                    {
+                        xtype: 'actioncolumn',
+                        header: '操作',
+                        width: 70,
+                        align: 'center',
+                        dataIndex: 'ID',
+                        items: [{
+                            icon: '/content/images/cog_edit.png',  // Use a URL in the icon config 
+                            tooltip: 'Edit',
+                            iconCls: 'actioncolumn',
+                            handler: function (grid, rowIndex, colIndex) {
+                                //debugger;
+                                var rec = grid.getStore().getAt(rowIndex);
+                                MemoNewOrEdit(rec.get('ID'));
+                            }
+                        }, {
+                            icon: '/content/images/delete.gif',
+                            tooltip: 'Delete',
+                            iconCls: 'actioncolumn',
+                            handler: function (grid, rowIndex, colIndex) {
+                                alert('暂未实现!');
+                            }
+                        }]
                     }
                     ],
                 tbar: [
-                    { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) { EventNewOrEdit() } },
-                    { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { } },
+                    { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) { MemoNewOrEdit() } },
                     { xtype: 'tbseparator' },
                     { xtype: 'tbfill' },
                     {
@@ -108,19 +134,15 @@
                     }
                 ],
                 tbar: [
-                    { xtype: 'label', text: '当前位置：个人办公 -> 我的日程(月视图)', cls: 'formNav' },
+                    { xtype: 'label', text: '当前位置：个人办公 -> 我的便笺', cls: 'formNav' },
                     { xtype: 'tbseparator' },
                     { xtype: 'tbfill' },
-                    { xtype: 'button', iconCls: 'helpIcon', text: '月视图', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } },
-                    { xtype: 'button', iconCls: 'helpIcon', text: '周视图', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } },
-                    { xtype: 'button', iconCls: 'helpIcon', text: '日视图', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } },
-                    { xtype: 'tbseparator' },
                     { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }
                     ]
             });
 
             var bookTplMarkup = [
-                '<div style="border:solid 1px #EEE;background-color:#EFEFEF;padding:4px;">',
+                '<div style="border:solid 1px #EEE;padding:4px; background:url(/content/images/memo.png) no-repeat 6px 4px; padding-left:60px;background-color:#EFEFEF;">',
                 '<span style="display:block; padding:4px;">标题:&nbsp;&nbsp;{Name}</span>',
                 '<span style="display:block; padding:4px;">时间:&nbsp;&nbsp;{CreateTime:date(\"Y-m-d H:i:s\")}</span>',
                 '</div>',
@@ -135,6 +157,28 @@
                 border: 0,
                 items: [panel]
             });
+
+            var MemoNewOrEdit = function (id) {
+                new Ext.window.Window({
+                    id: 'MemoWin',
+                    title: '便笺编辑',
+                    modal: true,
+                    closable: true,
+                    //animateTarget: this,
+                    width: 600,
+                    //height: 500,
+                    layout: 'fit',
+                    bodyPadding: 0,
+                    items: [
+                        new MB.form.Memo({
+                            id: id,
+                            close: function () { Ext.getCmp('MemoWin').close(); },
+                            submitSccess: function (form, action) { grid.getStore().load(); alert("submitSccess"); this.close(); },
+                            submitFailure: function (form, action) { alert("submitFailure"); }
+                        })
+                    ]
+                }).show();
+            }
         });
     </script>
 }

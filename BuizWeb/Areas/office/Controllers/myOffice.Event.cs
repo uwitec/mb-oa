@@ -66,5 +66,94 @@ namespace BuizApp.Areas.office.Controllers
         {
             return View();
         }
+
+        //saveEventState
+
+        public ActionResult saveEventState()
+        {
+            string ID = Request.Form["ID"];
+            string eventId = Request.Form["eventId"];
+            string StateDate = Request.Form["StateDate"];
+            string StateTime = Request.Form["StateTime"];
+            string PlanRadio = Request.Form["PlanRadio"];
+            string AcutalRadio = Request.Form["AcutalRadio"];
+            string Description = Request.Form["Description"];
+
+            using (MyDB mydb = new MyDB())
+            {
+                EntityObjectLib.EventState p = new EventState
+                {
+                    ID = Guid.NewGuid().ToString(),
+                    Event = mydb.Events.Find(eventId),
+                    StateTime = DateTime.Parse(StateDate + " " + StateTime),
+                    Description = Description,
+                    Creator = mydb.Users.Find(this.User.Identity.Name),
+                    CreateTime = DateTime.Now
+                };
+
+                if (!string.IsNullOrEmpty(PlanRadio))
+                    p.PlanRadio = float.Parse(PlanRadio);
+                if (!string.IsNullOrEmpty(AcutalRadio))
+                    p.AcutalRadio = float.Parse(AcutalRadio);
+
+                mydb.EventStates.Add(p);
+
+                mydb.SaveChanges();
+
+                return Json(new
+                {
+                    success = true
+                }
+                );
+            }
+        }
+
+        //saveEventRemind
+
+        public ActionResult saveEventRemind()
+        {
+            string ID = Request.Form["ID"];
+            string eventId = Request.Form["eventId"];
+            string RemindDate = Request.Form["RemindDate"];
+            string RemindTime = Request.Form["RemindTime"];
+            string RemindContent = Request.Form["RemindContent"];
+            
+            List<string> ReceiverTypes = new List<string>();
+            if (Request.Form["ReceiverTypeMaster"] != null)
+            {
+                ReceiverTypes.Add("责任人");
+            }
+            if (Request.Form["ReceiverTypeProctor"] != null)
+            {
+                ReceiverTypes.Add("督办人");
+            }
+            if (Request.Form["ReceiverTypeShare"] != null)
+            {
+                ReceiverTypes.Add("共享人");
+            }
+            string ReceiverType = string.Join(",", ReceiverTypes.ToArray());
+
+            using (MyDB mydb = new MyDB())
+            {
+                EntityObjectLib.EventRemind p = new EventRemind
+                {
+                    ID = Guid.NewGuid().ToString(),
+                    Event = mydb.Events.Find(eventId),
+                    RemindTime = DateTime.Parse(RemindDate + " " + RemindTime),
+                    RemindContent = RemindContent,
+                    ReceiverType = ReceiverType
+                };
+
+                mydb.EventReminds.Add(p);
+
+                mydb.SaveChanges();
+
+                return Json(new
+                {
+                    success = true
+                }
+                );
+            }
+        }
     }
 }

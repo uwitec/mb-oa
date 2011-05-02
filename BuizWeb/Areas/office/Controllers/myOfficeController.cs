@@ -285,6 +285,33 @@ namespace BuizApp.Areas.office.Controllers
                 AddressBook ab = mydb.AddressBooks.Find(id);
                 Type type =ab.GetType().GetProperty(field).PropertyType;
                 mydb.Entry<AddressBook>(ab).Property(field).CurrentValue = Convert.ChangeType(value, type); //需要类型转换
+                ab.LastUpdateTime = DateTime.Now;
+                mydb.SaveChanges();
+                return Json(new { success = true });
+            }
+        }
+
+        /// <summary>
+        /// 创建联系人
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult createAddress()
+        {
+            string Name = Request.Params["Name"];
+
+            string userID = this.User.Identity.Name;
+            using (MyDB mydb = new MyDB())
+            {
+                AddressBook ab = new AddressBook
+                {
+                    ID = Guid.NewGuid().ToString(),
+                    Name = Name,
+                    Creator = mydb.Users.Find(this.User.Identity.Name),
+                    Owner = mydb.Users.Find(this.User.Identity.Name),
+                    CreateTime = DateTime.Now,
+                    LastUpdateTime = DateTime.Now
+                };
+                mydb.AddressBooks.Add(ab);
                 mydb.SaveChanges();
                 return Json(new { success = true });
             }

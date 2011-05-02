@@ -377,7 +377,7 @@ MB.form.Event = function (config) {
         items: [
             { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
             { xtype: 'textfield', name: 'Name', width: '100%', fieldLabel: '标题' },
-            { xtype: 'textareafield', name: 'Content', flex: 1, fieldLabel: '内容' },
+            { xtype: 'htmleditor', name: 'Content', flex: 1, fieldLabel: '内容' },
             {
                 xtype: 'fieldcontainer',
                 layout: 'hbox',
@@ -621,21 +621,32 @@ MB.form.EventRemind = function (config) {
         items: [
             { xtype: 'hiddenfield', name: 'eventId', value: config.eventId, hidden: true },
             { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
-            { xtype: 'datefield', name: 'Name', width: 200, fieldLabel: '提醒时间' },
-            { xtype: 'textareafield', name: 'Content', flex: 1, fieldLabel: '内容' },
             {
-                xtype: 'fieldcontainer', 
+                xtype: 'fieldcontainer',
                 layout: 'hbox',
+                fieldDefaults: { labelAlign: 'left', msgTarget: 'none', labelWidth: 80 },
                 items: [
-                    { xtype: 'checkboxfield', flex: 1, name: 'ReceiverType', boxLabel: '提醒责任人', checked: true },
-                    { xtype: 'checkboxfield', flex: 1, name: 'ReceiverType', boxLabel: '提醒督办人', checked: true },
-                    { xtype: 'checkboxfield', flex: 1, name: 'ReceiverType', boxLabel: '提醒共享人', checked: true}]
+                    { xtype: 'datefield', flex: 1, name: 'RemindDate', fieldLabel: '提醒时间' },
+                    { xtype: 'splitter', width: 40 },
+                    { xtype: 'timefield', width: 100, name: 'RemindTime' },
+                    { xtype: 'fieldcontainer', flex: 1}
+                    ]
+            },
+            { xtype: 'textareafield', name: 'RemindContent', flex: 1, fieldLabel: '内容' },
+            {
+                xtype: 'fieldcontainer',
+                layout: 'hbox',
+                fieldLabel: '发送提醒给:',
+                items: [
+                    { xtype: 'checkboxfield', flex: 1, name: 'ReceiverTypeMaster', boxLabel: '责任人', value: '责任人', checked: true },
+                    { xtype: 'checkboxfield', flex: 1, name: 'ReceiverTypeProctor', boxLabel: '督办人', value: '督办人', checked: true },
+                    { xtype: 'checkboxfield', flex: 1, name: 'ReceiverTypeShare', boxLabel: '共享人', value: '共享人', checked: true}]
             }
         ],
         buttons: [
             { text: '保存', handler: function () {
                 this.up('form').getForm().submit({
-                    url: config.id ? '/office/myOffice/UpdateEvent' : '/office/myOffice/saveEvent',
+                    url: '/office/myOffice/saveEventRemind',
                     success: function (form, action) { if (config && config.submitSccess) config.submitSccess(form, action) },
                     failure: function (form, action) { if (config && config.submitFailure) config.submitFailure(form, action) }
                 }
@@ -650,7 +661,7 @@ MB.form.EventRemind = function (config) {
 
     if (config.id) {
         this.form.getForm().load({
-            url: '/office/myOffice/getEvent',
+            url: '/office/myOffice/getRemind',
             params: { id: config.id }
         }
         );
@@ -681,9 +692,10 @@ MB.form.EventState = function (config) {
                 layout: 'hbox',
                 fieldDefaults: { labelAlign: 'left', msgTarget: 'none', labelWidth: 80 },
                 items: [
-                    { xtype: 'datefield', flex: 1, name: 'Name', fieldLabel: '状态日期' },
+                    { xtype: 'datefield', flex: 1, name: 'StateDate', fieldLabel: '状态时间' },
                     { xtype: 'splitter', width: 40 },
-                    { xtype: 'fieldcontainer',  flex: 1 }
+                    { xtype: 'timefield', width: 100, name: 'StateTime' },
+                    { xtype: 'fieldcontainer', flex: 1}
                     ]
             },
             {
@@ -701,7 +713,7 @@ MB.form.EventState = function (config) {
         buttons: [
             { text: '保存', handler: function () {
                 this.up('form').getForm().submit({
-                    url: config.id ? '/office/myOffice/UpdateEvent' : '/office/myOffice/saveEvent',
+                    url: '/office/myOffice/saveEventState',
                     success: function (form, action) { if (config && config.submitSccess) config.submitSccess(form, action) },
                     failure: function (form, action) { if (config && config.submitFailure) config.submitFailure(form, action) }
                 }
@@ -716,11 +728,62 @@ MB.form.EventState = function (config) {
 
     if (config.id) {
         this.form.getForm().load({
-            url: '/office/myOffice/getEvent',
+            url: '/office/myOffice/getEventState',
             params: { id: config.id }
         }
         );
     }
+
+    return this.form;
+}
+
+MB.form.Memo = function (config) {
+    this.name = "便笺管理";
+    this.container = config.container;
+    this.form = new Ext.form.FormPanel({
+        params: { sid: config.id, jid: 'ssss' },
+        layout: {
+            type: 'vbox',
+            align: 'stretch'
+        },
+        height: 400,
+        width: '100%',
+        autoHeight: true,
+        stateful: false,
+        fieldDefaults: { labelAlign: 'top', msgTarget: 'none', margin: "4px 10px", labelWidth: 80 },
+        items: [
+            { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
+            { xtype: 'textfield', name: 'Name', fieldLabel: '标题' },
+            { xtype: 'htmleditor', name: 'Content', flex: 1, fieldLabel: '内容' }
+        ],
+        buttons: [
+            { text: '保存', handler: function () {
+                this.up('form').getForm().submit({
+                    url: '/office/myOffice/saveMemo',
+                    success: function (form, action) { if (config && config.submitSccess) config.submitSccess(form, action) },
+                    failure: function (form, action) { if (config && config.submitFailure) config.submitFailure(form, action) }
+                }
+                );
+            }
+            },
+            { text: '取消', handler: function () { if (config && config.close) config.close() } }
+        ],
+        listeners: {
+            beforerender: function (form) {
+                //debugger;
+                if (config.id) {
+                    form.getForm().load({
+                        url: '/office/myOffice/getMemo',
+                        params: { id: config.id }
+                    });
+                }
+            }
+        }
+    })
+
+    //debugger;
+
+
 
     return this.form;
 }

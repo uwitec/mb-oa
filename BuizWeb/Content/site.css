@@ -173,3 +173,9 @@
     cursor: pointer;
     border: 0;
 }
+
+.actioncolumn
+{
+    margin:2px;
+    cursor: pointer;
+}
