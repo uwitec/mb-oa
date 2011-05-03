@@ -33,6 +33,8 @@ namespace EntityObjectLib
 
         public string InfoReceiveTypes { get; set; }
 
+        public string LayoutData { get; set; }
+
         public virtual Organization Organization { get; set; }
 
         [NotMapped]

@@ -7,6 +7,7 @@ using BuizApp.Models;
 using System.Web.Security;
 using System.Web.Script.Serialization;
 using System.Web.Routing;
+using EntityObjectContext;
 
 namespace BuizApp
 {
@@ -20,6 +21,13 @@ namespace BuizApp
 
         public ActionResult mydesk()
         {
+            string userID = this.User.Identity.Name;
+            using (MyDB mydb = new MyDB())
+            {
+                EntityObjectLib.User user = mydb.Users.Find(userID);
+                TempData["layoutData"] = user.LayoutData;
+            }
+            
             return View();
         }
 
@@ -80,6 +88,20 @@ namespace BuizApp
             string result = serializer.Serialize(ms);
 
             return result;
+        }
+
+        public ActionResult save()
+        {
+            string userID = this.User.Identity.Name;
+            using (MyDB mydb = new MyDB())
+            {
+                EntityObjectLib.User user = mydb.Users.Find(userID);
+                user.LayoutData = Request.Params["LayoutData"];
+
+                mydb.SaveChanges();
+            }
+
+            return Json(new { success = true });
         }
     }
 }

@@ -20,6 +20,11 @@
     background: url(/content/images/search.gif) top left no-repeat !important;
 }
 
+.iconChart
+{
+    background: url(/content/images/chart.png) top left no-repeat !important;
+}
+
 .iconRSS
 {
     background: url(/content/images/rss.png) top left no-repeat !important;

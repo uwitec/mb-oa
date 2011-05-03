@@ -21,38 +21,47 @@
     <script src="@Url.Content("~/Content/javascript/common.js")" type="text/javascript"></script>
     <link rel="stylesheet" type="text/css" href="@Url.Content("~/Content/ExtJS/classes/portal.css")"/>
     <script type="text/javascript">
-        function addportlet() {
+        LayoutEngine = function (config) {
             var portalpanel = Ext.getCmp('app-portal');
-            portalpanel.items.items[0].insert(0,
-                new Ext.panel.Panel({
-                    title: 'adsfasdf',
-                    html: 'dafasdfasdf',
-                    frame: true,
-                    tools: this.getTools,
-                    closable: true,
-                    draggable: true,
-                    cls: 'x-portlet',
-                    listeners: {
-                        'close': Ext.bind(Portal.onPortletClose, this)
-                    }
-                })
-            );
+            for (var column in config) {
+                // 创建列
+                var p = Ext.create('Ext.container.Container', { flex: 1, padding: 4 });
+                portalpanel.add(p);
+                for (var item in config[column]) {
+                    // 创建组件,并向列中添加该组件
+                    var type = config[column][item].type;
+                    var params = config[column][item].params;
+                    //debugger;
+                    p.add(Ext.create(type, { params: params }));
+                }
+            }
             portalpanel.doLayout();
-            //debugger;
-        }
-
-        var msgShow = function (id, text) {
-            this.parent.addTab('/office/myOffice/MsgShow?id=' + id, '消息:' + text);
-            //window.setTimeout(refreshMsg, 3000);
         };
 
-        function addEnmailportlet() {
-            Ext.regModel('info', {
-                fields: ['Title', 'Creator', 'SendDate','ID']
-            });
+        Ext.define("textPanel", {
+            extend: 'Ext.panel.Panel',
+            frame: true,
+            //tools: this.getTools,
+            closable: true,
+            draggable: true,
+            params: { title: '', url: '' },
+            cls: 'x-portlet',
+            initComponent: function () {
+                this.title = this.params.title;
+                this.html = this.params.url;
+                this.callParent(arguments);
+            }
+        }
+            );
 
-            var store = new Ext.data.Store({
-                model: 'info',
+        Ext.define("msgUnread", {
+            extend: 'Ext.grid.Panel',
+            title: '未读邮件',
+            height: 160,
+            closable: true,
+            title: 'ddddddddddd',
+            store: new Ext.data.Store({
+                fields: ['Title', 'Creator', 'SendDate', 'ID'],
                 proxy: {
                     type: 'ajax',
                     url: '/data/info',
@@ -63,64 +72,84 @@
                     }
                 },
                 autoLoad: true
-            });
-
-            Ext.getCmp('app-portal').items.items[0].insert(0,
-                new Ext.grid.Panel({
-                    title: '未读邮件',
-                    height: 160,
-                    store: store,
-                    draggable: true,
-                    cls: 'x-portlet',
-                    frame:true,
-                    bodyPadding:2,
-                    columns: [
-                        {header: '标题',  dataIndex: 'Title',flex:1,
-                            renderer: function (val, meta, record) { return '<a href="javascript:msgShow(\''+ record.data.ID + '\')">' + val + '</a>'; }
-                            },
-                            {header: '发件人',width:70, dataIndex: 'Creator'},
-                        {header: '日期',width:70, dataIndex: 'SendDate'}
+            }),
+            draggable: true,
+            cls: 'x-portlet',
+            frame: true,
+            columns: [
+                        { header: '标题', dataIndex: 'Title', flex: 1,
+                            renderer: function (val, meta, record) { return '<a href="javascript:msgShow(\'' + record.data.ID + '\')">' + val + '</a>'; }
+                        },
+                            { header: '发件人', width: 70, dataIndex: 'Creator' },
+                        { header: '日期', width: 70, dataIndex: 'SendDate' }
                     ],
-                    listeners: {
-                        'close': Ext.bind(this.onPortletClose, this)
-                    }
-                })
-                );
-                 Ext.getCmp('app-portal').doLayout();
-        }
-
-        function addRSSportlet() {
-            Ext.regModel('RSS', {
-                fields: ['title', 'link', 'pubDate','description']
-            });
-            var RSSStore = function (url){
-                    var store = new Ext.data.Store({
-                    model: 'RSS',
-                    proxy: {
-                        url : '/data/RSS',
-                        type: 'ajax',
-                        extraParams :{rss:url},
-                        reader: {
-                            type: 'xml',
-                            root: 'rss',
-                            record: 'item'
-                        }
-                    },
-                    autoLoad:true
-                });
-
-                return store;
+            listeners: {
+                'close': function () { } //Ext.bind(this.onPortletClose, this)
+            },
+            initComponent: function () {
+//                this.title = this.params.title;
+//                this.html = this.params.url;
+                this.callParent(arguments);
             }
+        }
+    );
+
+        Ext.define("RSS", {
+            extend: 'Ext.grid.Panel',
+            //tools: portalpanel.getTools(),
+            height: 300,
+            store: Ext.create('Ext.data.Store',{
+                fields: ['title', 'link', 'pubDate', 'description'],
+                proxy: {
+                    url: '/data/RSS',  //有问题,不同的实例返回相同的数据
+                    type: 'ajax',
+                    noCache: true,
+                    reader: {
+                        type: 'xml',
+                        root: 'rss',
+                        record: 'item'
+                    }
+                }
+            }),
+            draggable: true,
+            cls: 'x-portlet',
+            frame: true,
+            closable: true,
+            bodyPadding: 2,
+            columns: [
+                { header: '标题', dataIndex: 'title', flex: 1,
+                    renderer: function (val, meta, record) { return '<a href="' + record.data.link + '" target="_blank" title="' + record.data.description + '">' + val + '</a>'; }
+                },
+                { header: '日期', width: 70, dataIndex: 'pubDate' }
+            ],
+            listeners: {
+                'close': function () { } //Ext.bind(this.onPortletClose, this)
+            },
+            initComponent: function () {
+                this.title = this.params.title;
+                this.callParent(arguments);
+                //debugger;
+                this.getStore().load({ params: { rss: this.params.url} });
+            }
+        }
+    );
+
+        var msgShow = function (id, text) {
+            this.parent.addTab('/office/myOffice/MsgShow?id=' + id, '消息:' + text);
+            //window.setTimeout(refreshMsg, 3000);
+        };
+
+        function addRSSportlet() { //RSS源
             new Ext.window.Window({
                 xtype: 'form',
-                 title: '加载RSS源',
+                title: '加载RSS源',
                 modal: true,
                 closable: true,
                 stateful: false,
                 //animateTarget: this,
                 width: 400,
                 height: 200,
-                bodyPadding:10,
+                bodyPadding: 10,
                 //height: 500,
                 layout: 'fit',
                 bodyStyle: 'padding: 5px;',
@@ -130,7 +159,7 @@
                         align: 'stretch'
                     },
                     width: '100%',
-                     items: [
+                    items: [
                         { xtype: 'textfield', name: 'title', fieldLabel: '标题' },
                         { xtype: 'textfield', name: 'url', fieldLabel: 'RSS源' }
                     ],
@@ -138,133 +167,84 @@
                         { text: '确定', handler: function () {
                             var portalpanel = Ext.getCmp('app-portal');
                             portalpanel.items.items[0].insert(0,
-                            new Ext.grid.Panel({
-                                title: this.up('form').getForm().getValues().title,
-                                //tools: portalpanel.getTools(),
-                                height: 300,
-                                store: RSSStore(this.up('form').getForm().getValues().url),
-                                draggable: true,
-                                cls: 'x-portlet',
-                                frame:true,
-                                closable: true,
-                                bodyPadding:2,
-                                columns: [
-                                    {header: '标题',  dataIndex: 'title',flex:1,
-                                     renderer: function (val, meta, record) { return '<a href="'+ record.data.link + '" target="_blank" title="'+record.data.description+'">' + val + '</a>'; }
-                                     },
-                                    {header: '日期',width:70, dataIndex: 'pubDate'}
-                                ],
-                                listeners: {
-                                    'close': Ext.bind(this.onPortletClose, this)
-                                }
-                            })
+                                Ext.create('RSS',{
+                                    params:{
+                                        title: this.up('form').getForm().getValues().title,
+                                        url: this.up('form').getForm().getValues().url
+                                        }
+                                })
                             );
                             portalpanel.doLayout();
                             this.up('window').close();
                         }
                         },
-                        { text: '取消', handler: function () { this.up('window').close(); }}
+                        { text: '取消', handler: function () { this.up('window').close(); } }
                     ]
                 })]
             }).show();
-        }
- 
-        Ext.define('Ext.app.Portal', {
+        };
 
-            extend: 'Ext.container.Viewport',
+        var saveLayout = function () {
+            var portalpanel = Ext.getCmp('app-portal');
+            var layoutData = new Array();
+            for (var i = 0; i < portalpanel.items.length; i++) {
+                var column = new Array();
+                for (var j = 0; j < portalpanel.items.get(i).items.length; j++) {
+                    column.push({
+                        type: portalpanel.items.get(i).items.get(j).$className,
+                        params: portalpanel.items.get(i).items.get(j).params
+                    });
+                }
+                layoutData.push(column);
+            };
+            //debugger;
+            Ext.Ajax.request({
+                url: '/main/save',
+                params: {
+                    layoutData: Ext.JSON.encode(layoutData)
+                },
+                success: function (response) {
+                    alert('保存成功');
+                }
+            });
+        };
 
-            getTools: function () {
-                return [{
-                    xtype: 'tool',
-                    type: 'gear',
-                    handler: function (e, target, panelHeader, tool) {
-                        var portlet = panelHeader.ownerCt, el = portlet.getEl();
-
-                        // simulate some gear activity
-                        el.mask('Working...');
-                        Ext.defer(el.unmask, 2000, el);
-                    }
-                }];
-            },
-
-            initComponent: function () {
-
-                var content = '<div class="portlet-content"> Ext.example.shortBogusMarkup </div>';
-
-                Ext.apply(this, {
+        Ext.onReady(function () {
+                var configData = @Html.Raw(TempData["layoutData"].ToString());
+                //debugger;
+                Ext.create('Ext.container.Viewport', {
                     id: 'app-viewport',
+                    bodyPaddinig: 5,
                     layout: {
-                        type: 'border',
-                        padding: '0 5 5 5' // pad the layout from the window edges
+                        type: 'fit'
                     },
                     items: [{
                         id: 'app-portal',
                         xtype: 'portalpanel',
-                        region: 'center',
+                        //region: 'center',
                         tbar: [
-                          { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '本地部件', tooltipType: 'title', handler: function (source, e) { addportlet() } },
-                          { xtype: 'button', iconCls: 'iconRSS', text: '', tooltip: 'RSS部件', tooltipType: 'title', handler: function (source, e) { addRSSportlet() } },
-                          { xtype: 'button', iconCls: 'iconEmail', text: '', tooltip: '未读邮件', tooltipType: 'title', handler: function (source, e) { addEnmailportlet() } },
-                          { xtype: 'tbseparator' },
-                          { xtype: 'tbfill' },
-                          { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handle: function (source, e) { alert(刷新) } }
-                        ],
-                        items: [{
-                            id: 'col-1',
-                            flex: 1,
-                            items: [{
-                                id: 'portlet-1',
-                                title: 'Grid Portlet',
-                                tools: this.getTools(),
-                                items: new Ext.app.GridPortlet(),
-                                listeners: {
-                                    'close': Ext.bind(this.onPortletClose, this)
-                                }
-                            }, {
-                                id: 'portlet-2',
-                                title: 'Portlet 2',
-                                tools: this.getTools(),
-                                html: content
-                            }]
-                        }, {
-                            id: 'col-2',
-                            flex: 1,
-                            items: [{
-                                id: 'portlet-3',
-                                title: 'Portlet 3',
-                                tools: this.getTools(),
-                                html: '<div class="portlet-content"> Ext.example.bogusMarkup </div>',
-                                listeners: {
-                                    'close': Ext.bind(this.onPortletClose, this)
-                                }
-                            }]
-                        }, {
-                            id: 'col-3',
-                            flex: 1,
-                            margins: '0 26 0 0',
-                            items: [{
-                                id: 'portlet-4',
-                                title: 'Stock Portlet',
-                                tools: this.getTools(),
-                                items: new Ext.app.ChartPortlet(),
-                                listeners: {
-                                    'close': Ext.bind(this.onPortletClose, this)
-                                }
-                            }]
-                        }]
+                        { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '本地部件', tooltipType: 'title', 
+                            handler: function (source, e) { 
+                                Ext.getCmp('app-portal').items.get(0).insert(0,Ext.create('textPanel',{params:{title:'test',url:'testHTML'}}));
+                                Ext.getCmp('app-portal').doLayout();
+                         } },
+                        { xtype: 'button', iconCls: 'iconRSS', text: '', tooltip: 'RSS部件', tooltipType: 'title', 
+                            handler: function (source, e) {
+                                addRSSportlet();
+                        } },
+                        { xtype: 'button', iconCls: 'iconEmail', text: '', tooltip: '未读邮件', tooltipType: 'title', 
+                            handler: function (source, e) { 
+                                Ext.getCmp('app-portal').items.get(0).insert(0,Ext.create('msgUnread'));
+                                Ext.getCmp('app-portal').doLayout();
+                         } },
+                        { xtype: 'tbseparator' },
+                        { xtype: 'tbfill' },
+                        { xtype: 'button', iconCls: 'iconSave', text: '', tooltip: '保存', tooltipType: 'title', handler: function (source, e) { saveLayout() } },
+                        { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { location.reload(); } }
+                    ]
                     }]
                 });
-
-                this.callParent(arguments);
-            },
-
-            onPortletClose: function (portlet) {
-                alert('PortletClose');
-            }
-
-        });
-        Ext.onReady(function () {
-            Portal = Ext.create('Ext.app.Portal');
+                LayoutEngine(configData);
         });
     </script>
 </head>
