@@ -119,7 +119,7 @@
                     }
                     ],
                 tbar: [
-                    { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', 
+                    { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', 
                         handler: function (source, e) { 
                             Ext.Msg.prompt('创建联系人', '请输入联系人名称:', function(btn, text){ 
                                 if (btn == 'ok'){ 
@@ -135,7 +135,7 @@
                                 } 
                             }); 
                         } },
-                    { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { } },
+                    { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip:'删除', handler: function (source, e) { } },
                     { xtype: 'tbseparator' },
                     { xtype: 'tbfill' },
                     {
@@ -165,7 +165,7 @@
                         }
                     },
                     { xtype: 'tbseparator' },
-                    { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { this.up('panel').getStore().load(); } }
+                    { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', handler: function (source, e) { this.up('panel').getStore().load(); } }
                     ],
                 listeners: {
                     itemclick: function (view, record, item, index, e) {
@@ -253,7 +253,7 @@
                 tbar: [
                     { xtype: 'tbseparator' },
                     { xtype: 'tbfill' },
-                    { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { this.up('panel').getStore().load(); } }
+                    { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', handler: function (source, e) { this.up('panel').getStore().load(); } }
                     ],
                 listeners: {
                     itemclick: function (view, record, item, index, e) {
@@ -294,7 +294,7 @@
                 tbar: [
                     { xtype: 'label', text: '个人办公 -> 我的订阅', cls: 'formNav' },
                     { xtype: 'tbfill' },
-                    { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }
+                    { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', handle: function (source, e) { alert('帮助!') } }
                     ]
                 , items: [
                     new Ext.grid.property.Grid({
@@ -304,7 +304,7 @@
                         hideHeaders: true,
                         sortableColumns: false,
                         tbar: [
-                            { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { } }
+                            { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', handler: function (source, e) { } }
                             ],
                         source: {},
                         propertyNames: {
@@ -389,7 +389,7 @@
                 tbar: [
                     { xtype: 'label', text: '当前位置：个人办公 -> 我的通讯录', cls: 'formNav' },
                     { xtype: 'tbfill' },
-                    { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }
+                    { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', handle: function (source, e) { alert('帮助!') } }
                     ]
             });
 

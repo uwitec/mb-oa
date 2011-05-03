@@ -8,6 +8,18 @@
     <script src="@Url.Content("~/Content/javascript/common.js")" type="text/javascript"></script>
     <script src="@Url.Content("~/Content/javascript/BuizForm.js")" type="text/javascript"></script>
     @RenderSection("header",false)
+    <script type="text/javascript">
+        Ext.onReady(function () {
+            Ext.tip.QuickTipManager.init();
+
+            // Apply a set of config properties to the singleton
+//            Ext.apply(Ext.tip.QuickTipManager.getQuickTip(), {
+//                maxWidth: 200,
+//                minWidth: 100,
+//                showDelay: 50      // Show 50ms after entering target
+//            });
+        });
+    </script>
 </head>
 <body>
     @*@RenderPage(“~/Views/Shared/_Header.cshtml”)*@ 

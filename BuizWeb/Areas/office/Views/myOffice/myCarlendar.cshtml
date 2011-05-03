@@ -159,29 +159,29 @@
                     {
                     text: '开始时间',
                     dataIndex: 'StartTime',
-                    width: 140,
+                    width: 120,
                     renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')
                 },
                     {
                         text: '完成时间',
                         dataIndex: 'FinishTime',
-                        width: 140,
+                        width: 120,
                         renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')
                     },
                     {
                         text: '类型',
                         dataIndex: 'Type',
-                        width: 100
+                        width: 70
                     },
                     {
                         text: '责任人',
                         dataIndex: 'Master',
-                        width: 80
+                        width: 60
                     },
                     {
                         text: '督办人',
                         dataIndex: 'Proctor',
-                        width: 80
+                        width: 60
                     },
                     {
                         xtype: 'actioncolumn',
@@ -221,8 +221,8 @@
                     }
                 },
                 tbar: [
-                    { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) { EventNewOrEdit() } },
-                    { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { } },
+                    { xtype: 'button', iconCls: 'iconNew', tooltip: '新增',  handler: function (source, e) { EventNewOrEdit() } },
+                    { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除',  handler: function (source, e) { } },
                     { xtype: 'tbseparator' },
                     { xtype: 'tbfill' },
                     { xtype: 'datefield', id: 'from', fieldLabel: '从', labelWidth: 20, width: 140, value: new Date(new Date().getYear(), new Date().getMonth(), 1) },
@@ -286,7 +286,7 @@
                     margin: '0 0 0 10',
                     text: '',
                     tooltip: '查询',
-                    tooltipType: 'title',
+                    
                     handler: function (source, e) {
                         query(source);
                     }
@@ -297,7 +297,7 @@
                         iconCls: 'iconRefresh',
                         text: '',
                         tooltip: '刷新',
-                        tooltipType: 'title',
+                        
                         handler: function (source, e) {
                             query(source);
                         }
@@ -409,13 +409,75 @@
                                         ID: Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID
                                     }
                                 });
-                                this.close(); 
+                                this.close();
                             },
                             submitFailure: function (form, action) { alert("submitFailure"); }
                         })
                     ]
                 }).show();
-            }
+                }
+
+                var EventStateShow = function () {
+                    new Ext.window.Window({
+                        id: 'EventStateWin',
+                        title: '事件状态',
+                        modal: true,
+                        closable: true,
+                        //animateTarget: this,
+                        width: 600,
+                        height: 500,
+                        layout: 'fit',
+                        bodyPadding: 0,
+                        items: [
+                             {
+                                 xtype: 'chart',
+                                 store: stateStore,
+                                 shadow: true,
+                                 animate: true,
+                                 width: '100%',
+                                 flex: 1,
+                                 axes: [{
+                                     type: 'Numeric',
+                                     position: 'left',
+                                     fields: ['PlanRadio', 'AcutalRadio'],
+                                     label: {
+                                         renderer: Ext.util.Format.numberRenderer('0,0')
+                                     },
+                                     title: '任务状态',
+                                     grid: true,
+                                     minimum: 0
+                                 }, {
+                                     type: 'Category',
+                                     position: 'bottom',
+                                     fields: ['StateTime']
+                                 }],
+                                 series: [{
+                                     type: 'column',
+                                     axis: 'left',
+                                     highlight: true,
+                                     tips: {
+                                         trackMouse: true,
+                                         width: 140,
+                                         height: 28,
+                                         renderer: function (storeItem, item) {
+                                             this.setTitle(storeItem.get('StateTime') + ': ' + storeItem.get('PlanRadio') + ' /' + storeItem.get('AcutalRadio'));
+                                         }
+                                     },
+                                     label: {
+                                         display: 'insideEnd',
+                                         'text-anchor': 'middle',
+                                         field: 'data1',
+                                         renderer: Ext.util.Format.numberRenderer('0'),
+                                         orientation: 'vertical',
+                                         color: '#333'
+                                     },
+                                     xField: 'StateTime',
+                                     yField: ['PlanRadio', 'AcutalRadio']
+                                 }]
+                             }
+                    ]
+                    }).show();
+                }
 
             function query(source) {
                 //debugger;
@@ -453,7 +515,7 @@
                         region: 'center',
                         xtype: 'container',
                         layout: 'border',
-                        flex: 3,
+                        flex: 2,
                         items: [
                             grid,
                             {
@@ -472,7 +534,8 @@
                         layout: 'border',
                         flex: 1,
                         split: true,
-                        items: [{
+                        items: [
+                        {
                             region: 'north',
                             xtype: 'grid',
                             id: 'stateGrid',
@@ -487,14 +550,16 @@
                                 renderer: Ext.util.Format.dateRenderer('Y-m-d H:i')
                             },
                             {
-                                header: '计划完成%',
+                                header: '计划完成',
                                 dataIndex: 'PlanRadio',
-                                flex: 3
+                                flex: 3,
+                                renderer: function (v) { return Math.round(v * 100) + '%' }
                             },
                             {
-                                header: '实际完成%',
+                                header: '实际完成',
                                 dataIndex: 'AcutalRadio',
-                                flex: 3
+                                flex: 3,
+                                renderer: function (v) { return Math.round(v * 100) + '%' }
                             },
                             {
                                 header: '描述',
@@ -503,9 +568,10 @@
                             }
                             ],
                             tbar: [
-                                { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) { EventStateNewOrEdit(Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID) } },
-                                { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { } },
+                                { xtype: 'button', iconCls: 'iconNew', tooltip: '新增',  handler: function (source, e) { EventStateNewOrEdit(Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID) } },
+                                { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', handler: function (source, e) { } },
                                 { xtype: 'tbseparator' },
+                                { xtype: 'button', iconCls: 'iconChart', text: '', tooltip: '查看图表', handler: function (source, e) { EventStateShow() } },
                                 { xtype: 'tbfill' },
                                 { xtype: 'tbseparator' },
                                 {
@@ -513,7 +579,7 @@
                                     iconCls: 'iconRefresh',
                                     text: '',
                                     tooltip: '刷新',
-                                    tooltipType: 'title',
+                                    
                                     handler: function (source, e) {
                                         this.up('panel').getStore().load({
                                             params: { ID: Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID }
@@ -553,8 +619,8 @@
                             }
                             ],
                             tbar: [
-                                { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) { EventRemindNewOrEdit(Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID) } },
-                                { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { } },
+                                { xtype: 'button', iconCls: 'iconNew', tooltip: '新增',  handler: function (source, e) { EventRemindNewOrEdit(Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID) } },
+                                { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除',  handler: function (source, e) { } },
                                 { xtype: 'tbseparator' },
                                 { xtype: 'tbfill' },
                                 { xtype: 'tbseparator' },
@@ -563,7 +629,7 @@
                                     iconCls: 'iconRefresh',
                                     text: '',
                                     tooltip: '刷新',
-                                    tooltipType: 'title',
+                                    
                                     handler: function (source, e) {
                                         this.up('panel').getStore().load({
                                             params: { ID: Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID }
@@ -594,8 +660,8 @@
                             }
                             ],
                             tbar: [
-                                { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) { EventShareNewOrEdit(Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID) } },
-                                { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除', tooltipType: 'title', handler: function (source, e) { } },
+                                { xtype: 'button', iconCls: 'iconNew', tooltip: '新增',  handler: function (source, e) { EventShareNewOrEdit(Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID) } },
+                                { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除',  handler: function (source, e) { } },
                                 { xtype: 'tbseparator' },
                                 { xtype: 'tbfill' },
                                 { xtype: 'tbseparator' },
@@ -604,7 +670,7 @@
                                     iconCls: 'iconRefresh',
                                     text: '',
                                     tooltip: '刷新',
-                                    tooltipType: 'title',
+                                    
                                     handler: function (source, e) {
                                         this.up('panel').getStore().load({
                                             params: { ID: Ext.getCmp('EventGrid').selModel.getSelection()[0].data.ID }
@@ -619,11 +685,11 @@
                     { xtype: 'label', text: '当前位置：个人办公 -> 我的日程(月视图)', cls: 'formNav' },
                     { xtype: 'tbseparator' },
                     { xtype: 'tbfill' },
-                    { xtype: 'button', iconCls: 'helpIcon', text: '月视图', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } },
-                    { xtype: 'button', iconCls: 'helpIcon', text: '周视图', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } },
-                    { xtype: 'button', iconCls: 'helpIcon', text: '日视图', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } },
+                    { xtype: 'button', iconCls: 'helpIcon', text: '月视图', tooltip: '帮助',  handle: function (source, e) { alert('帮助!') } },
+                    { xtype: 'button', iconCls: 'helpIcon', text: '周视图',  handle: function (source, e) { alert('帮助!') } },
+                    { xtype: 'button', iconCls: 'helpIcon', text: '日视图',  handle: function (source, e) { alert('帮助!') } },
                     { xtype: 'tbseparator' },
-                    { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } }
+                    { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助',  handle: function (source, e) { alert('帮助!') } }
                     ]
             });
 

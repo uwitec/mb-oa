@@ -19,6 +19,7 @@ namespace BuizApp.Areas.data.Controllers
             WebRequest request = WebRequest.Create(rss);
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             Response.ContentType = "application/xml";
+            Response.CacheControl = "no-cache";
             StreamReader reader = new StreamReader(response.GetResponseStream(), System.Text.Encoding.UTF8);
             Response.Write(reader.ReadToEnd());
             return null;
