@@ -30,9 +30,10 @@
                 for (var item in config[column]) {
                     // 创建组件,并向列中添加该组件
                     var type = config[column][item].type;
-                    var params = config[column][item].params;
+                    //var params = config[column][item].params;
+                   //var height = config[column][item].height;
                     //debugger;
-                    p.add(Ext.create(type, { params: params }));
+                    p.add(Ext.create(type,config[column][item]/* { params: params ,height: height }*/));
                 }
             }
             portalpanel.doLayout();
@@ -43,6 +44,7 @@
             frame: true,
             //tools: this.getTools,
             closable: true,
+            resizable: true,
             draggable: true,
             params: { title: '', url: '' },
             cls: 'x-portlet',
@@ -59,6 +61,7 @@
             title: '未读邮件',
             height: 160,
             closable: true,
+            resizable: true,
             title: 'ddddddddddd',
             store: new Ext.data.Store({
                 fields: ['Title', 'Creator', 'SendDate', 'ID'],
@@ -98,23 +101,11 @@
             extend: 'Ext.grid.Panel',
             //tools: portalpanel.getTools(),
             height: 300,
-            store: Ext.create('Ext.data.Store',{
-                fields: ['title', 'link', 'pubDate', 'description'],
-                proxy: {
-                    url: '/data/RSS',  //有问题,不同的实例返回相同的数据
-                    type: 'ajax',
-                    noCache: true,
-                    reader: {
-                        type: 'xml',
-                        root: 'rss',
-                        record: 'item'
-                    }
-                }
-            }),
             draggable: true,
             cls: 'x-portlet',
             frame: true,
             closable: true,
+            resizable: true,
             bodyPadding: 2,
             columns: [
                 { header: '标题', dataIndex: 'title', flex: 1,
@@ -126,10 +117,33 @@
                 'close': function () { } //Ext.bind(this.onPortletClose, this)
             },
             initComponent: function () {
+            //ebugger;
                 this.title = this.params.title;
+                this.height = this.params.height?this.params.height:this.height;
+                this.store = new Ext.data.Store({
+                    storeId: Ext.id(),
+                    fields: ['title', 'link', 'pubDate', 'description'],
+                    proxy: {
+                        url: '/data/RSS', 
+                        type: 'ajax',
+                        extraParams: { rss: this.params.url},
+                        reader: {
+                            type: 'xml',
+                            root: 'rss',
+                            record: 'item'
+                        }
+                    },
+                    autoLoad: true
+                });
                 this.callParent(arguments);
                 //debugger;
-                this.getStore().load({ params: { rss: this.params.url} });
+//                this.getStore().load({ 
+//                    params: {} ,
+//                    scope: this,
+//                    callback: function(records, operation, success) {
+//                        debugger;
+//                    }
+//                    }); //有问题,不同的实例返回相同的数据
             }
         }
     );
@@ -192,7 +206,9 @@
                 for (var j = 0; j < portalpanel.items.get(i).items.length; j++) {
                     column.push({
                         type: portalpanel.items.get(i).items.get(j).$className,
-                        params: portalpanel.items.get(i).items.get(j).params
+                        params: portalpanel.items.get(i).items.get(j).params,
+                        height: portalpanel.items.get(i).items.get(j).getHeight()/*,
+                        width: portalpanel.items.get(i).items.get(j).getWidth()*/
                     });
                 }
                 layoutData.push(column);
