@@ -64,7 +64,7 @@
             resizable: true,
             title: 'ddddddddddd',
             store: new Ext.data.Store({
-                fields: ['Title', 'Creator', 'SendDate', 'ID'],
+                fields: ['Title', 'Sender', 'SendDate', 'ID'],
                 proxy: {
                     type: 'ajax',
                     url: '/data/info',
@@ -83,8 +83,8 @@
                         { header: '标题', dataIndex: 'Title', flex: 1,
                             renderer: function (val, meta, record) { return '<a href="javascript:msgShow(\'' + record.data.ID + '\')">' + val + '</a>'; }
                         },
-                            { header: '发件人', width: 70, dataIndex: 'Creator' },
-                        { header: '日期', width: 70, dataIndex: 'SendDate' }
+                            { header: '发件人', width: 70, dataIndex: 'Sender' },
+                        { header: '日期', width: 100, dataIndex: 'SendDate' }
                     ],
             listeners: {
                 'close': function () { } //Ext.bind(this.onPortletClose, this)
@@ -111,7 +111,8 @@
                 { header: '标题', dataIndex: 'title', flex: 1,
                     renderer: function (val, meta, record) { return '<a href="' + record.data.link + '" target="_blank" title="' + record.data.description + '">' + val + '</a>'; }
                 },
-                { header: '日期', width: 70, dataIndex: 'pubDate' }
+                //{ header: '日期', width: 120, dataIndex: 'pubDate' ,renderer: Ext.util.Format.dateRenderer('Y-m-d H:i:s')}
+                { header: '日期', width: 120, dataIndex: 'pubDate' }
             ],
             listeners: {
                 'close': function () { } //Ext.bind(this.onPortletClose, this)
@@ -122,7 +123,12 @@
                 this.height = this.params.height?this.params.height:this.height;
                 this.store = new Ext.data.Store({
                     storeId: Ext.id(),
-                    fields: ['title', 'link', 'pubDate', 'description'],
+                    fields: [
+                        { name: 'title', type: 'string' },
+                        { name: 'link', type: 'string' },
+                        //{ name: 'pubDate', type: 'date', dateFormat: 'timestamp' },  //Wed, 4 May 2011 02:20:48 GMT
+                        { name: 'pubDate', type: 'string'},
+                        { name: 'description', type: 'string' }],
                     proxy: {
                         url: '/data/RSS', 
                         type: 'ajax',
