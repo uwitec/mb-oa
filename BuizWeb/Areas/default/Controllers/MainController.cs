@@ -25,7 +25,7 @@ namespace BuizApp
             using (MyDB mydb = new MyDB())
             {
                 EntityObjectLib.User user = mydb.Users.Find(userID);
-                TempData["layoutData"] = user.LayoutData;
+                TempData["layoutData"] = string.IsNullOrEmpty(user.LayoutData) ? "[[],[],[]]" : user.LayoutData;
             }
             
             return View();
