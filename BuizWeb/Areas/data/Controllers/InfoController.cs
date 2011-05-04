@@ -61,6 +61,27 @@ namespace BuizApp.Areas.data.Controllers
 
                         return Json(new { success = true, data = data }, JsonRequestBehavior.AllowGet);
                     }
+                case "remind":
+                    using (MyDB mydb = new MyDB())
+                    {
+                        List<EntityObjectLib.Info> infoes =
+                            mydb.InfoInboxs.Where(info => info.Receiver.ID.Equals(UserID) && info.ReadDate == null)
+                            .OrderByDescending(info => info.Info.SendDate)
+                            .Select(info => info.Info)
+                            .Where(info=>info.Type.Equals("提醒"))
+                            .ToList();//ToList不能少,要本地化,才能执行后面的string.Join
+                        object[] data = infoes.AsQueryable().Select(info => new
+                        {
+                            info.ID,
+                            info.Title,
+                            Sender = info.Creator.Name,
+                            SendDate = info.SendDate.ToString("yyyy年M月d日"),
+                            SendDateTime = info.SendDate.ToString("yyyy年M月d日 HH:mm"),
+                            Receivers = string.Join(",", info.Receivers.Select(r => r.Receiver.Name).ToArray())
+                        }).ToArray();
+
+                        return Json(new { success = true, data = data }, JsonRequestBehavior.AllowGet);
+                    }
                 case "outbox":
                     using (MyDB mydb = new MyDB())
                     {

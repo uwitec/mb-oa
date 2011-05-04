@@ -20,6 +20,11 @@ namespace EntityObjectLib
 
         public DateTime SendDate { get; set; }
 
+        /// <summary>
+        /// 消息类型: 提醒,消息,...
+        /// </summary>
+        public string Type { get; set; }
+
         public string SendTypes { get; set; }
 
         /// <summary>

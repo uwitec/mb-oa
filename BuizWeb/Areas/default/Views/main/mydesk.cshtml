@@ -56,13 +56,52 @@
         }
             );
 
-        Ext.define("msgUnread", {
+        Ext.define("remind", {
             extend: 'Ext.grid.Panel',
-            title: '未读邮件',
+            title: '我的提醒',
             height: 160,
             closable: true,
             resizable: true,
-            title: 'ddddddddddd',
+            store: new Ext.data.Store({
+                fields: ['Title', 'Sender', 'SendDate', 'ID'],
+                proxy: {
+                    type: 'ajax',
+                    url: '/data/info',
+                    extraParams: { type: 'remind' }, //传参数,在Request.Params["mrId"]
+                    reader: {
+                        type: 'json',
+                        root: 'data'
+                    }
+                },
+                autoLoad: true
+            }),
+            draggable: true,
+            cls: 'x-portlet',
+            frame: true,
+            columns: [
+                        { header: '标题', dataIndex: 'Title', flex: 1,
+                            renderer: function (val, meta, record) { return '<a href="javascript:msgShow(\'' + record.data.ID + '\')">' + val + '</a>'; }
+                        },
+                            { header: '发件人', width: 70, dataIndex: 'Sender' },
+                        { header: '日期', width: 100, dataIndex: 'SendDate' }
+                    ],
+            listeners: {
+                'close': function () { } //Ext.bind(this.onPortletClose, this)
+            },
+            initComponent: function () {
+//                this.title = this.params.title;
+//                this.html = this.params.url;
+                this.callParent(arguments);
+            }
+        }
+    );
+
+        Ext.define("msgUnread", {
+            extend: 'Ext.grid.Panel',
+            title: '我的未读消息',
+            height: 160,
+            closable: true,
+            resizable: true,
             store: new Ext.data.Store({
                 fields: ['Title', 'Sender', 'SendDate', 'ID'],
                 proxy: {
@@ -254,9 +293,14 @@
                             handler: function (source, e) {
                                 addRSSportlet();
                         } },
-                        { xtype: 'button', iconCls: 'iconEmail', text: '', tooltip: '未读邮件', tooltipType: 'title', 
+                        { xtype: 'button', iconCls: 'iconEmail', text: '', tooltip: '未读消息', tooltipType: 'title', 
                             handler: function (source, e) { 
                                 Ext.getCmp('app-portal').items.get(0).insert(0,Ext.create('msgUnread'));
+                                Ext.getCmp('app-portal').doLayout();
+                         } },
+                        { xtype: 'button', iconCls: 'iconRemind', text: '', tooltip: '我的提醒', tooltipType: 'title', 
+                            handler: function (source, e) { 
+                                Ext.getCmp('app-portal').items.get(0).insert(0,Ext.create('remind'));
                                 Ext.getCmp('app-portal').doLayout();
                          } },
                         { xtype: 'tbseparator' },
