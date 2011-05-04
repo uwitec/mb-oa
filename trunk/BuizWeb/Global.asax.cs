@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using System.Threading;
 
 namespace BuizApp
 {
@@ -12,6 +13,8 @@ namespace BuizApp
 
     public class MvcApplication : System.Web.HttpApplication
     {
+        System.Threading.Thread scheduleThread = null;
+
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
@@ -33,6 +36,11 @@ namespace BuizApp
 
         protected void Application_Start()
         {
+            // 后台自动任务
+            ThreadTimer threadTimer = new ThreadTimer();
+            scheduleThread = new System.Threading.Thread(new System.Threading.ThreadStart(threadTimer.Run));
+            scheduleThread.Start();
+
             // 注意:注册有个顺序问题???
             //AreaRegistration.RegisterAllAreas(); //调用每个AreaRegistration的RegisterArea方法
             RegisterAllAreas(); //按自定义顺序注册,AreaRegistration.RegisterAllAreas()顺序规则不能确定
@@ -78,6 +86,27 @@ namespace BuizApp
             }
 
             registration.RegisterArea(context);
+        }
+    }
+
+    public class ThreadTimer
+    {
+        public void Run()
+        {
+            Timer t = new Timer(new TimerCallback(RunTasks));
+            t.Change(0, 60000);
+        }
+
+        private void RunTasks(Object obj)
+        {
+            try
+            {
+                // System.Diagnostics.Debug.WriteLine(DateTime.Now.ToLongTimeString());
+                BuizModel.RemindCheck.CheckALL();
+            }
+            catch (Exception e)
+            {
+            }
         }
     }
 }

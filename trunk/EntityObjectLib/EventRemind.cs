@@ -15,7 +15,7 @@ namespace EntityObjectLib
         /// <summary>
         /// 事件
         /// </summary>
-        public Event Event { get; set; }
+        public virtual Event Event { get; set; }
 
         /// <summary>
         /// 提醒时间

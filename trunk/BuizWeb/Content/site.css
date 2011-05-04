@@ -35,6 +35,11 @@
     background: url(/content/images/email.gif) top left no-repeat !important;
 }
 
+.iconRemind
+{
+    background: url(/content/images/information.png) top left no-repeat !important;
+}
+
 .iconNew
 {
     background: url(/content/images/add.gif) top left no-repeat !important;
