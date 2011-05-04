@@ -80,17 +80,18 @@ Ext.example = function () {
     var msgCt;
 
     function createBox(t, s) {
-        return '<div class="msg"><h3>' + t + '</h3><p>' + s + '</p></div>';
+        return '<div class="msg"><h3>' + t + '</h3><a href=javascript:addTab("/office/myOffice/myMessage","我的消息")>' + s + '</a></div>';
     }
     return {
         msg: function (title, format) {
+            //debugger;
             if (!msgCt) {
                 msgCt = Ext.core.DomHelper.insertFirst(document.body, { id: 'msg-div' }, true);
             }
             var s = Ext.String.format.apply(String, Array.prototype.slice.call(arguments, 1));
             var m = Ext.core.DomHelper.append(msgCt, createBox(title, s), true);
             m.hide();
-            m.slideIn('b').ghost("b", { delay: 3000, remove: true });
+            m.slideIn('b').ghost("b", { delay: 5000, remove: true });
             //m.slideIn('b').slideOut("r", { delay: 3000, remove: true });
         },
 

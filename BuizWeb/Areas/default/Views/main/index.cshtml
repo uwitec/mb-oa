@@ -74,8 +74,8 @@
                     region: 'center',
                     id: 'mainTabPanel',
                     xtype: 'tabpanel',
-//                    border: 0,
-//                    bodyBorder: false,
+                    //                    border: 0,
+                    //                    bodyBorder: false,
                     //frame: true,
                     enableTabScroll: true,
                     //deferredRender: true,
@@ -94,22 +94,38 @@
                 }]
         });
 
-        window.setTimeout(
-        Ext.TaskManager.start({
-            run: function () {
-                Ext.Ajax.request({
-                    url: '/data/info/unReadCount',
-                    success: function (response, opts) {
-                        if (response.responseText != '0')
-                            Ext.example.msg("有未读消息", "您有{0}条未读消息,请查收!", response.responseText);
-                    },
-                    failure: function (response, opts) {
-                        debugger;
-                    }
-                });
-            },
-            interval: 10000 //1 second
-        }), 20000);
+        //        window.setTimeout(
+        //        Ext.TaskManager.start({
+        //            run: function () {
+        //                Ext.Ajax.request({
+        //                    url: '/data/info/unReadCount',
+        //                    success: function (response, opts) {
+        //                        if (response.responseText != '0')
+        //                            Ext.example.msg("有未读消息", "您有{0}条未读消息,请查收!", response.responseText);
+        //                    },
+        //                    failure: function (response, opts) {
+        //                        debugger;
+        //                    }
+        //                });
+        //            },
+        //            interval: 10000 //1 second
+        //        }), 20000);
+
+
+        window.setInterval(function () {
+            Ext.Ajax.request({
+                url: '/data/info/unReadCount',
+                success: function (response, opts) {
+                    if (response.responseText != '0')
+                        Ext.example.msg("有未读消息", "您有{0}条未读消息,请查收!", response.responseText);
+                },
+                failure: function (response, opts) {
+                    debugger;
+                }
+            });
+        },
+            20000
+            );
 
         //        Ext.select('.MBmenu a').each(function (s, w, index) { //s:Element,w:Composite
         //            s.on("click", function (e) {
@@ -134,21 +150,6 @@
         //            t.className = "";
         //        }
     });
-
-
-        Ext.onReady(function () {
-//            var win = new Ext.window.Window({
-//                title: '提示窗口',
-//                html: '测试信息',
-//                iconCls: 'error',
-//                width: 300,
-//                height: 200 
-//            });
-//            win.setPosition(Ext.getBody().dom.clientWidth-300, Ext.getBody().dom.clientHeight-200);
-//            win.show(this.document);
-            //debugger;
-            
-        })
     </script>
 </head>
 <body>
