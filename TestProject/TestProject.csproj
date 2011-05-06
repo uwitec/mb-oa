@@ -85,7 +85,7 @@
     <Compile Include="SMS.cs" />
     <Compile Include="TestJSON.cs" />
     <Compile Include="TestOrganization.cs" />
-    <Compile Include="MenuInit.cs" />
+    <Compile Include="PrivilegeTest.cs" />
     <Compile Include="UnitTestForT4.cs" />
     <Compile Include="UT2.cs" />
     <Compile Include="AddressBookTest.cs" />

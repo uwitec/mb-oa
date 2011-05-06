@@ -8,6 +8,7 @@ using EntityObjectLib;
 using EntityObjectContext;
 using System.Data.Entity.Validation;
 using System.Data;
+using System.Data.Entity;
 
 namespace TestProject1
 {
@@ -31,38 +32,70 @@ namespace TestProject1
                 foreach (Role r in roles)
                 {
                     r.RolePrivileges.Clear();
-                    r.Users.Clear();
+                    r.Subjects.OfType<User>().ToList().Clear();
                     mydb.Roles.Remove(r);
                 }
 
-                IQueryable<Privilege> privileges = mydb.Privileges.Select(p => p);
-                foreach (Privilege r in privileges)
-                {
-                    mydb.Privileges.Remove(r);
-                }
+                //IQueryable<Privilege> privileges = mydb.Privileges.Select(p => p);
+                //foreach (Privilege r in privileges)
+                //{
+                //    mydb.Privileges.Remove(r);
+                //}
 
-                IQueryable<Resource> resources = mydb.Resources.Select(p => p);
-                foreach (Resource r in resources)
-                {
-                    mydb.Resources.Remove(r);
-                }
+                mydb.Privileges.Load();
+                mydb.Privileges.Local.Clear();
 
-                IQueryable<Module> modules = mydb.Modules.Select(p => p);
-                foreach (Module m in modules)
-                {
-                    mydb.Modules.Remove(m);
-                }
+                //IQueryable<Resource> resources = mydb.Resources.Select(p => p);
+                //foreach (Resource r in resources)
+                //{
+                //    mydb.Resources.Remove(r);
+                //}
 
-                IQueryable<User> users = mydb.Users.Select(p => p);
-                foreach (User r in users)
-                {
-                    mydb.Users.Remove(r);
-                }
+                mydb.Resources.Load();
+                mydb.Resources.Local.Clear();
 
-                foreach (Organization o in mydb.Organizations.Select(o => o).OrderByDescending(o=>o.OrderNO))
+                //IQueryable<Module> modules = mydb.Modules.Select(p => p);
+                //foreach (Module m in modules)
+                //{
+                //    mydb.Modules.Remove(m);
+                //}
+
+                mydb.Modules.Load();
+                mydb.Modules.Local.Clear();
+
+                //IQueryable<User> users = mydb.Users.Select(p => p);
+                //foreach (User r in users)
+                //{
+                //    mydb.Users.Remove(r);
+                //}
+
+                mydb.Users.Load();
+                mydb.Users.Local.Clear();
+
+                //foreach (Organization o in mydb.Organizations.Select(o => o).OrderByDescending(o=>o.OrderNO))
+                //{
+                //    mydb.Organizations.Remove(o);
+                //}
+
+                mydb.Organizations.Load();
+                foreach (Organization org in mydb.Organizations.Local)
                 {
-                    mydb.Organizations.Remove(o);
+                    if (org.Users != null)
+                    {
+                        org.Users.Clear();
+                    }
                 }
+                mydb.Organizations.Local.Clear();
+
+                mydb.UserGroups.Load();
+                foreach (UserGroup ug in mydb.UserGroups.Local)
+                {
+                    if (ug.Users != null)
+                    {
+                        ug.Users.Clear();
+                    }
+                }
+                mydb.UserGroups.Local.Clear();
 
                 int result = mydb.SaveChanges();
 
@@ -667,7 +700,7 @@ namespace TestProject1
                     {
                         ID = Guid.NewGuid().ToString(),
                         Privilege = p,
-                        Parameters = "admin"
+                        Parameters = ""
                     }
                     );
             }
@@ -815,6 +848,7 @@ namespace TestProject1
                   }
                   }
             };
+
             using (MyDB mydb = new MyDB())
             {
                 // 奇怪,下面的foreach不能少,不然会出现"操作到资源"关系缺失的错误提示
@@ -827,6 +861,31 @@ namespace TestProject1
                 {
                     mydb.Organizations.Add(org);
                 }
+
+                UserGroup[] ugs = new UserGroup[]{
+                    new UserGroup
+                    {
+                        ID = Guid.NewGuid().ToString(),
+                        Code = "UG-A",
+                        Name = "A用户组",
+                        Description = "A用户组描述",
+                        Users = mydb.Users.Local.ToArray()
+                    },
+                    new UserGroup
+                    {
+                        ID = Guid.NewGuid().ToString(),
+                        Code = "UG-B",
+                        Name = "B用户组",
+                        Description = "B用户组描述",
+                        Users = mydb.Users.Local.Where(u=>u.Code.Equals("chw")).ToArray()
+                    },
+                };
+
+                foreach (UserGroup ug in ugs)
+                {
+                    mydb.UserGroups.Add(ug);
+                }
+
                 mydb.SaveChanges();
             }
         }
@@ -846,9 +905,9 @@ namespace TestProject1
         {
             using (MyDB mydb = new MyDB())
             {
-                ICollection<User> us = mydb.Roles.First().Users;
+                ICollection<User> us = mydb.Roles.First().Subjects.OfType<User>().ToList() ;
                 IQueryable<User> us1 = mydb.Roles.SelectMany(r => r.Subjects).OfType<User>();
-                IQueryable<User> users = mydb.Roles.SelectMany(r => r.Users);
+                IQueryable<User> users = mydb.Roles.SelectMany(r => r.Subjects.OfType<User>());
                 //IQueryable < User > users = mydb.Roles.SelectMany(r => r.Subjects).Distinct().Where(s => s.Category.Equals("User")).Select(s => s as User);
                 IQueryable<Organization> Organizations = mydb.Roles.SelectMany(r => r.Organizations);
                 return;

@@ -6,12 +6,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>苏迈克斯协同办公系统－登录</title>
-    <link href='@Url.Content("~//Content/Site.css")' rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/Content/ExtJS/resources/css/ext-all.css")" rel="stylesheet" type="text/css" />
+    <link href='@Url.Content("~//Content/Site.css")' rel="stylesheet" type="text/css" />
     <script src="@Url.Content("~/Content/ExtJS/bootstrap.js")" type="text/javascript"></script>
     <script type="text/javascript">
         Ext.onReady(function () {
-            var form = Ext.create('Ext.form.FormPanel', {
+            Ext.create('Ext.window.Window', {
+                title: '苏迈克斯协同办公系统－登录',
+                renderTo: Ext.getBody(),
+                //height: 200,
+                width: 400,
+                modal: true,
+                closable: false,
+                layout: 'fit',
+                items: [Ext.create('Ext.form.FormPanel', {
                 url: '/login',
                 bodyPadding: 10,
                 bodyBorder: 0,
@@ -47,22 +55,11 @@
                     { text: '登录', handler: function () { this.up('form').getForm().submit(); } },
                     { text: '找回密码',margin: '0 4 0 10 ', handler: function () { this.up('form').getForm().submit(); } }
                 ]
-            });
-
-            var win = Ext.create('Ext.window.Window', {
-                title: '苏迈克斯协同办公系统[2011.4.27]－登录',
-                //renderTo: Ext.getBody(),
-                //height: 200,
-                width: 400,
-                closable: false,
-                layout: 'fit'
-            });
-            win.add(form);
-            form.show();
-            win.show();
+            })]
+            }).show();
         });
     </script>
 </head>
-<body style="background-color:#EEE">
+<body>
 </body>
 </html>

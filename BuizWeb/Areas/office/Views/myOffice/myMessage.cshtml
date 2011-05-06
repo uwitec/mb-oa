@@ -78,10 +78,7 @@
                 });
             };
 
-            Ext.TaskManager.start({
-                run: getUnReadCount,
-                interval: 20000 //1 second
-            });
+            window.setInterval(getUnReadCount,20000);
 
             var grid = new Ext.grid.GridPanel({
                 id: 'grid001',
