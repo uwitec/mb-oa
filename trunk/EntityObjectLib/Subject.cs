@@ -15,6 +15,19 @@ namespace EntityObjectLib
 
         public string Category { get; set; }
 
+        public string Code { get; set; }
+
+        public string Name { get; set; }
+
+        public int? OrderNO { get; set; }
+
+        public string Description { get; set; }
+
         public virtual ICollection<Role> Roles { get; set; }
+
+        public Subject()
+        {
+            this.Category = this.GetType().Name;
+        }
     }
 }

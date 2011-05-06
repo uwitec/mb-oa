@@ -103,11 +103,15 @@ namespace TestProject1
                 mydb.EventStates.Load();
                 mydb.EventShares.Load();
                 mydb.Events.Load();
+                mydb.AddressBookShares.Load();
+                mydb.AddressBooks.Load();
 
                 mydb.EventReminds.Local.Clear();
                 mydb.EventStates.Local.Clear();
                 mydb.EventShares.Local.Clear();
                 mydb.Events.Local.Clear();
+                mydb.AddressBookShares.Local.Clear();
+                mydb.AddressBooks.Local.Clear();
 
                 mydb.SaveChanges();
             }

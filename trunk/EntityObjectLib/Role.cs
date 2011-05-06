@@ -26,14 +26,14 @@ namespace EntityObjectLib
         /// 在linq表达式中使用时用.OfType<User>()替代，在表达式外仍可使用
         /// 可参考：http://damieng.com/blog/2009/06/24/client-side-properties-and-any-remote-linq-provider
         /// </summary>
-        [NotMapped]
-        public ICollection<User> Users
-        {
-            get
-            {
-                return this.Subjects.OfType<User>().ToList();
-            }
-        }
+        //[NotMapped]
+        //public ICollection<User> Users
+        //{
+        //    get
+        //    {
+        //        return this.Subjects == null ? null : this.Subjects.OfType<User>().ToList();
+        //    }
+        //}
 
         //public virtual ICollection<User> Users;
 
