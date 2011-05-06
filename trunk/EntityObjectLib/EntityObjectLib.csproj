@@ -61,6 +61,18 @@
     <Compile Include="EventState.cs" />
     <Compile Include="AddressBook.cs" />
     <Compile Include="AddressBookShare.cs" />
+    <Compile Include="WF\NodeACL.cs" />
+    <Compile Include="WF\NodeExt\NodeXORJoin.cs" />
+    <Compile Include="WF\NodeExt\NodeXORSplit.cs" />
+    <Compile Include="WF\NodeExt\NodeAndJoin.cs" />
+    <Compile Include="WF\NodeExt\NodeAndSplit.cs" />
+    <Compile Include="WF\NodeExt\NodeHandle.cs" />
+    <Compile Include="WF\NodeExt\NodeFinish.cs" />
+    <Compile Include="WF\NodeExt\NodeStart.cs" />
+    <Compile Include="WF\Action.cs" />
+    <Compile Include="WF\Node.cs" />
+    <Compile Include="WF\IWFBuiz.cs" />
+    <Compile Include="WF\Template.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

@@ -869,6 +869,7 @@ namespace TestProject1
                         Code = "UG-A",
                         Name = "A用户组",
                         Description = "A用户组描述",
+                        //QQ="123123123",
                         Users = mydb.Users.Local.ToArray()
                     },
                     new UserGroup
@@ -877,6 +878,7 @@ namespace TestProject1
                         Code = "UG-B",
                         Name = "B用户组",
                         Description = "B用户组描述",
+                        //QQ="23423423",
                         Users = mydb.Users.Local.Where(u=>u.Code.Equals("chw")).ToArray()
                     },
                 };

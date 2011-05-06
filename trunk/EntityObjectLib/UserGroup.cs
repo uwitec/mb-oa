@@ -10,6 +10,8 @@ namespace EntityObjectLib
     /// </summary>
     public partial class UserGroup : Subject
     {
+        //public string QQ { get; set; }
+
         public virtual ICollection<User> Users { get; set; }
     }
 
