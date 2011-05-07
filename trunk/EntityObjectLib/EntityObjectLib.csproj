@@ -61,21 +61,30 @@
     <Compile Include="EventState.cs" />
     <Compile Include="AddressBook.cs" />
     <Compile Include="AddressBookShare.cs" />
-    <Compile Include="WF\NodeACL.cs" />
-    <Compile Include="WF\NodeExt\NodeXORJoin.cs" />
-    <Compile Include="WF\NodeExt\NodeXORSplit.cs" />
-    <Compile Include="WF\NodeExt\NodeAndJoin.cs" />
-    <Compile Include="WF\NodeExt\NodeAndSplit.cs" />
-    <Compile Include="WF\NodeExt\NodeHandle.cs" />
-    <Compile Include="WF\NodeExt\NodeFinish.cs" />
-    <Compile Include="WF\NodeExt\NodeStart.cs" />
-    <Compile Include="WF\Action.cs" />
-    <Compile Include="WF\Node.cs" />
-    <Compile Include="WF\IWFBuiz.cs" />
-    <Compile Include="WF\Template.cs" />
+    <Compile Include="WFInstance\ApplyExpense.cs" />
+    <Compile Include="WFInstance\WFInst.cs" />
+    <Compile Include="WFInstance\WFInstNode.cs" />
+    <Compile Include="WFInstance\WFInstNodeHandler.cs" />
+    <Compile Include="WFDefine\WFNodeACL.cs" />
+    <Compile Include="WFDefine\WFNodeExtension\WFNodeEvent.cs" />
+    <Compile Include="WFDefine\WFNodeExtension\WFNodeORSplit.cs" />
+    <Compile Include="WFDefine\WFNodeExtension\WFNodeXORJoin.cs" />
+    <Compile Include="WFDefine\WFNodeExtension\WFNodeXORSplit.cs" />
+    <Compile Include="WFDefine\WFNodeExtension\WFNodeAndJoin.cs" />
+    <Compile Include="WFDefine\WFNodeExtension\WFNodeAndSplit.cs" />
+    <Compile Include="WFDefine\WFNodeExtension\WFNodeHandle.cs" />
+    <Compile Include="WFDefine\WFNodeExtension\WFNodeFinish.cs" />
+    <Compile Include="WFDefine\WFNodeExtension\WFNodeStart.cs" />
+    <Compile Include="WFDefine\WFNodeAction.cs" />
+    <Compile Include="WFDefine\WFNode.cs" />
+    <Compile Include="WFDefine\IWFBuiz.cs" />
+    <Compile Include="WFDefine\WFTemplate.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="WFInstance\Readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

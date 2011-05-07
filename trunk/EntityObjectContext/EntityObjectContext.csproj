@@ -42,12 +42,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MyDB.ApplyExpense.cs" />
+    <Compile Include="MyDB.WFInst.cs" />
     <Compile Include="MyDB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MyDB.Event.cs" />
     <Compile Include="MyDB.Info.cs" />
     <Compile Include="MyDB.Privilege.cs" />
     <Compile Include="MyDB.AddressBook.cs" />
+    <Compile Include="MyDB.WFDefine.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EntityObjectLib\EntityObjectLib.csproj">
