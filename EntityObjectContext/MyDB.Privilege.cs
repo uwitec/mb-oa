@@ -98,6 +98,16 @@ namespace EntityObjectContext
 
             // 用户组派生于主体,在此处声明是表明使用单表继承
             modelBuilder.Entity<UserGroup>().ToTable("UserGroups");//以多表方式实现继承Table-per-Hierarchy
+
+            //modelBuilder.Entity<Role>()
+            //    .HasMany(p => p.Organizations)
+            //    .WithMany(org=>org.Roles)
+            //    .Map(m =>
+            //    {
+            //        m.ToTable("Subjects_Roles");
+            //        m.MapLeftKey("RoleID");
+            //        m.MapRightKey("SubjectID");
+            //    });
         }
     }
 }

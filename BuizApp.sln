@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RazorFromDB", "RazorFromDB\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynEntityExt", "DynEntityExt\DynEntityExt.csproj", "{9354CFA9-4639-4BF8-92D2-440A21C4D777}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfSearchModel", "EfSearchModel\EfSearchModel.csproj", "{787DBFB5-1861-493F-8D8C-35886810445B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{9354CFA9-4639-4BF8-92D2-440A21C4D777}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9354CFA9-4639-4BF8-92D2-440A21C4D777}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9354CFA9-4639-4BF8-92D2-440A21C4D777}.Release|Any CPU.Build.0 = Release|Any CPU
+		{787DBFB5-1861-493F-8D8C-35886810445B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{787DBFB5-1861-493F-8D8C-35886810445B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{787DBFB5-1861-493F-8D8C-35886810445B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{787DBFB5-1861-493F-8D8C-35886810445B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

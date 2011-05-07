@@ -1005,6 +1005,10 @@
       <Project>{8B79EA68-656A-42CF-9466-D34B7E128D38}</Project>
       <Name>BuizModel</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EfSearchModel\EfSearchModel.csproj">
+      <Project>{787DBFB5-1861-493F-8D8C-35886810445B}</Project>
+      <Name>EfSearchModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EntityObjectContext\EntityObjectContext.csproj">
       <Project>{3DC63F88-DBE2-476E-94A3-B4B7E7F62988}</Project>
       <Name>EntityObjectContext</Name>

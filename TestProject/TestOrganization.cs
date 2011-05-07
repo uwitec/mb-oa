@@ -20,5 +20,17 @@ namespace TestProject1
             OrganizationExt m = mydb.OrganizationExts.FirstOrDefault();
             Debug.WriteLine(m.Name);
         }
+
+        [TestMethod]
+        public void TestCrossTable()
+        {
+            MyDB mydb = new MyDB();
+
+            Organization[] orgs1 = mydb.Roles.SelectMany(r => r.Subjects).OfType<Organization>().ToArray();
+
+            //Organization[] orgs2 = mydb.Roles.SelectMany(r => r.Organizations).ToArray();
+
+            return;
+        }
     }
 }

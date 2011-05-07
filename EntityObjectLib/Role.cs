@@ -37,14 +37,15 @@ namespace EntityObjectLib
 
         //public virtual ICollection<User> Users;
 
-        [NotMapped]
-        public ICollection<Organization> Organizations
-        {
-            get
-            {
-                return this.Subjects.Where(s => s.Category.Equals("Organization")).Select(s => s as Organization).ToList();
-            }
-        }
+        //[NotMapped]
+        //public IEnumerable<Organization> Organizations
+        //{
+        //    get
+        //    {
+        //        return this.Subjects.Where(s => s.Category.Equals("Organization")).OfType < Organization>();
+        //    }
+        //    //set;
+        //}
 
         public virtual ICollection<RolePrivilege> RolePrivileges { get; set; }
     }

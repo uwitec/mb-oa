@@ -911,7 +911,7 @@ namespace TestProject1
                 IQueryable<User> us1 = mydb.Roles.SelectMany(r => r.Subjects).OfType<User>();
                 IQueryable<User> users = mydb.Roles.SelectMany(r => r.Subjects.OfType<User>());
                 //IQueryable < User > users = mydb.Roles.SelectMany(r => r.Subjects).Distinct().Where(s => s.Category.Equals("User")).Select(s => s as User);
-                IQueryable<Organization> Organizations = mydb.Roles.SelectMany(r => r.Organizations);
+                //IQueryable<Organization> Organizations = mydb.Roles.SelectMany(r => r.Organizations);
                 return;
             }
         }

@@ -51,6 +51,9 @@ namespace BuizApp
 
             //使用数据库存储视图
             //System.Web.Hosting.HostingEnvironment.RegisterVirtualPathProvider(new DbPathProvider());
+
+            // 注册查询模型绑定器
+            ModelBinders.Binders.Add(typeof(EfSearchModel.Model.QueryModel), new EfSearchModel.Binders.SearchModelBinder());
         }
 
         /// <summary>
