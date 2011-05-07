@@ -21,10 +21,13 @@ namespace EntityObjectContext
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            PrivilegeModelCreate(modelBuilder);
-            InfoModelCreate(modelBuilder);
-            EventModelCreate(modelBuilder);
-            AddressBookModelCreate(modelBuilder);
+            this.PrivilegeModelCreate(modelBuilder);
+            this.InfoModelCreate(modelBuilder);
+            this.EventModelCreate(modelBuilder);
+            this.AddressBookModelCreate(modelBuilder);
+            this.WFDefineModelCreate(modelBuilder);
+            this.WFInstModelCreate(modelBuilder);
+            this.ApplyExpenseModelCreate(modelBuilder);
         }
     }
 }

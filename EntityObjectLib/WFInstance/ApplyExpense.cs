@@ -2,48 +2,39 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace EntityObjectLib.WF
+namespace EntityObjectLib
 {
     /// <summary>
-    /// 工作流模板
+    /// 申请用款
     /// </summary>
-    public partial class Template
+    public class ApplyExpense : WFInst
     {
         [Key]
         public string ID { get; set; }
 
         /// <summary>
-        /// 模板名称
+        /// 金额
         /// </summary>
-        public string Name { get; set; }
+        public int Amount { get; set; }
+        
+        /// <summary>
+        /// 用途说明
+        /// </summary>
+        public string Description { get; set; }
 
         /// <summary>
-        /// 业务类
-        /// </summary>
-        [NotMapped]
-        public IWFBuiz BuizType { get; set; }
-
-        /// <summary>
-        /// 创建人
+        /// 申请人
         /// </summary>
         public virtual User Creator { get; set; }
 
         /// <summary>
-        /// 创建时间
+        /// 申请时间
         /// </summary>
         public DateTime CreateTime { get; set; }
     }
 
-
-}
-
-namespace EntityObjectLib
-{
     public partial class User
     {
-        /// <summary>
-        /// 用户创建的工作流模板
-        /// </summary>
-        public virtual ICollection<EntityObjectLib.WF.Template> CreateWFTs { get; set; }
+        public virtual ICollection<ApplyExpense> CreateApplyExpenses { get; set; }
     }
 }
