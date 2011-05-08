@@ -24,7 +24,7 @@ namespace EntityObjectContext
         {
             // 流程实例与流程模板的关系
             modelBuilder.Entity<ApplyExpense>()
-                .HasRequired(i => i.Creator)
+                .HasRequired(i => i.Applicant)
                 .WithMany(t => t.CreateApplyExpenses)
                 .Map(m => { m.MapKey("Creator"); });
 

@@ -29,7 +29,15 @@ namespace EntityObjectLib.WF
         public virtual WFNode WFNode { get; set; }
 
         /// <summary>
+        /// 该活动允许根据业务表单的修改更新业务数据吗?
+        /// 大多数情况下,应该允许更新业务数据
+        /// 暂时不用,默认情况下都更新业务数据
+        /// </summary>
+        //public bool AllowUpdate { get; set; }
+
+        /// <summary>
         /// 下一个节点
+        /// 可以为空,表示节点内活动,不产生流转
         /// </summary>
         public virtual WFNode NextNode { get; set; }
     }

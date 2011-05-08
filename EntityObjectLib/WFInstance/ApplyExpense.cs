@@ -25,12 +25,12 @@ namespace EntityObjectLib
         /// <summary>
         /// 申请人
         /// </summary>
-        public virtual User Creator { get; set; }
+        public virtual User Applicant { get; set; }
 
         /// <summary>
         /// 申请时间
         /// </summary>
-        public DateTime CreateTime { get; set; }
+        public DateTime ApplyTime { get; set; }
     }
 
     public partial class User

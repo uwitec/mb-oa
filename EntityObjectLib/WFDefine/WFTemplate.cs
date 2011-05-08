@@ -18,10 +18,14 @@ namespace EntityObjectLib.WF
         public string Name { get; set; }
 
         /// <summary>
-        /// 业务类
+        /// 业务类编码
         /// </summary>
-        [NotMapped]
-        public IWFBuiz BuizType { get; set; }
+        public string BuizCode { get; set; }
+
+        /// <summary>
+        /// 业务类名称
+        /// </summary>
+        public string BizName { get; set; }
 
         /// <summary>
         /// 创建人

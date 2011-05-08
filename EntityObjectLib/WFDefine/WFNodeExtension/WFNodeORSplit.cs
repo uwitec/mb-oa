@@ -10,6 +10,6 @@ namespace EntityObjectLib.WF
     /// </summary>
     public partial class WFNodeORSplit : WFNode
     {
-
+        public string ID { get; set; }
     }
 }
