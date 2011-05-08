@@ -31,6 +31,11 @@ namespace EntityObjectLib
         /// 申请时间
         /// </summary>
         public DateTime ApplyTime { get; set; }
+
+        public ApplyExpense()
+        {
+            this.Description = "Description";
+        }
     }
 
     public partial class User
