@@ -47,6 +47,11 @@ namespace EntityObjectLib.WF
         /// </summary>
         public virtual WFTemplate WFTemplate { get; set; }
 
+        /// <summary>
+        /// 节点处理 人(主体)
+        /// </summary>
+        public virtual ICollection<Subject> Subjects { get; set; }
+
         public WFNode()
         {
             this.ExtType = this.GetType().Name;
@@ -59,5 +64,17 @@ namespace EntityObjectLib.WF
         /// 模板的节点表
         /// </summary>
         public virtual ICollection<WFNode> Nodes { get; set; }
+    }
+
+}
+
+namespace EntityObjectLib
+{
+    public partial class Subject
+    {
+        /// <summary>
+        /// 主体参与的流程节点
+        /// </summary>
+        public virtual ICollection<EntityObjectLib.WF.WFNode> WFNodes { get; set; }
     }
 }

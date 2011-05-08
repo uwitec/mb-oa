@@ -64,7 +64,6 @@
     <Compile Include="WFInstance\ApplyExpense.cs" />
     <Compile Include="WFInstance\WFInst.cs" />
     <Compile Include="WFInstance\WFInstNode.cs" />
-    <Compile Include="WFInstance\WFInstNodeHandler.cs" />
     <Compile Include="WFDefine\WFNodeACL.cs" />
     <Compile Include="WFDefine\WFNodeExtension\WFNodeEvent.cs" />
     <Compile Include="WFDefine\WFNodeExtension\WFNodeORSplit.cs" />
@@ -77,8 +76,8 @@
     <Compile Include="WFDefine\WFNodeExtension\WFNodeStart.cs" />
     <Compile Include="WFDefine\WFNodeAction.cs" />
     <Compile Include="WFDefine\WFNode.cs" />
-    <Compile Include="WFDefine\IWFBuiz.cs" />
     <Compile Include="WFDefine\WFTemplate.cs" />
+    <Compile Include="WFInstance\WFInstNodeHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
