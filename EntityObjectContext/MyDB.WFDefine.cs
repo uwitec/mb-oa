@@ -66,6 +66,17 @@ namespace EntityObjectContext
                 .HasOptional(a => a.NextNode) //如果为空,表示节点内活动
                 .WithMany(n => n.FromActions)
                 .Map(m => m.MapKey("NextNode"));
+
+            // 流程节点处理人
+            modelBuilder.Entity<WFNode>()
+                .HasMany(p => p.Subjects)
+                .WithMany(t => t.WFNodes)
+                .Map(m =>
+                {
+                    m.ToTable("Subjects_WFNodes");
+                    m.MapLeftKey("Subject");
+                    m.MapRightKey("WFNode");
+                });
         }
     }
 }
