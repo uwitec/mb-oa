@@ -48,6 +48,13 @@ namespace EntityObjectLib.WF
         public virtual WFTemplate WFTemplate { get; set; }
 
         /// <summary>
+        /// 是否会签
+        /// 2011.5.8 chw
+        /// 当前会签是必须全部参与人员签署完毕后,整个节点才处理完成,处理结果按多数人的活动选择为节点活动
+        /// </summary>
+        public bool IsCountersign { get; set; }
+
+        /// <summary>
         /// 节点处理 人(主体)
         /// </summary>
         public virtual ICollection<Subject> Subjects { get; set; }

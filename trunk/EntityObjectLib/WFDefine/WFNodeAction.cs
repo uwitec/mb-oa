@@ -19,9 +19,15 @@ namespace EntityObjectLib.WF
         public string Name { get; set; }
 
         /// <summary>
-        /// 代码
+        /// 代码,在节点类型是XORSplit时,是一个表达式,可返回字符串与Name比较,符合则自动执行活动
         /// </summary>
         public string Code { get; set; }
+
+        /// <summary>
+        /// 活动的顺序
+        /// 在节点类型是XORSplit时,按此顺序检测,遇到第一个符合的则执行活动
+        /// </summary>
+        public string OrderNO { get; set; }
 
         /// <summary>
         /// 活动所在节点

@@ -66,11 +66,7 @@
     <Compile Include="WFInstance\WFInstNode.cs" />
     <Compile Include="WFDefine\WFNodeACL.cs" />
     <Compile Include="WFDefine\WFNodeExtension\WFNodeEvent.cs" />
-    <Compile Include="WFDefine\WFNodeExtension\WFNodeORSplit.cs" />
-    <Compile Include="WFDefine\WFNodeExtension\WFNodeXORJoin.cs" />
     <Compile Include="WFDefine\WFNodeExtension\WFNodeXORSplit.cs" />
-    <Compile Include="WFDefine\WFNodeExtension\WFNodeAndJoin.cs" />
-    <Compile Include="WFDefine\WFNodeExtension\WFNodeAndSplit.cs" />
     <Compile Include="WFDefine\WFNodeExtension\WFNodeHandle.cs" />
     <Compile Include="WFDefine\WFNodeExtension\WFNodeFinish.cs" />
     <Compile Include="WFDefine\WFNodeExtension\WFNodeStart.cs" />
@@ -83,6 +79,7 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="WFDefine\Readme.txt" />
     <Content Include="WFInstance\Readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
