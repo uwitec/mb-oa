@@ -63,8 +63,8 @@ namespace EntityObjectContext
 
             // 活动及其后继节点
             modelBuilder.Entity<WFNodeAction>()
-                .HasRequired(a => a.NextNode)
-                .WithMany(n => n.Actions)
+                .HasOptional(a => a.NextNode) //如果为空,表示节点内活动
+                .WithMany(n => n.FromActions)
                 .Map(m => m.MapKey("NextNode"));
         }
     }

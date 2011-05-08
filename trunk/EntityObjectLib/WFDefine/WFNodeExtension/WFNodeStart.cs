@@ -9,6 +9,6 @@ namespace EntityObjectLib.WF
     /// </summary>
     public partial class WFNodeStart : WFNode
     {
-
+        public string ID { get; set; }
     }
 }

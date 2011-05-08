@@ -13,14 +13,24 @@ namespace EntityObjectLib.WF
         public string ID { get; set; }
 
         /// <summary>
-        /// 模板名称
+        /// 节点名称
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// 节点类型:
+        /// 视图代码
         /// </summary>
-        public string Type { get; set; }
+        public string ViewCode { get; set; }
+
+        /// <summary>
+        /// 视图名称
+        /// </summary>
+        public string ViewName { get; set; }
+
+        /// <summary>
+        /// 节点扩展类型:
+        /// </summary>
+        public string ExtType { get; set; }
 
         /// <summary>
         /// 节点在图形上的位置X坐标
@@ -39,7 +49,7 @@ namespace EntityObjectLib.WF
 
         public WFNode()
         {
-            this.Type = this.GetType().Name;
+            this.ExtType = this.GetType().Name;
         }
     }
 

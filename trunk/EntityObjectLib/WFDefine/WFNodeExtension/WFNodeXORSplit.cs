@@ -10,6 +10,12 @@ namespace EntityObjectLib.WF
     /// </summary>
     public partial class WFNodeXORSplit : WFNode
     {
+        public string ID { get; set; }
 
+        /// <summary>
+        /// 条件表达式
+        /// 运行后返回true或false,对应活动中的"是"和"否"
+        /// </summary>
+        public string Expression { get; set; }
     }
 }

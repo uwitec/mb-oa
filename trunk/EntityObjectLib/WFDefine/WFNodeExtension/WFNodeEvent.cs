@@ -11,5 +11,6 @@ namespace EntityObjectLib.WF.NodeExtension
     /// </summary>
     public partial class WFNodeEvent : WFNode
     {
+        public string ID { get; set; }
     }
 }
