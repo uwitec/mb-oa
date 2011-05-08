@@ -18,6 +18,7 @@ namespace BuizApp
             LoginModel lm = new LoginModel();
             lm.name = "lilin";
             lm.pwd = "123456";
+            lm.other = "other";
             return View(lm);
         }
 

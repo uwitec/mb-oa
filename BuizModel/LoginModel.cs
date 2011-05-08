@@ -28,6 +28,13 @@ namespace BuizApp.Models
             set { _pwd = value; }
         }
 
+        string _other;
+        public string other
+        {
+            get { return this._other; }
+            set { this._other = value; }
+        }
+
         /// <summary>
         /// 登录认证
         /// </summary>

@@ -32,5 +32,20 @@ namespace TestProject1
 
             return;
         }
+
+        [TestMethod]
+        public void cast()
+        {
+            Subject s;
+            MyDB mydb = new MyDB();
+            {
+                s = mydb.Subjects.First();
+            }
+            Convert.ChangeType(s, s.GetType());
+
+            System.Reflection.Assembly ass = System.Reflection.Assembly.LoadFrom("EntityObjectLib.dll");
+            Type t = ass.GetType("EntityObjectLib.Subject");
+            object so = Convert.ChangeType(s, t.GetType());
+        }
     }
 }
