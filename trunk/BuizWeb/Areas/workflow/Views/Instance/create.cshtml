@@ -12,7 +12,8 @@
     <div>
          @*@RenderPage("~/areas/default/views/login/dddx.cshtml")//RenderPage使用后,RenderPartial都失效*@
        @{
-            Html.RenderPartial("~/areas/default/views/login/dddx.cshtml"); //dddx要替换为视图代码,注意:这样写要加cshtml后缀
+           Html.RenderPartial("ddd");
+            //Html.RenderPartial("~/areas/default/views/login/dddx.cshtml"); //dddx要替换为视图代码,注意:这样写要加cshtml后缀
         }
     </div>
     <!--业务视图结束-->

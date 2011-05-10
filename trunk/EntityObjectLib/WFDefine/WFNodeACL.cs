@@ -40,6 +40,11 @@ namespace EntityObjectLib.WF
         /// 活动所在节点
         /// </summary>
         public virtual WFNode WFNode { get; set; }
+
+        public WFNodeACL()
+        {
+            this.ID = Guid.NewGuid().ToString();
+        }
     }
 
     public partial class WFNode

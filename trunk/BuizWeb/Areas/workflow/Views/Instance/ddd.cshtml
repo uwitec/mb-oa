@@ -1,6 +1,8 @@
 ﻿@{
+    Layout = null;
 }
     <div>
-        name: @Model.State
-                
+        <input name="ID" type="hidden" value="@Model.ID" />
+        金额: <input name="Amount" type="text" value="@Model.Amount" /><br />
+        用途说明: <input name="Description" type="text" value="@Model.Description" />
     </div>

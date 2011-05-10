@@ -9,7 +9,7 @@ namespace BuizApp.Areas.workflow.Controllers
     public class InstanceController : Controller
     {
         //
-        // GET: /workflow/Instance/
+        // GET: /workflow/Instance/ 
 
         public ActionResult Index()
         {

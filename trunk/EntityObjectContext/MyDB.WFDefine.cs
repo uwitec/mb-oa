@@ -32,6 +32,26 @@ namespace EntityObjectContext
         public DbSet<WFNodeAction> WFNodeActions { get; set; }
 
         /// <summary>
+        /// 流程模板开始节点表
+        /// </summary>
+        public DbSet<WFNodeStart> WFNodeStarts { get; set; }
+
+        /// <summary>
+        /// 流程模板人工处理节点表
+        /// </summary>
+        public DbSet<WFNodeHandle> WFNodeHandles { get; set; }
+
+        /// <summary>
+        /// 流程模板排他选择节点表
+        /// </summary>
+        public DbSet<WFNodeXORSplit> WFNodeXORSplits { get; set; }
+
+        /// <summary>
+        /// 流程模板排他选择节点表
+        /// </summary>
+        public DbSet<WFNodeFinish> WFNodeFinishs { get; set; }
+
+        /// <summary>
         /// 流程模板模型
         /// </summary>
         /// <param name="modelBuilder"></param>
@@ -55,8 +75,10 @@ namespace EntityObjectContext
                 .WithRequired(acl => acl.WFNode)
                 .Map(m => m.MapKey("WFNode"));
 
+            modelBuilder.Entity<WFNodeHandle>().ToTable("WFNodeHandles");
+
             // 节点与其活动列表
-            modelBuilder.Entity<WFNode>()
+            modelBuilder.Entity<WFNodeHandle>()
                 .HasMany(n => n.Actions)
                 .WithRequired(a => a.WFNode)
                 .Map(m => m.MapKey("WFNode"));
@@ -68,7 +90,7 @@ namespace EntityObjectContext
                 .Map(m => m.MapKey("NextNode"));
 
             // 流程节点处理人
-            modelBuilder.Entity<WFNode>()
+            modelBuilder.Entity<WFNodeHandle>()
                 .HasMany(p => p.Subjects)
                 .WithMany(t => t.WFNodes)
                 .Map(m =>
@@ -77,6 +99,24 @@ namespace EntityObjectContext
                     m.MapLeftKey("Subject");
                     m.MapRightKey("WFNode");
                 });
+
+            modelBuilder.Entity<WFNodeStart>().ToTable("WFNodeStarts");
+
+            modelBuilder.Entity<WFNodeStart>()
+                .HasRequired(s => s.Next).WithOptional()
+                //.WithRequiredPrincipal()
+                //.WithRequiredDependent()
+                .Map(m => m.MapKey("Next"));
+
+            modelBuilder.Entity<WFNodeXORSplit>().ToTable("WFNodeXORSplits");
+
+            modelBuilder.Entity<WFNodeXORSplit>()
+                .HasRequired(s => s.Next)
+                .WithOptional()
+                .Map(m => m.MapKey("Next"));
+
+            modelBuilder.Entity<WFNodeFinish>().ToTable("WFNodeFinishs");
+            
         }
     }
 }

@@ -25,7 +25,7 @@ namespace EntityObjectLib.WF
         /// <summary>
         /// 业务类名称
         /// </summary>
-        public string BizName { get; set; }
+        public string BuizName { get; set; }
 
         /// <summary>
         /// 创建人

@@ -99,7 +99,7 @@
     <Compile Include="App_Code\ActionFilters\AuthoritionFilter.cs" />
     <Compile Include="Areas\default\Controllers\LoginController.cs" />
     <Compile Include="Areas\workflow\Controllers\InstanceController.cs" />
-    <Compile Include="Areas\workflow\Controllers\workflowManageController.cs" />
+    <Compile Include="Areas\workflow\Controllers\DefineController.cs" />
     <Compile Include="Areas\workflow\workflowAreaRegistration.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

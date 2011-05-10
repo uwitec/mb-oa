@@ -6,7 +6,7 @@ using System.Web.Mvc;
 
 namespace BuizApp.Areas.workflow.Controllers
 {
-    public class workflowManageController : Controller
+    public class DefineController : Controller
     {
         //
         // GET: /workflow/workflowManage/
@@ -16,6 +16,10 @@ namespace BuizApp.Areas.workflow.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ActionResult define()
         {
             return this.Redirect("~/canvas/canvas.htm");
