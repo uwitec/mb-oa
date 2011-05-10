@@ -998,7 +998,6 @@
     <Folder Include="Areas\system\Models\" />
     <Folder Include="Areas\test\Models\" />
     <Folder Include="Areas\workflow\Models\" />
-    <Folder Include="Areas\workflow\Views\Shared\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\TestEF.db3">
@@ -1145,6 +1144,10 @@
     <Content Include="Areas\workflow\Views\Web.config" />
     <Content Include="Areas\workflow\Views\Instance\create.cshtml" />
     <Content Include="Areas\default\Views\Login\dddx.cshtml" />
+    <Content Include="Areas\workflow\Views\Instance\WFPanel.cshtml" />
+    <Content Include="Areas\workflow\Views\Instance\index.cshtml" />
+    <Content Include="Areas\workflow\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\workflow\Views\_ViewStart.cshtml" />
     <None Include="Content\ExtJS\resources\sass\config.rb" />
     <None Include="Content\ExtJS\resources\sass\ext-all-access.scss" />
     <None Include="Content\ExtJS\resources\sass\ext-all-scoped.scss" />

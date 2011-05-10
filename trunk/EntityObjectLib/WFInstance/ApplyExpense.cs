@@ -9,17 +9,16 @@ namespace EntityObjectLib
     /// </summary>
     public class ApplyExpense : WFInst
     {
-        [Key]
-        public string ID { get; set; }
-
         /// <summary>
-        /// 金额
+        /// 费用金额
         /// </summary>
+        [Display(Name="费用金额(元)")]
         public int Amount { get; set; }
         
         /// <summary>
         /// 用途说明
         /// </summary>
+        [Display(Name = "用途说明")]
         public string Description { get; set; }
 
         /// <summary>
@@ -34,7 +33,10 @@ namespace EntityObjectLib
 
         public ApplyExpense()
         {
+            // 测试业务属性用
             this.Description = "Description";
+            
+            this.ApplyTime = DateTime.Now;
         }
     }
 

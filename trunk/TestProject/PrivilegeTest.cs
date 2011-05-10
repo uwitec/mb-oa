@@ -172,17 +172,6 @@ namespace TestProject1
                                     new Privilege
                                     {
                                         ID = Guid.NewGuid().ToString(),
-                                        privilegeName = "分级授权",
-                                        privilegeCode = "selfAuth",
-                                        needAuth = true,
-                                        isMenuEntry = true,
-                                        createdTime = DateTime.Now,
-                                        securityGrade = 1,
-                                        orderNO = 50
-                                    },
-                                    new Privilege
-                                    {
-                                        ID = Guid.NewGuid().ToString(),
                                         privilegeName = "权限查询",
                                         privilegeCode = "query",
                                         needAuth = true,
@@ -606,13 +595,13 @@ namespace TestProject1
                         }
                     },
                     new Module{
-                        ID = Guid.NewGuid().ToString(), moduleCode = "workflow", moduleName = "流程",
+                        ID = Guid.NewGuid().ToString(), moduleCode = "workflow", moduleName = "流程管理",
                         resources = new Resource[]{
-                            new Resource{ ID = Guid.NewGuid().ToString(),resourceCode = "workflowManage",resourceName = "流程管理",orderNO = 300,
+                            new Resource{ ID = Guid.NewGuid().ToString(),resourceCode = "manage",resourceName = "流程管理",orderNO = 300,
                                 privileges = new Privilege[] {
                                     new Privilege {
                                         ID = Guid.NewGuid().ToString(),
-                                        privilegeName = "流程定义",
+                                        privilegeName = "流程建模",
                                         privilegeCode = "define",
                                         needAuth = true,
                                         isMenuEntry = true,
@@ -623,7 +612,7 @@ namespace TestProject1
                                     new Privilege {
                                         ID = Guid.NewGuid().ToString(),
                                         privilegeName = "流程监控",
-                                        privilegeCode = "apply",
+                                        privilegeCode = "Monitor",
                                         needAuth = true,
                                         isMenuEntry = true,
                                         createdTime = DateTime.Now,
@@ -638,16 +627,16 @@ namespace TestProject1
                                         isMenuEntry = true,
                                         createdTime = DateTime.Now,
                                         securityGrade = 1,
-                                        orderNO = 20
+                                        orderNO = 30
                                     }
                                 }
                             },
-                            new Resource{ ID = Guid.NewGuid().ToString(),resourceCode = "myWorkflow",resourceName = "我的流程",orderNO = 400,
+                            new Resource{ ID = Guid.NewGuid().ToString(),resourceCode = "instance",resourceName = "我的流程",orderNO = 400,
                                 privileges = new Privilege[] {
                                     new Privilege {
                                         ID = Guid.NewGuid().ToString(),
                                         privilegeName = "发起流程",
-                                        privilegeCode = "dataSource",
+                                        privilegeCode = "index",
                                         needAuth = true,
                                         isMenuEntry = true,
                                         createdTime = DateTime.Now,
@@ -657,12 +646,22 @@ namespace TestProject1
                                     new Privilege {
                                         ID = Guid.NewGuid().ToString(),
                                         privilegeName = "待办事项",
-                                        privilegeCode = "define",
+                                        privilegeCode = "workList",
                                         needAuth = true,
                                         isMenuEntry = true,
                                         createdTime = DateTime.Now,
                                         securityGrade = 1,
                                         orderNO = 20
+                                    },
+                                    new Privilege {
+                                        ID = Guid.NewGuid().ToString(),
+                                        privilegeName = "我参与的流程",
+                                        privilegeCode = "query",
+                                        needAuth = true,
+                                        isMenuEntry = true,
+                                        createdTime = DateTime.Now,
+                                        securityGrade = 1,
+                                        orderNO = 30
                                     }
                                 }
                             }
@@ -772,6 +771,13 @@ namespace TestProject1
                                                 Name="李林", 
                                                 Password="123456",
                                                 Roles= roles.Where(r=>r.roleCode=="admin").ToArray()
+                                            },
+                                            new User{
+                                                ID=Guid.NewGuid().ToString(), 
+                                                Code="lxx", 
+                                                Name="李晓晓", 
+                                                Password="123456",
+                                                Roles= roles.Where(r=>r.roleCode=="admin").ToArray()
                                             }
                                       }
                                   }
@@ -796,7 +802,15 @@ namespace TestProject1
                                       ID = Guid.NewGuid().ToString(), 
                                       Code = "NJ",
                                       Name = "南京组",
-                                      OrderNO = 200
+                                      OrderNO = 200,
+                                      Users = new User[]{
+                                            new User{
+                                                ID=Guid.NewGuid().ToString(), 
+                                                Code="lw", 
+                                                Name="刘伟", 
+                                                Password="123456"
+                                            }
+                                      }
                                   },
                                   new Organization{
                                       ID = Guid.NewGuid().ToString(), 

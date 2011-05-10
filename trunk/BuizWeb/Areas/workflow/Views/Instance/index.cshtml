@@ -1,0 +1,10 @@
+﻿@model EntityObjectLib.WF.WFTemplate[]
+
+    <div>
+        <ul>
+            @foreach(EntityObjectLib.WF.WFTemplate template in Model)
+            {
+                <li><a href="/workflow/instance/create/@template.ID">@template.Name</a></li>
+            }
+        </ul>
+    </div>

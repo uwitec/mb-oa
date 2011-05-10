@@ -15,7 +15,7 @@ namespace EntityObjectLib
         // 还需要一个实例的摘要或名称,暂未设定属性
 
         /// <summary>
-        /// 流程实例当前状态: 处理中,已结束
+        /// 流程实例当前状态,取活动状态
         /// </summary>
         public string State { get; set; }
 
