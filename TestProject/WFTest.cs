@@ -116,6 +116,9 @@ namespace TestProject1
                 mydb.WFNodeActions.Load();
                 mydb.WFNodeActions.Local.Clear();
 
+                mydb.WFNodeACLs.Load();
+                mydb.WFNodeACLs.Local.Clear();
+
                 mydb.WFNodeHandles.Load();
                 mydb.WFNodeHandles.Local.Clear();
 
