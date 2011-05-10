@@ -70,7 +70,7 @@ namespace EntityObjectContext
                 .Map(m => { m.MapKey("WFTemplate"); });
 
             // 节点与其访问列表
-            modelBuilder.Entity<WFNode>()
+            modelBuilder.Entity<WFNodeHandle>()
                 .HasMany(n => n.NodeACLs)
                 .WithRequired(acl => acl.WFNode)
                 .Map(m => m.MapKey("WFNode"));

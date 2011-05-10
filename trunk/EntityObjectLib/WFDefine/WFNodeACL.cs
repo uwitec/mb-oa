@@ -38,8 +38,9 @@ namespace EntityObjectLib.WF
 
         /// <summary>
         /// 活动所在节点
+        /// 设计约束:类似活动执行人的选择,在同一节点上,视图数据的控制对所有执行人是同等的
         /// </summary>
-        public virtual WFNode WFNode { get; set; }
+        public virtual WFNodeHandle WFNode { get; set; }
 
         public WFNodeACL()
         {
@@ -47,7 +48,7 @@ namespace EntityObjectLib.WF
         }
     }
 
-    public partial class WFNode
+    public partial class WFNodeHandle
     {
         /// <summary>
         /// 本节点的活动列表
