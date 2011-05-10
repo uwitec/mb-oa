@@ -9,6 +9,10 @@ namespace EntityObjectLib.WF
     /// </summary>
     public partial class WFNodeStart : WFNode
     {
-        public string ID { get; set; }
+        /// <summary>
+        /// 开始节点的后继节点,有且只有一个
+        /// 这个关系是单向的
+        /// </summary>
+        public virtual WFNode Next { get; set; }
     }
 }

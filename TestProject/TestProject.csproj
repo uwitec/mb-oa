@@ -89,6 +89,7 @@
     <Compile Include="UnitTestForT4.cs" />
     <Compile Include="UT2.cs" />
     <Compile Include="AddressBookTest.cs" />
+    <Compile Include="WFTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

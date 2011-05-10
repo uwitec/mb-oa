@@ -18,16 +18,6 @@ namespace EntityObjectLib.WF
         public string Name { get; set; }
 
         /// <summary>
-        /// 视图代码
-        /// </summary>
-        public string ViewCode { get; set; }
-
-        /// <summary>
-        /// 视图名称
-        /// </summary>
-        public string ViewName { get; set; }
-
-        /// <summary>
         /// 节点扩展类型:
         /// </summary>
         public string ExtType { get; set; }
@@ -54,13 +44,9 @@ namespace EntityObjectLib.WF
         /// </summary>
         public bool IsCountersign { get; set; }
 
-        /// <summary>
-        /// 节点处理 人(主体)
-        /// </summary>
-        public virtual ICollection<Subject> Subjects { get; set; }
-
         public WFNode()
         {
+            this.PositionX = this.PositionY = 0;
             this.ExtType = this.GetType().Name;
         }
     }
@@ -75,13 +61,3 @@ namespace EntityObjectLib.WF
 
 }
 
-namespace EntityObjectLib
-{
-    public partial class Subject
-    {
-        /// <summary>
-        /// 主体参与的流程节点
-        /// </summary>
-        public virtual ICollection<EntityObjectLib.WF.WFNode> WFNodes { get; set; }
-    }
-}

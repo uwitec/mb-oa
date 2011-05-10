@@ -27,12 +27,12 @@ namespace EntityObjectLib.WF
         /// 活动的顺序
         /// 在节点类型是XORSplit时,按此顺序检测,遇到第一个符合的则执行活动
         /// </summary>
-        public string OrderNO { get; set; }
+        //public int OrderNO { get; set; }
 
         /// <summary>
         /// 活动所在节点
         /// </summary>
-        public virtual WFNode WFNode { get; set; }
+        public virtual WFNodeHandle WFNode { get; set; }
 
         /// <summary>
         /// 该活动允许根据业务表单的修改更新业务数据吗?
@@ -46,15 +46,23 @@ namespace EntityObjectLib.WF
         /// 可以为空,表示节点内活动,不产生流转
         /// </summary>
         public virtual WFNode NextNode { get; set; }
+
+        public WFNodeAction()
+        {
+            this.ID = Guid.NewGuid().ToString();
+        }
     }
 
-    public partial class WFNode
+    public partial class WFNodeHandle
     {
         /// <summary>
         /// 本节点的活动列表
         /// </summary>
         public virtual ICollection<WFNodeAction> Actions { get; set; }
+    }
 
+    public partial class WFNode
+    {
         /// <summary>
         /// 指向本节点的活动列表
         /// </summary>
