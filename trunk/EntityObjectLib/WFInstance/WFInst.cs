@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace EntityObjectLib
 {
@@ -33,6 +34,20 @@ namespace EntityObjectLib
         /// 流程实例创建时间
         /// </summary>
         public DateTime CreateTime { get; set; }
+
+        public WFInst()
+        {
+            this.ID = Guid.NewGuid().ToString();
+        }
+
+        [NotMapped]
+        public WFInstNode CurrentNode
+        {
+            get
+            {
+                return this.WFInstNodes.First(n => n.State.Equals("处理中"));
+            }
+        }
     }
 
     public partial class User
