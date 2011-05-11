@@ -1,0 +1,49 @@
+﻿@model EntityObjectLib.WFInstNode
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>create</title>
+    <script type="text/javascript">
+        function actionClick(btn) {
+            var theForm = document.forms['form1'];
+            if (!theForm) {
+                theForm = document.form1;
+            }
+            //debugger;
+            //alert(btn.id);
+            theForm.actionID.value = btn.id;
+            //theForm.submit();
+        }
+
+    </script>
+</head>
+<body>
+    <form name="form1" method="post" action="/workflow/instance/handle">
+    <input type="hidden" name="TemplateID" value="@Model.WFInst.WFTemplate.ID" />
+    <input type="hidden" name="instNodeID" value="@Model.ID" />
+    <input type="hidden" name="nodeID" value="@Model.WFNode.ID" />
+    <input type="hidden" name="actionID" value="" />
+    <!--业务视图开始-->
+    <div>
+        <h3>
+        业务视图</h3>
+         @*@RenderPage("~/areas/default/views/login/dddx.cshtml")//RenderPage使用后,RenderPartial都失效*@
+       @{
+           Html.RenderPartial(((EntityObjectLib.WF.WFNodeHandle)Model.WFNode).ViewCode);
+            //Html.RenderPartial("~/areas/default/views/login/dddx.cshtml"); //dddx要替换为视图代码,注意:这样写要加cshtml后缀
+        }
+    </div>
+    <!--业务视图结束-->
+    <!--流程面板视图开始-->
+    <div>
+        @{
+            Html.RenderPartial("WFPanel"); //注意:这样写不要加cshtml后缀
+        }
+    </div>
+    <!--流程面板视图结束-->
+    </form>
+</body>
+</html>

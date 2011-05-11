@@ -25,17 +25,12 @@ namespace EntityObjectLib
         /// <summary>
         /// 当前节点的前一个节点
         /// </summary>
-        public WFInstNode PreviouInstNode { get; set; }
+        //public WFInstNode PreviouInstNode { get; set; }
 
         /// <summary>
         /// 进入当前节点的时间
         /// </summary>
         public DateTime EntryTime { get; set; }
-
-        /// <summary>
-        /// 当前节点的后继节点集
-        /// </summary>
-        public virtual ICollection<WFInstNode> NextNodes { get; set; }
         
         /// <summary>
         /// 离开当前节点的时间
@@ -46,6 +41,11 @@ namespace EntityObjectLib
         /// 节点状态:处理中,已处理
         /// </summary>
         public string State { get; set; }
+
+        public WFInstNode()
+        {
+            this.ID = Guid.NewGuid().ToString();
+        }
     }
 
     public partial class WFInst

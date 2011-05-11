@@ -1139,7 +1139,7 @@
     <Content Include="Areas\office\Views\myOffice\myAddressBook.cshtml" />
     <Content Include="Areas\office\Views\myOffice\myCarlendar.cshtml" />
     <Content Include="Areas\office\Views\myOffice\myMemo.cshtml" />
-    <Content Include="Areas\workflow\Views\Instance\ddd.cshtml" />
+    <Content Include="Areas\workflow\Views\Instance\createForm.cshtml" />
     <Content Include="Areas\workflow\Views\define.cshtml" />
     <Content Include="Areas\workflow\Views\Web.config" />
     <Content Include="Areas\workflow\Views\Instance\create.cshtml" />
@@ -1148,6 +1148,7 @@
     <Content Include="Areas\workflow\Views\Instance\index.cshtml" />
     <Content Include="Areas\workflow\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\workflow\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\workflow\Views\Instance\Handle.cshtml" />
     <None Include="Content\ExtJS\resources\sass\config.rb" />
     <None Include="Content\ExtJS\resources\sass\ext-all-access.scss" />
     <None Include="Content\ExtJS\resources\sass\ext-all-scoped.scss" />

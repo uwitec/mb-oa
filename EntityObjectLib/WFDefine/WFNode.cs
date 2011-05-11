@@ -49,6 +49,29 @@ namespace EntityObjectLib.WF
             this.PositionX = this.PositionY = 0;
             this.ExtType = this.GetType().Name;
         }
+
+        //public void Init()
+        //{
+        //    WFInstNode inode = new WFInstNode
+        //    {
+        //        ID = Guid.NewGuid().ToString(),
+        //        WFNode = this,
+        //       EntryTime = DateTime.Now,
+        //        PreviouInstNode = null,
+        //         State = "未处理",
+        //          WFInst=null
+        //    };
+        //}
+
+        //public void Activate()
+        //{
+
+        //}
+
+        //public void Compelete()
+        //{
+
+        //}
     }
 
     public partial class WFTemplate

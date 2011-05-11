@@ -1,9 +1,18 @@
 ﻿@{
     Layout = null;
+    //EntityObjectLib.WF.WFNodeAction[] actions = ((EntityObjectLib.WF.WFNodeHandle)Model.WFInstNodes[0].WFNode).Actions.ToArray();
+    EntityObjectLib.WF.WFNodeAction[] actions = ((EntityObjectLib.WF.WFNodeHandle)Model.WFNode).Actions.ToArray();
 }
-    <div>
-        <h3>流程面板</h3>
-        <div>
-            <span>流程ID:</span><span>@Model.State</span>
-        </div>
-    </div>
+<div>
+    <h3>
+        流程历史</h3>
+    <span>流程状态:</span><span>@Model.WFInst.State</span>
+</div>
+<div>
+    <h3>
+        流程面板</h3>
+    @foreach (EntityObjectLib.WF.WFNodeAction action in actions)
+    {
+        <input type="submit" id="@action.ID" name="@action.Code" value="@action.Name" onclick="actionClick(this)" />
+    }
+</div>

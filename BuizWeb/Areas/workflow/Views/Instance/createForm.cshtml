@@ -1,0 +1,10 @@
+﻿@{
+    Layout = null;
+}
+    <div>
+        <input name="ID" type="hidden" value="@Model.WFInst.ID" />
+        <input name="ApplicantID" type="hidden" value="@Context.User.Identity.Name" />
+        金额: <input name="Amount" type="text" value="@Model.WFInst.Amount" /><br />
+        用途说明: <input name="Description" type="text" value="@Model.WFInst.Description" />
+        申请人:<span>@Request.</span>
+    </div>

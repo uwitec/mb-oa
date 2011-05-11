@@ -7,6 +7,7 @@ namespace EntityObjectLib
     /// <summary>
     /// 申请用款
     /// </summary>
+    [Table("ApplyExpenses")]
     public class ApplyExpense : WFInst
     {
         /// <summary>
@@ -21,9 +22,11 @@ namespace EntityObjectLib
         [Display(Name = "用途说明")]
         public string Description { get; set; }
 
+        public string ApplicantID { get; set; }
         /// <summary>
         /// 申请人
         /// </summary>
+        [ForeignKey("ApplicantID")]
         public virtual User Applicant { get; set; }
 
         /// <summary>
@@ -35,13 +38,14 @@ namespace EntityObjectLib
         {
             // 测试业务属性用
             this.Description = "Description";
-            
+            this.Applicant = null; // 这个怎么写,创建时是当前用户
             this.ApplyTime = DateTime.Now;
         }
     }
 
     public partial class User
     {
+        [ForeignKey("ApplicantID")]
         public virtual ICollection<ApplyExpense> CreateApplyExpenses { get; set; }
     }
 }
