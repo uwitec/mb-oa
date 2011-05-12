@@ -2,261 +2,325 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>无标题页</title>
+    <!--[if IE]><script type="text/javascript" src="excanvas.js"></script><![endif]-->
+    <style type="text/css">
+        *
+        {
+            margin: 0;
+            padding: 0;
+        }
+        html, body
+        {
+            width: 100%;
+            height: 100%;
+        }
+        #CanvasDiv
+        {
+            width: 100%;
+            height: 100%;
+        }
+        #myCanvas
+        {
+            background-color: #EEE;
+        }
+    </style>
+    <script type="text/javascript">
 
-	<!--[if IE]><script type="text/javascript" src="excanvas.js"></script><![endif]-->
-	<style type="text/css">
-	*
-	{
-		margin: 0;
-		padding:0;
-	}
-	html, body
-	{
-		width:100%; 
-		height:100%;
-	}
-	#CanvasDiv 
-	{
-		width:100%;
-		height:100%;
-	}
-	#myCanvas
-	{
-		background-color:#EEE;
-	}
-	</style>
-	<script type="text/javascript">
-	
-	var sampleData={
-		name:'某某流程图',
-		Node:{},
-		nodes:[
-			{ID:'1',name:'name1',type:'start',position:{x:11,y:11}},
-			{ID:'2',name:'name2',type:'handle',position:{x:305,y:450}},
-			{ID:'3',name:'name3',type:'handle',position:{x:35,y:670}},
-			{ID:'4',name:'name4',type:'XORSplit',position:{x:311,y:111}},
-			{ID:'5',name:'name5',type:'handle',position:{x:600,y:330}},
-			{ID:'6',name:'name6',type:'handle',position:{x:110,y:37}},
-			{ID:'7',name:'name7',type:'finish',position:{x:66,y:88}}
+        var sampleData = {
+            name: '某某流程图',
+            Node: {},
+            nodes: [
+			{ ID: '1', name: 'name1', type: 'start', position: { x: 11, y: 11} },
+			{ ID: '2', name: 'name2', type: 'handle', position: { x: 305, y: 450} },
+			{ ID: '3', name: 'name3', type: 'handle', position: { x: 35, y: 670} },
+			{ ID: '4', name: 'name4', type: 'XORSplit', position: { x: 311, y: 111} },
+			{ ID: '5', name: 'name5', type: 'handle', position: { x: 600, y: 330} },
+			{ ID: '6', name: 'name6', type: 'handle', position: { x: 110, y: 37} },
+			{ ID: '7', name: 'name7', type: 'finish', position: { x: 66, y: 88} }
 		],
-		Lines:[
-			{from:'1',to:'2',middlePoint:{x:11,y:11}},
-			{from:'2',to:'3',middlePoint:{x:11,y:11}},
-			{from:'2',to:'4',middlePoint:{x:11,y:11}},
-			{from:'3',to:'4',middlePoint:{x:11,y:11}},
-			{from:'5',to:'6',middlePoint:{x:11,y:11}},
-			{from:'5',to:'7',middlePoint:{x:11,y:11}}
+            Lines: [
+			{ from: '1', to: '2', middlePoint: { x: 11, y: 11} },
+			{ from: '2', to: '3', middlePoint: { x: 11, y: 11} },
+			{ from: '2', to: '4', middlePoint: { x: 11, y: 11} },
+			{ from: '3', to: '4', middlePoint: { x: 11, y: 11} },
+			{ from: '5', to: '6', middlePoint: { x: 11, y: 11} },
+			{ from: '5', to: '7', middlePoint: { x: 11, y: 11} },
+            { from: '4', to: '5', middlePoint: { x: 11, y: 11} }
 		]
-	};
-	
-	var img = new Image();
-		img.src = "home.bmp";
-	var transXY = {x:20,y:20};
-		
-	var ctx;
-	function fullcanvas()
-	{
-		ctx = document.getElementById('myCanvas').getContext('2d');
-		ctx.canvas.width  = document.getElementById('CanvasDiv').scrollWidth;
-		ctx.canvas.height = document.getElementById('CanvasDiv').scrollHeight;
-		tran(ctx);
-		
-		document.getElementById('myCanvas').onmousedown=canvasMouseDownHandler;
-		document.getElementById('myCanvas').onmouseup=canvasMouseUpHandler;
+        };
 
-		redrawAll();
+        var imgHandle = new Image();
+        imgHandle.src = "handle.png";
 
-		
-		
-		/*
-		ctx.beginPath();
-		ctx.moveTo(75,50);
-		ctx.lineTo(100,75);
-		ctx.lineTo(100,25);
-		ctx.fill();
-		*/
-		//drawLine(ctx,{x:100,y:100},{x:200,y:200},{x:250,y:200});
-		
-		//alert('ddd');
-		//context.setTransform (1, 0, 0, 1, 0, 0);
-	}
-	
-	function redrawAll()
-	{
-		ctx.clearRect(-transXY.x,-transXY.y,document.getElementById('CanvasDiv').scrollWidth,document.getElementById('CanvasDiv').scrollHeight);
+        var imgXOR = new Image();
+        imgXOR.src = "split.png";
 
-		ctx.beginPath();
-		ctx.moveTo(0,0);
-		ctx.lineTo(100,0);		
-		ctx.stroke();
-		
-		ctx.beginPath();
-		ctx.moveTo(0,0);
-		ctx.lineTo(0,50);		
-		ctx.stroke();
-		
-		
-		for(var n in sampleData.Lines)
-		{
-			drawLine(ctx,sampleData.Lines[n]);
-		}
-		
-		for(var n in sampleData.nodes)
-		{
-			drawNode(ctx,sampleData.nodes[n]);
-		}
-	}
-	
-	function drawText(ctx,text,x,y)
-	{
-		//ctx.fillText(text,x,y);
-		ctx.setTransform (1, 0, 0, 1, 0, 0);
-		ctx.save();
-		ctx.translate(transXY.x,ctx.canvas.height-transXY.y);
-		ctx.fillText(text,x,-y+10);
-		ctx.restore();
-		ctx.setTransform(1, 0, 0, -1, transXY.x, ctx.canvas.height-transXY.y);
-	}
-	
-	/*
-	* 画一条折线,终点带箭头
-	*/
-	function drawLine(ctx,l)
-	{
-		var start={},end={},n;
-		for(n in sampleData.nodes)
-		{
-			if(sampleData.nodes[n].ID==l.from)
-			{
-				start = sampleData.nodes[n].position
-			}
-			if(sampleData.nodes[n].ID==l.to)
-			{
-				end = sampleData.nodes[n].position
-			}
-		}
-		
-		ctx.beginPath();
-		ctx.moveTo(start.x,start.y);
-		
-		ctx.lineTo(end.x,end.y);		
-		ctx.stroke();
-	}
-	
-	function drawNode(ctx,n)
-	{
-		ctx.drawImage(img, n.position.x-12,n.position.y-12);  //drawImage(image, x, y, width, height)
-		drawText(ctx,n.name, n.position.x-12,n.position.y-12);
-	}
-	
-	function tran(ctx)
-	{
-		ctx.setTransform(1, 0, 0, -1, transXY.x, ctx.canvas.height-transXY.y);
+        var imgStart = new Image();
+        imgStart.src = "start.png";
 
-	}
-	
-	var startDragMouseX=0;
+        var imgFinish = new Image();
+        imgFinish.src = "stop.png";
 
-	var startDragMouseY=0;
-	
-	var selected = null;
+        var transXY = { x: 20, y: 20 };
 
-	function canvasMouseDownHandler(event){
+        var ctx;
+        function fullcanvas() {
+            ctx = document.getElementById('myCanvas').getContext('2d');
+            ctx.canvas.width = document.getElementById('CanvasDiv').scrollWidth;
+            ctx.canvas.height = document.getElementById('CanvasDiv').scrollHeight;
+            tran(ctx);
 
-		var canvasMouseX=event.layerX;
+            document.getElementById('myCanvas').onmousedown = canvasMouseDownHandler;
+            document.getElementById('myCanvas').onmouseup = canvasMouseUpHandler;
 
-				if(!canvasMouseX){
-
-					canvasMouseX=event.x;
-
-				}
-
-				var canvasMouseY=event.layerY;
-
-				if(!canvasMouseY){
-
-					canvasMouseY=event.y;
-
-				}
-				
-				canvasMouseX = canvasMouseX-transXY.x;
-				canvasMouseY = ctx.canvas.height-transXY.y -canvasMouseY;
-//	alert(canvasMouseX+","+canvasMouseY);
- 
-var n;
-selected=null;
-		for(n in sampleData.nodes)
-		{
-			var jl = distance(sampleData.nodes[n].position, {x:canvasMouseX,y:canvasMouseY});
-			if(jl<12)
-			{
-				selected=n;
-				break;
-			}
-		}
-		
-				if(selected)
-				{
-				//alert(selected);
-
-					document.getElementById('myCanvas').onmousemove=canvasMouseMoveHandler;
-
- 
-
-					startDragMouseX=canvasMouseX;
-
-					startDragMouseY=canvasMouseY;
-					
+            redrawAll();
 
 
-				}
 
-			}
+            /*
+            ctx.beginPath();
+            ctx.moveTo(75,50);
+            ctx.lineTo(100,75);
+            ctx.lineTo(100,25);
+            ctx.fill();
+            */
+            //drawLine(ctx,{x:100,y:100},{x:200,y:200},{x:250,y:200});
 
- 
+            //alert('ddd');
+            //context.setTransform (1, 0, 0, 1, 0, 0);
+        }
 
-			function canvasMouseMoveHandler(event){
+        function redrawAll() {
+            ctx.clearRect(-transXY.x, -transXY.y, document.getElementById('CanvasDiv').scrollWidth, document.getElementById('CanvasDiv').scrollHeight);
 
-				var canvasMouseX=event.layerX;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(100, 0);
+            ctx.stroke();
 
-				if(!canvasMouseX){
-
-					canvasMouseX=event.x;
-
-				}
-
-				var canvasMouseY=event.layerY;
-
-				if(!canvasMouseY){
-
-					canvasMouseY=event.y;
-
-				}
-				
-				
-
- 					sampleData.nodes[selected].position.x = canvasMouseX -10;
-					sampleData.nodes[selected].position.y = ctx.canvas.height-transXY.y -canvasMouseY;
-					
-					redrawAll();
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(0, 50);
+            ctx.stroke();
 
 
-			}
+            for (var n in sampleData.Lines) {
+                drawLine(ctx, sampleData.Lines[n]);
+            }
 
- 
+            for (var n in sampleData.nodes) {
+                drawNode(ctx, sampleData.nodes[n]);
+            }
+        }
 
-			function canvasMouseUpHandler(event){
+        function drawText(ctx, text, x, y) {
+            //ctx.fillText(text,x,y);
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.save();
+            ctx.translate(transXY.x, ctx.canvas.height - transXY.y);
+            ctx.fillText(text, x, -y + 10);
+            ctx.restore();
+            ctx.setTransform(1, 0, 0, -1, transXY.x, ctx.canvas.height - transXY.y);
+        }
 
-				document.getElementById('myCanvas').onmousemove=null;
+        /*
+        * 画一条折线,终点带箭头
+        */
+        function drawLine(ctx, l) {
+            var start = {}, end = {}, n;
+            for (n in sampleData.nodes) {
+                if (sampleData.nodes[n].ID == l.from) {
+                    start = sampleData.nodes[n].position
+                }
+                if (sampleData.nodes[n].ID == l.to) {
+                    end = sampleData.nodes[n].position
+                }
+            }
 
-			}
-			
-			function distance(p1,p2){
-				return Math.sqrt(Math.pow(p1.x-p2.x,2)+Math.pow(p1.y-p2.y,2));
-			}
+            ctx.beginPath();
 
-	</script>
+            var eee = {}, sss = {};
+            var dis = distance(start, end);
+            sss.x = end.x + (start.x - end.x) * (dis - 20) / dis;
+            sss.y = end.y + (start.y - end.y) * (dis - 20) / dis;
+            eee.x = start.x + (end.x - start.x) * (dis - 20) / dis;
+            eee.y = start.y + (end.y - start.y) * (dis - 20) / dis;
+            ctx.moveTo(sss.x, sss.y);
+            ctx.lineTo(eee.x, eee.y);
+            ctx.stroke();
 
+            drawArrow(sss, eee);
+            
+        }
+
+        function drawArrow(start, end) {
+            ctx.save();
+            var dis = distance(start, end);
+            var eee = {};
+            eee.x = start.x + (end.x - start.x) * (dis - 12) / dis;
+            eee.y = start.y + (end.y - start.y) * (dis - 12) / dis;
+            ctx.translate(eee.x, eee.y);
+            var angle = Math.atan((end.y - start.y) / (end.x - start.x));
+            var angle = end.x < start.x ? Math.PI + angle : angle;
+//            if (angle>0){
+//                if (angle > Math.PI / 2) {
+//                    angle = Math.PI / 2 - angle;
+//                }
+//                else {
+//                    angle = Math.PI *3/2  - angle;
+//                }
+//            }
+//            else {
+//                if (angle > -Math.PI / 2) {
+//                    angle = Math.PI *3/2 - angle;
+//                }
+//                else {
+//                    angle = Math.PI / 2 - angle;
+//                }
+//            }
+            ctx.rotate(angle);
+            
+//            ctx.beginPath();
+//            ctx.moveTo(0,4);
+//            ctx.lineTo(0,-4);
+//            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(0, 5);
+            ctx.lineTo(4, 0);
+            ctx.lineTo(0, -5);
+            ctx.lineTo(13,0);
+            ctx.fill();
+            //drawText(ctx, angle, eee.x - 12, eee.y - 12);
+            ctx.restore();
+
+        }
+
+        function drawNode(ctx, n) {
+            var img = null;
+            switch (n.type) {
+                case 'start':
+                    img = imgStart;
+                    break;
+                case 'handle':
+                    img = imgHandle;
+                    break;
+                case 'XORSplit':
+                    img = imgXOR;
+                    break;
+                case 'finish':
+                    img = imgFinish;
+                    break;
+                default:
+                    break;
+            }
+            ctx.drawImage(img, n.position.x - 12, n.position.y - 12);  //drawImage(image, x, y, width, height)
+            drawText(ctx, n.name, n.position.x - 12, n.position.y - 12);
+        }
+
+        function tran(ctx) {
+            ctx.setTransform(1, 0, 0, -1, transXY.x, ctx.canvas.height - transXY.y);
+
+        }
+
+        var startDragMouseX = 0;
+
+        var startDragMouseY = 0;
+
+        var selected = null;
+
+        function canvasMouseDownHandler(event) {
+
+            var canvasMouseX = event.layerX;
+
+            if (!canvasMouseX) {
+
+                canvasMouseX = event.x;
+
+            }
+
+            var canvasMouseY = event.layerY;
+
+            if (!canvasMouseY) {
+
+                canvasMouseY = event.y;
+
+            }
+
+            canvasMouseX = canvasMouseX - transXY.x;
+            canvasMouseY = ctx.canvas.height - transXY.y - canvasMouseY;
+            //	alert(canvasMouseX+","+canvasMouseY);
+
+            var n;
+            selected = null;
+            for (n in sampleData.nodes) {
+                var jl = distance(sampleData.nodes[n].position, { x: canvasMouseX, y: canvasMouseY });
+                if (jl < 12) {
+                    selected = n;
+                    break;
+                }
+            }
+
+            if (selected) {
+                //alert(selected);
+
+                document.getElementById('myCanvas').onmousemove = canvasMouseMoveHandler;
+
+
+
+                startDragMouseX = canvasMouseX;
+
+                startDragMouseY = canvasMouseY;
+
+
+
+            }
+
+        }
+
+
+
+        function canvasMouseMoveHandler(event) {
+
+            var canvasMouseX = event.layerX;
+
+            if (!canvasMouseX) {
+
+                canvasMouseX = event.x;
+
+            }
+
+            var canvasMouseY = event.layerY;
+
+            if (!canvasMouseY) {
+
+                canvasMouseY = event.y;
+
+            }
+
+
+
+            sampleData.nodes[selected].position.x = canvasMouseX - 10;
+            sampleData.nodes[selected].position.y = ctx.canvas.height - transXY.y - canvasMouseY;
+
+            redrawAll();
+
+
+        }
+
+
+
+        function canvasMouseUpHandler(event) {
+
+            document.getElementById('myCanvas').onmousemove = null;
+
+        }
+
+        function distance(p1, p2) {
+            return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+        }
+
+    </script>
 </head>
 <body onload="fullcanvas()">
     <div id="CanvasDiv">
