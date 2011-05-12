@@ -15,8 +15,10 @@ namespace EntityObjectLib
 
         public string Category { get; set; }
 
+        [Display(Name="代码")]
         public string Code { get; set; }
 
+        [Display(Name = "名称")]
         public string Name { get; set; }
 
         public int? OrderNO { get; set; }

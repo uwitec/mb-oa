@@ -1,0 +1,22 @@
+﻿@model EntityObjectLib.WFInstNodeHandler[]
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>workList</title>
+</head>
+<body>
+    <div>
+        <ul>
+        @foreach (EntityObjectLib.WFInstNodeHandler h in Model)
+        {
+            <li><a href="/workflow/Instance/preHandle/@h.WFInstNode.ID">@h.WFInstNode.WFNode.Name</a></li>
+        }
+        </ul>
+    </div>
+</body>
+</html>

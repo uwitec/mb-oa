@@ -13,8 +13,14 @@ namespace EntityObjectLib
         /// <summary>
         /// 费用金额
         /// </summary>
-        [Display(Name="费用金额(元)")]
+        [Display(Name="费用金额")]
         public int Amount { get; set; }
+
+        /// <summary>
+        /// 费用类别
+        /// </summary>
+        [Display(Name = "费用类别")]
+        public string ApplyType { get; set; }
         
         /// <summary>
         /// 用途说明

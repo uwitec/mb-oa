@@ -46,6 +46,7 @@ namespace EntityObjectLib.WF
 
         public WFNode()
         {
+            this.ID = Guid.NewGuid().ToString();
             this.PositionX = this.PositionY = 0;
             this.ExtType = this.GetType().Name;
         }

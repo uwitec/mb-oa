@@ -61,6 +61,7 @@
     <Compile Include="EventState.cs" />
     <Compile Include="AddressBook.cs" />
     <Compile Include="AddressBookShare.cs" />
+    <Compile Include="WFDefine\WFNodeExpression.cs" />
     <Compile Include="WFInstance\ApplyExpense.cs" />
     <Compile Include="WFInstance\WFInst.cs" />
     <Compile Include="WFInstance\WFInstNode.cs" />

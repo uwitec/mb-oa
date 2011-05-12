@@ -47,6 +47,11 @@ namespace EntityObjectContext
         public DbSet<WFNodeXORSplit> WFNodeXORSplits { get; set; }
 
         /// <summary>
+        /// 流程模板排他选择节点表的表达式列表
+        /// </summary>
+        public DbSet<WFNodeExpression> WFNodeExpressions { get; set; }
+
+        /// <summary>
         /// 流程模板排他选择节点表
         /// </summary>
         public DbSet<WFNodeFinish> WFNodeFinishs { get; set; }
@@ -116,6 +121,16 @@ namespace EntityObjectContext
                 .Map(m => m.MapKey("Next"));
 
             modelBuilder.Entity<WFNodeFinish>().ToTable("WFNodeFinishs");
+
+            modelBuilder.Entity<WFNodeExpression>()
+                .HasRequired(e => e.WFNode)
+                .WithMany(n => n.WFNodeExpressions)
+                .Map(m => m.MapKey("WFNode"));
+
+            modelBuilder.Entity<WFNodeExpression>()
+                .HasRequired(e => e.Next)
+                .WithMany(n => n.FromExpressions)
+                .Map(m => m.MapKey("Next"));
             
         }
     }

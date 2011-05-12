@@ -45,6 +45,8 @@ namespace EntityObjectLib
         public WFInstNode()
         {
             this.ID = Guid.NewGuid().ToString();
+            EntryTime = DateTime.Now;
+            State = "未处理";
         }
     }
 

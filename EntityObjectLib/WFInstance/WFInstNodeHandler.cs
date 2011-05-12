@@ -43,6 +43,12 @@ namespace EntityObjectLib
         /// 处理时间
         /// </summary>
         public DateTime HandleTime { get; set; }
+
+        public WFInstNodeHandler()
+        {
+            this.ID = Guid.NewGuid().ToString();
+            State = "待处理";
+        }
     }
 
     public partial class WFInstNode
