@@ -1148,7 +1148,10 @@
     <Content Include="Areas\workflow\Views\Instance\index.cshtml" />
     <Content Include="Areas\workflow\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\workflow\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\workflow\Views\Instance\Handle.cshtml" />
+    <Content Include="Areas\workflow\Views\Instance\toHandle.cshtml" />
+    <Content Include="Areas\workflow\Views\Instance\handleSuccess.cshtml" />
+    <Content Include="Areas\workflow\Views\Instance\workList.cshtml" />
+    <Content Include="Areas\workflow\Views\Instance\auditForm.cshtml" />
     <None Include="Content\ExtJS\resources\sass\config.rb" />
     <None Include="Content\ExtJS\resources\sass\ext-all-access.scss" />
     <None Include="Content\ExtJS\resources\sass\ext-all-scoped.scss" />
