@@ -1,0 +1,543 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" style="margin: 0 0 0 0; width:100%; height:100%;">
+<head>
+    <title>无标题页</title>
+
+    <script type="text/javascript" src="json.js"></script>
+
+    <!-- 公用 -->
+
+    <script type="text/javascript">
+        var editElement = "";
+//        var imgpath = "images/";
+//        var xmove = -76;
+//        var ymove = -105;
+//        var imgwidth = 96;
+//        var imgheight = 96;
+        var imgpath = "";
+        var xmove = 0;
+        var ymove = 0;
+        var imgwidth = 48;
+        var imgheight = 48;
+        var startDragMouseX = null;
+        var startDragMouseY = null;
+
+        function fullcanvas() {
+//            var operatezone = document.getElementById("btndiv");
+//            var datazone = document.getElementById("contentdiv");
+//            var canvas = document.getElementById("myCanvas");
+//            canvas.width = window.screen.width;
+//            canvas.height = window.screen.height - operatezone.offsetHeight - datazone.offsetHeight;
+        }
+    </script>
+    <script type="text/javascript">
+        function clearf() {
+            var canvas = document.getElementById("myCanvas");
+            var context = canvas.getContext("2d");
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            txtData.value = '{  "Image" : [],  "Reference" : [],  "Square" : [],  "Circle" : [] }';
+            editElement = "";
+            canvas.onclick = null;
+        }
+    </script>
+    <script type="text/javascript">
+        function openf() {
+            var canvas = document.getElementById("myCanvas");
+            canvas.onclick = null;
+            canvas.onmousedown = null;
+            canvas.onmouseup = null;
+            var context = canvas.getContext("2d");
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            txtData.value = '{  "Image" : [],  "Reference" : [],  "Square" : [],  "Circle" : [] }';
+            editElement = '{ "ID" : "",  "url" : "home.bmp",  "X" : ' + xmove + '+50,  "Y" : ' + (ymove + canvas.height / 2 - imgheight / 2) + ',  "iwid" : ' + imgwidth + ',  "ihei" : ' + imgheight + ' }';
+            drawElement();
+            editElement = '{ "ID" : "",  "url" : "world.bmp",  "X" : ' + (xmove + canvas.width - imgwidth - 50) + ',  "Y" : ' + (ymove + canvas.height / 2 - imgheight / 2) + ',  "iwid" : ' + imgwidth + ',  "ihei" : ' + imgheight + ' }';
+            drawElement();
+        }
+    </script>
+    <script type="text/javascript">
+        function drawElement() {
+            var canvas = document.getElementById("myCanvas");
+            var context = canvas.getContext("2d");
+            var j = eval("(" + editElement + ")");
+            if(editElement.indexOf("url") >= 0)
+            {
+                var img = new Image();
+                img.src = imgpath+j.url;
+                context.drawImage(img, j.X, j.Y, j.iwid, j.ihei);
+
+                if(j.ID=="")
+                {
+                    j.ID = getNewID();
+                }
+                var d = eval("(" + txtData.value + ")");
+                if(hasID(j.ID))
+                {
+                    for (var b = 0; b < d.Image.length; b++) {
+                        if (d.Image[b].ID == j.ID) {
+                            d.Image[b] = j;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    d.Image.unshift(j);
+                }
+                txtData.value = d.toJSON();
+            }
+            else if(editElement.indexOf("startID") >= 0)
+            {
+                var startX, startY, endX, endY;
+                var se = findElement(j.startID);
+                var ee = findElement(j.endID);
+                startX = se.X + se.iwid / 2;
+                startY = se.Y + se.ihei / 2;
+                endX = ee.X + ee.iwid / 2;
+                endY = ee.Y + ee.ihei / 2;
+                context.beginPath();
+                context.moveTo(startX, startY);
+                context.lineTo(endX, endY);
+                context.stroke();
+                context.beginPath();
+                context.closePath();
+
+                if(j.ID=="")
+                {
+                    j.ID = getNewID();
+                }
+                var d = eval("(" + txtData.value + ")");
+                if(hasID(j.ID))
+                {
+                    for (var b = 0; b < d.Reference.length; b++) {
+                        if (d.Reference[b].ID == j.ID) {
+                            d.Reference[b] = j;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    d.Reference.unshift(j);
+                }
+                txtData.value = d.toJSON();
+            }
+        }
+    </script>
+    <script type="text/javascript">
+        function findElement(fid) {
+            var j = eval("(" + txtData.value + ")");
+            for (var i = 0; i < j.Square.length; i++) {
+                if (j.Square[i].ID == fid) {
+                    return j.Square[i];
+                }
+            }
+            for (var i = 0; i < j.Circle.length; i++) {
+                if (j.Circle[i].ID == fid) {
+                    return j.Circle[i];
+                }
+            }
+            for (var i = 0; i < j.Image.length; i++) {
+                if (j.Image[i].ID == fid) {
+                    return j.Image[i];
+                }
+            }
+            for (var i = 0; i < j.Reference.length; i++) {
+                if (j.Reference[i].ID == fid) {
+                    return j.Reference[i];
+                }
+            }
+            return null;
+        }
+    </script>
+    <script type="text/javascript">
+        function savef() {
+            alert("未连接");
+        }
+    </script>
+    <script type="text/javascript">
+        function newreference() {
+            var canvas = document.getElementById("myCanvas");
+            editElement = "";
+            canvas.onclick = canvasReferenceHandler;
+            canvas.onmousedown = null;
+            canvas.onmouseup = null;
+        }
+        function canvasReferenceHandler() {
+            var canvasMouseX = event.layerX;
+            var canvasMouseY = event.layerY;
+            var e = lockElement(canvasMouseX,canvasMouseY);
+            if(e != null && editElement == "")
+            {
+//                if(confirm("起始元素为：" + e.ID + "吗？"))
+                {
+                    editElement=e.toJSON();
+                    return;
+                }
+            }
+            if(e != null && editElement != "")
+            {
+                var s = eval("(" + editElement + ")");
+//                if(confirm("起始元素为：" + s.ID + "，结束元素为：" + e.ID + "吗？"))
+                if(s.ID != e.ID)
+                {
+                    editElement = '{ "ID" : "",  "startID" : "' + s.ID + '",  "endID" : "' + e.ID + '" }';
+                    drawElement();
+                    editElement = "";
+                    
+//                    var canvas = document.getElementById("myCanvas");
+//                    canvas.onclick = null;
+                }
+            }
+        }
+    </script>
+    <script type="text/javascript">
+        function newnode() {
+            var canvas = document.getElementById("myCanvas");
+            canvas.onclick = canvasClickHandler;
+            canvas.onmousedown = null;
+            canvas.onmouseup = null;
+        }
+        function canvasClickHandler() {
+            var operatezone = document.getElementById("btndiv");
+            var canvasMouseX = event.layerX;
+            var canvasMouseY = event.layerY;
+            var canvas = document.getElementById("myCanvas");
+            var context = canvas.getContext("2d");
+            editElement = '{ "ID" : "",  "url" : "page.bmp",  "X" : '+(canvasMouseX + xmove-imgwidth/2)+',  "Y" : '+(canvasMouseY-operatezone.offsetHeight + ymove-imgheight/2)+',  "iwid" : ' + imgwidth + ',  "ihei" : ' + imgheight + ' }';
+            drawElement();
+        }
+    </script>
+
+    <script type="text/javascript">
+        function getNewID() {
+            var i = eval("(" + txtData.value + ")");
+            var newID = "";
+            if (editElement.indexOf("url") > 0) {
+                var a = 1;
+                for (; a <= i.Image.length; ) {
+                    var IDAvailable = true;
+                    for (var b = 0; b < i.Image.length; b++) {
+                        if (i.Image[b].ID == "I" + a) {
+                            IDAvailable = false;
+                            break;
+                        }
+                    }
+                    if (IDAvailable)
+                        break;
+                    else
+                        a++;
+                }
+                newID = "I" + a;
+            }
+            else if (editElement.indexOf("startID") > 0) {
+                var a = 1;
+                for (; a <= i.Reference.length; ) {
+                    var IDAvailable = true;
+                    for (var b = 0; b < i.Reference.length; b++) {
+                        if (i.Reference[b].ID == "R" + a) {
+                            IDAvailable = false;
+                            break;
+                        }
+                    }
+                    if (IDAvailable)
+                        break;
+                    else
+                        a++;
+                }
+                newID = "R" + a;
+            }
+            return newID;
+        }
+
+        function hasID(checkID) {
+            var i = eval("(" + txtData.value + ")");
+            for (var b = 0; b < i.Square.length; b++) {
+                if (i.Square[b].ID == checkID) {
+                    return true;
+                }
+            }
+            for (var b = 0; b < i.Circle.length; b++) {
+                if (i.Circle[b].ID == checkID) {
+                    return true;
+                }
+            }
+            for (var b = 0; b < i.Image.length; b++) {
+                if (i.Image[b].ID == checkID) {
+                    return true;
+                }
+            }
+            for (var b = 0; b < i.Reference.length; b++) {
+                if (i.Reference[b].ID == checkID) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    </script>
+    <script type="text/javascript">
+        function deleteelement() {
+            var canvas = document.getElementById("myCanvas");
+            canvas.onclick = canvasDeleteHandler;
+        }
+        function canvasDeleteHandler() {
+            var canvasMouseX = event.layerX;
+            var canvasMouseY = event.layerY;
+            var e = lockElement(canvasMouseX,canvasMouseY);
+            if(e != null && e.ID!="I1" && e.ID!="I2")// && confirm("确认删除元素“"+e.ID+"”吗？"))
+            {
+                var j = eval("(" + txtData.value + ")");
+                for (var i = 0; i < j.Image.length; i++) {
+                    if (j.Image[i].ID == e.ID) {
+                        //先删除关系
+                        for (var l = 0; l < j.Reference.length; l++) {
+                            if (j.Reference[l].startID == e.ID) {
+                                j.Reference.splice(l, 1);
+                                l--;
+                            }
+                            else if (j.Reference[l].endID == e.ID) {
+                                j.Reference.splice(l, 1);
+                                l--;
+                            }
+                        }
+
+                        j.Image.splice(i, 1);
+                        break;
+                    }
+                }
+                txtData.value = j.toJSON();
+                fromjsonstr();
+            }
+            else
+            {
+                var l = lockReferenct(canvasMouseX,canvasMouseY);
+                if(l != null)
+                {
+                    var j = eval("(" + txtData.value + ")");
+                    for (var i = 0; i < j.Reference.length; i++) {
+                        if (j.Reference[i].ID == l.ID) {
+                            j.Reference.splice(i, 1);
+                            break;
+                        }
+                    }
+                    l = null;
+                    txtData.value = j.toJSON();
+                    fromjsonstr();
+                }
+            }
+        }
+        function lockReferenct(canvasMouseX,canvasMouseY) {
+            var operatezone = document.getElementById("btndiv");
+            var j = eval("(" + txtData.value + ")");
+            for (var i = 0; i < j.Reference.length; i++) {
+                var startX, startY, endX, endY;
+                var se = findElement(j.Reference[i].startID);
+                var ee = findElement(j.Reference[i].endID);
+                if(se==null || ee==null)
+                {
+                    continue;
+                }
+                startX = se.X + se.iwid / 2;
+                startY = se.Y + se.ihei / 2;
+                endX = ee.X + ee.iwid / 2;
+                endY = ee.Y + ee.ihei / 2;
+                var b = (endY-startY*endX/startX)/((startX-endX)/startX);
+                var a = (startY-((endY-startY*endX/startX)/((startX-endX)/startX)))/startX;
+                if(
+                ((canvasMouseY-operatezone.offsetHeight)>=(a*canvasMouseX+b-10))
+                &&
+                ((canvasMouseY-operatezone.offsetHeight)<=(a*canvasMouseX+b+10))
+                )
+                {
+                    if(canvasMouseX < (endX>startX?startX:endX) || canvasMouseX > (endX>startX?endX:startX) || (canvasMouseY-operatezone.offsetHeight) < (endY>startY?startY:endY) || (canvasMouseY-operatezone.offsetHeight) > (endY>startY?endY:startY))
+                    {
+                        continue;
+                    }
+//                    startY=a*startX+b;
+//                    endY=a*endX+b;
+//                    
+//                    a = (startY-b)/startX;
+//                    b = (endY-startY*endX/startX)/((startX-endX)/startX);
+//                    a = ((startY-b)/startX)
+//                    b = ((endY-startY*endX/startX)/((startX-endX)/startX))
+                    
+                    return j.Reference[i];
+                }
+                else
+                {
+                    continue;
+                }
+            }
+            return null;
+        }
+        function lockElement(canvasMouseX,canvasMouseY) {
+            var operatezone = document.getElementById("btndiv");
+            var i = eval("(" + txtData.value + ")");
+            for (var b = 0; b < i.Image.length; b++) {
+                if (i.Image[b].X < canvasMouseX && canvasMouseX < (i.Image[b].X + i.Image[b].iwid) && i.Image[b].Y < (canvasMouseY-operatezone.offsetHeight) && (canvasMouseY-operatezone.offsetHeight) < (i.Image[b].Y + i.Image[b].ihei)) {
+                    return i.Image[b];
+                }
+            }
+            return null;
+        }
+    </script>
+    <script type="text/javascript">
+        function moveelement() {
+            var canvas = document.getElementById("myCanvas");
+            canvas.onclick = null;
+            canvas.onmousedown = canvasMouseDownHandler;
+            canvas.onmouseup = canvasMouseUpHandler;
+        }
+        function canvasMouseDownHandler() {
+            var canvasMouseX = event.layerX;
+            var canvasMouseY = event.layerY;
+            var e = lockElement(canvasMouseX,canvasMouseY);
+            if(e != null)
+            {
+                startDragMouseX=canvasMouseX;
+                startDragMouseY=canvasMouseY;
+                editElement = e.toJSON();
+                var canvas = document.getElementById("myCanvas");
+                canvas.onmousemove = canvasMouseMoveHandler;
+            }
+        }
+        function canvasMouseUpHandler() {
+            startDragMouseX=null;
+            startDragMouseY=null;
+            editElement = "";
+            var canvas = document.getElementById("myCanvas");
+            canvas.onmousemove = null;
+        }
+        function canvasMouseMoveHandler() {
+            var canvasMouseX = event.layerX;
+            var canvasMouseY = event.layerY;
+            var e = eval("(" + editElement + ")");
+
+            e.X+=canvasMouseX-startDragMouseX;
+            e.Y+=canvasMouseY-startDragMouseY;
+            var d = eval("(" + txtData.value + ")");
+            for (var b = 0; b < d.Image.length; b++) {
+                if (d.Image[b].ID == e.ID) {
+                    d.Image[b] = e;
+                    break;
+                }
+            }
+            txtData.value = d.toJSON();
+            fromjsonstr();
+        }
+    </script>
+    <script type="text/javascript">
+        function tojsonstr() {
+        }
+    </script>
+    <script type="text/javascript">
+        function fromjsonstr() {
+            var canvas = document.getElementById("myCanvas");
+            var context = canvas.getContext("2d");
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            var j = eval("(" + txtData.value + ")");
+            for (var i = 0; i < j.Image.length; i++) {
+                var img = new Image();
+                img.src = imgpath+j.Image[i].url;
+                context.drawImage(img, j.Image[i].X, j.Image[i].Y, j.Image[i].iwid, j.Image[i].ihei);
+            }
+            for (var i = 0; i < j.Reference.length; i++) {
+                var startX, startY, endX, endY;
+                var se = findElement(j.Reference[i].startID);
+                var ee = findElement(j.Reference[i].endID);
+                startX = se.X + se.iwid / 2;
+                startY = se.Y + se.ihei / 2;
+                endX = ee.X + ee.iwid / 2;
+                endY = ee.Y + ee.ihei / 2;
+                context.beginPath();
+                context.moveTo(startX, startY);
+                context.lineTo(endX, endY);
+                context.stroke();
+                context.beginPath();
+                context.closePath();
+            }
+        }
+    </script>
+    <!-- JSON字符串转换 -->
+    <script type="text/javascript">
+        Object.prototype.deep_clone = function() {
+            eval("var tmp = " + this.toJSON());
+            return tmp;
+        }
+        Object.prototype.toJSON = function() {
+            var json = [];
+            for (var i in this) {
+                if (!this.hasOwnProperty(i)) continue;
+                //if(typeof this[i] == "function") continue;   
+                json.push(
+            i.toJSON() + " : " +
+            ((this[i] != null) ? this[i].toJSON() : "null")
+        )
+            }
+            return "{\n " + json.join(",\n ") + "\n}";
+        }
+        Array.prototype.toJSON = function() {
+            for (var i = 0, json = []; i < this.length; i++)
+                json[i] = (this[i] != null) ? this[i].toJSON() : "null";
+            return "[" + json.join(", ") + "]"
+        }
+
+        String.prototype.toJSON = function() {
+            return '"' +
+        this.replace(/(\\|\")/g, "\\$1")
+        .replace(/\n|\r|\t/g, function() {
+            var a = arguments[0];
+            return (a == '\n') ? '\\n' :
+                    (a == '\r') ? '\\r' :
+                    (a == '\t') ? '\\t' : ""
+        }) +
+        '"'
+        }
+        Boolean.prototype.toJSON = function() { return this }
+        Function.prototype.toJSON = function() { return this }
+        Number.prototype.toJSON = function() { return this }
+        RegExp.prototype.toJSON = function() { return this }
+
+        // strict but slow   
+        String.prototype.toJSON = function() {
+            var tmp = this.split("");
+            for (var i = 0; i < tmp.length; i++) {
+                var c = tmp[i];
+                (c >= ' ') ?
+            (c == '\\') ? (tmp[i] = '\\\\') :
+            (c == '"') ? (tmp[i] = '\\"') : 0 :
+        (tmp[i] =
+            (c == '\n') ? '\\n' :
+            (c == '\r') ? '\\r' :
+            (c == '\t') ? '\\t' :
+            (c == '\b') ? '\\b' :
+            (c == '\f') ? '\\f' :
+            (c = c.charCodeAt(), ('\\u00' + ((c > 15) ? 1 : 0) + (c % 16)))
+        )
+            }
+            return '"' + tmp.join("") + '"';
+        }
+    </script>
+
+</head>
+<body style="margin: 0 0 0 0;" onload="fullcanvas()" >
+    <div id="btndiv" style="width:100%; height:30px;">
+        <input type="button" value="清空" onclick="clearf()" />
+        <input type="button" style="margin-left:10px;" value="新建" onclick="openf()" />
+        <input type="button" style="margin-left:10px;" value="保存" onclick="savef()" />
+        <input type="button" style="margin-left:10px;" value="节点" onclick="newnode()" />
+        <input type="button" style="margin-left:10px;" value="路径" onclick="newreference()" />
+        <input type="button" style="margin-left:10px;" value="删除" onclick="deleteelement()" />
+        <input type="button" style="margin-left:10px;" value="调整" onclick="moveelement()" />
+        <input type="button" style="margin-left:10px; display:none;" value="提取" onclick="tojsonstr()" />
+        <input type="button" style="margin-left:10px;" value="重绘" onclick="fromjsonstr()" />
+    </div>
+    <div id="Div1" style="text-align:center; vertical-align:middle; background-color:Yellow;">
+        <canvas id="myCanvas" style="background-color:White;" width="1278px" height="530px">您的浏览器不支持 HTML5 Canvas。</canvas>
+    </div>
+    <div id="contentdiv" style="text-align:center; background-color:Gray; height:100px; width:100%;">
+        <input id="txtData" type="text" style="width:100%; height:100px;" value='{  "Image" : [],  "Reference" : [],  "Square" : [],  "Circle" : [] }' />
+    </div>
+</body>
+</html>
