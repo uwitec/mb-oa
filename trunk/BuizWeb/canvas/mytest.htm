@@ -23,12 +23,17 @@
         {
             background-color: #EEE;
         }
+        image
+        {
+            margin:20px;
+            border: 1px solid #333;
+            display:block;
+        }
     </style>
     <script type="text/javascript">
 
         var sampleData = {
             name: '某某流程图',
-            Node: {},
             nodes: [
 			{ ID: '1', name: 'name1', type: 'start', position: { x: 11, y: 11} },
 			{ ID: '2', name: 'name2', type: 'handle', position: { x: 305, y: 450} },
@@ -49,49 +54,39 @@
 		]
         };
 
+
         var imgHandle = new Image();
         imgHandle.src = "handle.png";
+        imgHandle.alt = "imgHandle";
 
         var imgXOR = new Image();
         imgXOR.src = "split.png";
+        imgXOR.alt = "imgXOR";
 
         var imgStart = new Image();
         imgStart.src = "start.png";
+        imgStart.alt = "imgStart";
 
         var imgFinish = new Image();
         imgFinish.src = "stop.png";
+        imgFinish.alt = "imgFinish";
 
         var transXY = { x: 20, y: 20 };
 
         var ctx;
         function fullcanvas() {
             ctx = document.getElementById('myCanvas').getContext('2d');
-            ctx.canvas.width = document.getElementById('CanvasDiv').scrollWidth;
-            ctx.canvas.height = document.getElementById('CanvasDiv').scrollHeight;
-            tran(ctx);
-
-            document.getElementById('myCanvas').onmousedown = canvasMouseDownHandler;
-            document.getElementById('myCanvas').onmouseup = canvasMouseUpHandler;
+            ctx.canvas.width = ctx.canvas.parentNode.scrollWidth;
+            ctx.canvas.height = ctx.canvas.parentNode.scrollHeight;
+            tran();
+            ctx.canvas.onmousedown = canvasMouseDownHandler;
+            ctx.canvas.onmouseup = canvasMouseUpHandler;
 
             redrawAll();
-
-
-
-            /*
-            ctx.beginPath();
-            ctx.moveTo(75,50);
-            ctx.lineTo(100,75);
-            ctx.lineTo(100,25);
-            ctx.fill();
-            */
-            //drawLine(ctx,{x:100,y:100},{x:200,y:200},{x:250,y:200});
-
-            //alert('ddd');
-            //context.setTransform (1, 0, 0, 1, 0, 0);
         }
 
         function redrawAll() {
-            ctx.clearRect(-transXY.x, -transXY.y, document.getElementById('CanvasDiv').scrollWidth, document.getElementById('CanvasDiv').scrollHeight);
+            ctx.clearRect(-transXY.x, -transXY.y, ctx.canvas.scrollWidth, ctx.canvas.scrollHeight);
 
             ctx.beginPath();
             ctx.moveTo(0, 0);
@@ -105,15 +100,15 @@
 
 
             for (var n in sampleData.Lines) {
-                drawLine(ctx, sampleData.Lines[n]);
+                drawLine(sampleData.Lines[n]);
             }
 
             for (var n in sampleData.nodes) {
-                drawNode(ctx, sampleData.nodes[n]);
+                drawNode(sampleData.nodes[n]);
             }
         }
 
-        function drawText(ctx, text, x, y) {
+        function drawText(text, x, y) {
             //ctx.fillText(text,x,y);
             ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.save();
@@ -126,7 +121,7 @@
         /*
         * 画一条折线,终点带箭头
         */
-        function drawLine(ctx, l) {
+        function drawLine(l) {
             var start = {}, end = {}, n;
             for (n in sampleData.nodes) {
                 if (sampleData.nodes[n].ID == l.from) {
@@ -155,48 +150,27 @@
 
         function drawArrow(start, end) {
             ctx.save();
-            var dis = distance(start, end);
-            var eee = {};
-            eee.x = start.x + (end.x - start.x) * (dis - 12) / dis;
-            eee.y = start.y + (end.y - start.y) * (dis - 12) / dis;
-            ctx.translate(eee.x, eee.y);
-            var angle = Math.atan((end.y - start.y) / (end.x - start.x));
-            var angle = end.x < start.x ? Math.PI + angle : angle;
-//            if (angle>0){
-//                if (angle > Math.PI / 2) {
-//                    angle = Math.PI / 2 - angle;
-//                }
-//                else {
-//                    angle = Math.PI *3/2  - angle;
-//                }
-//            }
-//            else {
-//                if (angle > -Math.PI / 2) {
-//                    angle = Math.PI *3/2 - angle;
-//                }
-//                else {
-//                    angle = Math.PI / 2 - angle;
-//                }
-//            }
-            ctx.rotate(angle);
-            
-//            ctx.beginPath();
-//            ctx.moveTo(0,4);
-//            ctx.lineTo(0,-4);
-//            ctx.stroke();
 
+            var dis = distance(start, end);
+            ctx.translate(start.x + (end.x - start.x) * (dis - 12) / dis, start.y + (end.y - start.y) * (dis - 12) / dis);
+
+            var angle = Math.atan((end.y - start.y) / (end.x - start.x));
+            ctx.rotate(end.x < start.x ? Math.PI + angle : angle);
+
+            ctx.fillStyle = "rgba(0, 0, 0, 1)";
+            ctx.lineJoin = 'miter'; //'round','bevel','miter'
             ctx.beginPath();
             ctx.moveTo(0, 5);
             ctx.lineTo(4, 0);
             ctx.lineTo(0, -5);
-            ctx.lineTo(13,0);
+            ctx.lineTo(13, 0);
+            
             ctx.fill();
-            //drawText(ctx, angle, eee.x - 12, eee.y - 12);
-            ctx.restore();
 
+            ctx.restore();
         }
 
-        function drawNode(ctx, n) {
+        function drawNode(n) {
             var img = null;
             switch (n.type) {
                 case 'start':
@@ -215,105 +189,35 @@
                     break;
             }
             ctx.drawImage(img, n.position.x - 12, n.position.y - 12);  //drawImage(image, x, y, width, height)
-            drawText(ctx, n.name, n.position.x - 12, n.position.y - 12);
+            drawText(n.name, n.position.x - 12, n.position.y - 12);
         }
 
-        function tran(ctx) {
+        function tran() {
             ctx.setTransform(1, 0, 0, -1, transXY.x, ctx.canvas.height - transXY.y);
 
         }
 
-        var startDragMouseX = 0;
-
-        var startDragMouseY = 0;
-
         var selected = null;
-
         function canvasMouseDownHandler(event) {
-
-            var canvasMouseX = event.layerX;
-
-            if (!canvasMouseX) {
-
-                canvasMouseX = event.x;
-
-            }
-
-            var canvasMouseY = event.layerY;
-
-            if (!canvasMouseY) {
-
-                canvasMouseY = event.y;
-
-            }
-
-            canvasMouseX = canvasMouseX - transXY.x;
-            canvasMouseY = ctx.canvas.height - transXY.y - canvasMouseY;
-            //	alert(canvasMouseX+","+canvasMouseY);
-
-            var n;
             selected = null;
-            for (n in sampleData.nodes) {
-                var jl = distance(sampleData.nodes[n].position, { x: canvasMouseX, y: canvasMouseY });
-                if (jl < 12) {
+            for (var n in sampleData.nodes) {
+                if (distance(sampleData.nodes[n].position, { x: event.x - transXY.x, y: this.height - transXY.y - event.y }) < 16) {
                     selected = n;
-                    break;
+                    this.onmousemove = selected ? canvasMouseMoveHandler : null;
+                    return;
                 }
             }
-
-            if (selected) {
-                //alert(selected);
-
-                document.getElementById('myCanvas').onmousemove = canvasMouseMoveHandler;
-
-
-
-                startDragMouseX = canvasMouseX;
-
-                startDragMouseY = canvasMouseY;
-
-
-
-            }
-
         }
 
-
-
         function canvasMouseMoveHandler(event) {
-
-            var canvasMouseX = event.layerX;
-
-            if (!canvasMouseX) {
-
-                canvasMouseX = event.x;
-
-            }
-
-            var canvasMouseY = event.layerY;
-
-            if (!canvasMouseY) {
-
-                canvasMouseY = event.y;
-
-            }
-
-
-
-            sampleData.nodes[selected].position.x = canvasMouseX - 10;
-            sampleData.nodes[selected].position.y = ctx.canvas.height - transXY.y - canvasMouseY;
-
+            sampleData.nodes[selected].position = { x: event.x - 10, y: this.height - transXY.y - event.y };
             redrawAll();
-
-
         }
 
 
 
         function canvasMouseUpHandler(event) {
-
-            document.getElementById('myCanvas').onmousemove = null;
-
+            this.onmousemove = null;
         }
 
         function distance(p1, p2) {
