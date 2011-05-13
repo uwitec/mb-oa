@@ -107,6 +107,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="canvas\canvas.htm" />
+    <Content Include="canvas\excanvas.js" />
+    <Content Include="canvas\handle.png" />
+    <Content Include="canvas\json.js" />
+    <Content Include="canvas\mytest.htm" />
+    <Content Include="canvas\split.png" />
+    <Content Include="canvas\Start.png" />
+    <Content Include="canvas\stop.png" />
     <Content Include="Content\ExtJS\bootstrap.js" />
     <Content Include="Content\ExtJS\classes\ChartPortlet.js" />
     <Content Include="Content\ExtJS\classes\GridPortlet.js" />
