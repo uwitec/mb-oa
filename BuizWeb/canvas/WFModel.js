@@ -37,22 +37,26 @@ new WFGraph({ id: "myCanvas", data: sampleData });
 function WFGraph(config) {
     var transXY = { x: 20, y: 20 }; //转换后的坐标系原点距离容器左下角
     this.data = config.data;
-    this.canvasID = config.id;
-    this.ctx = document.getElementById(this.canvasID).getContext('2d');
-    this.height = this.ctx.canvas.parentNode.scrollHeight;
-    this.width = this.ctx.canvas.parentNode.scrollWidth;
+    this.ctx = Ext.fly(config.id).dom.getContext('2d');
+    this.height = Ext.fly(config.id).getHeight();
+    this.width = Ext.fly(config.id).getWidth();
     this.fullCanvas = function () {
-        this.ctx.canvas.width = this.width;
-        this.ctx.canvas.height = this.height;
+//        Ext.fly(this.ctx.canvas).dom.width = this.width;
+//        Ext.fly(this.ctx.canvas).dom.height = this.height;
+
+        //this.ctx.canvas.width = this.width;
+        //this.ctx.canvas.height = this.height;
 
         this.ctx.setTransform(1, 0, 0, -1, transXY.x, this.height - transXY.y);
 
         // 注册事件方法,注意事件方法要运行在WFGraph对象中,不能运行在window下
-        this.ctx.canvas.onmousedown = function (scope) {
+        /*this.ctx.canvas.onmousedown = function (scope) {
             return function (event) {
                 return scope.canvasMouseDownHandler.call(scope, event);  // 返回一个上下文在scope(this)里的对canvasMouseDownHandler的调用,EXT可能有更好的解决方法
             } 
-            } (this);
+            } (this);*/
+
+        
 
         this.redrawAll();
     }
@@ -107,25 +111,45 @@ function WFGraph(config) {
 
     //
     this.selected = null;
-    this.canvasMouseDownHandler = function (event) {
-        for (var n in this.data.nodes) {
-            if (this.ctx.distance(this.data.nodes[n].position, { x: event.x - transXY.x - this.ctx.canvas.offsetLeft, y: this.height - transXY.y - event.y + this.ctx.canvas.offsetTop }) < 16) {
-                this.selected = n;
-                this.ctx.canvas.onmousemove = function (scope) { return function (event) { return scope.canvasMouseMoveHandler.call(scope, event); } } (this);
-                this.ctx.canvas.onmouseup = function (scope) { return function (event) { return scope.canvasMouseUpHandler.call(scope, event); } } (this);
-                break;
-            }
+
+    var canvasMouseUpHandler = function (event) {
+        this.selected = null;
+        Ext.fly(this.ctx.canvas).un('mousemove', canvasMouseMoveHandler);
+        Ext.fly(this.ctx.canvas).un('mouseup', canvasMouseUpHandler);
+        //this.ctx.canvas.onmousemove = this.ctx.canvas.onmouseup = null;
+    }
+
+    var canvasMouseMoveHandler = function (event) {
+        //event = event.browserEvent;
+        this.data.nodes[this.selected].position = this.tranp({x:event.x,y:event.y});
+        this.redrawAll();
+    }
+
+    this.tranp = function (point){
+        return {
+            x: point.x - transXY.x - Ext.fly(this.ctx.canvas).getOffsetsTo(document.body)[0] + Ext.fly(document.body).getScroll().left,
+            y: this.height - transXY.y - point.y + Ext.fly(this.ctx.canvas).getOffsetsTo(document.body)[1] - Ext.fly(document.body).getScroll().top 
         }
     }
 
-    this.canvasMouseUpHandler = function (event) {
-        this.selected = this.ctx.canvas.onmousemove = this.ctx.canvas.onmouseup = null;
-    }
-
-    this.canvasMouseMoveHandler = function (event) {
-        this.data.nodes[this.selected].position = { x: event.x - transXY.x - this.ctx.canvas.offsetLeft, y: this.height - transXY.y - event.y + this.ctx.canvas.offsetTop };
-        this.redrawAll();
-    }
+    Ext.fly(this.ctx.canvas).on(
+        'mousedown',
+        function (event) {
+            //event = event.browserEvent;  //使用了normalized: false,不需要转化
+            for (var n in this.data.nodes) {
+                if (this.ctx.distance(this.data.nodes[n].position, this.tranp({ x: event.x, y: event.y })) < 16) {
+                    this.selected = n;
+                    Ext.fly(this.ctx.canvas).on('mousemove', canvasMouseMoveHandler, this, { normalized: false }); //normalized:false表示是HTML正常事件参数,否则要使用event.browserEvent
+                    Ext.fly(this.ctx.canvas).on('mouseup', canvasMouseUpHandler, this);
+                    //this.ctx.canvas.onmousemove = function (scope) { return function (event) { return scope.canvasMouseMoveHandler.call(scope, event); } } (this);
+                    //this.ctx.canvas.onmouseup = function (scope) { return function (event) { return scope.canvasMouseUpHandler.call(scope, event); } } (this);
+                    break;
+                }
+            }
+        },
+        this
+        , { normalized: false }
+    );
 
     this.fullCanvas();
 }
