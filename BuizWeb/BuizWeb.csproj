@@ -115,6 +115,7 @@
     <Content Include="canvas\split.png" />
     <Content Include="canvas\Start.png" />
     <Content Include="canvas\stop.png" />
+    <Content Include="canvas\WFModel.js" />
     <Content Include="Content\ExtJS\bootstrap.js" />
     <Content Include="Content\ExtJS\classes\ChartPortlet.js" />
     <Content Include="Content\ExtJS\classes\GridPortlet.js" />
