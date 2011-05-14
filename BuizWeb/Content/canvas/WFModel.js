@@ -34,34 +34,30 @@ new WFGraph({ id: "myCanvas", data: sampleData });
 3.一些固定尺寸要根据图片尺寸自动变,而不是写死值
 4.那些在当前可视区域外的节点或连线如何进入可视区域
 */
+
 function WFGraph(config) {
-    WFGraph.nodeImgs = {
-        Handle: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("handle.png"),
-        XORSplit: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("split.png"),
-        Start: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("start.png"),
-        Finish: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("stop.png")
-    };
+
 
     var transXY = { x: 20, y: 20 }; //转换后的坐标系原点距离容器左下角
     this.data = config.data;
     this.ctx = Ext.fly(config.id).dom.getContext('2d');
-    this.height = Ext.fly(config.id).getHeight();
-    this.width = Ext.fly(config.id).getWidth();
+    this.height = Ext.fly(config.id).parent().getHeight();
+    this.width = Ext.fly(config.id).parent().getWidth();
     this.fullCanvas = function () {
-//        Ext.fly(this.ctx.canvas).dom.width = this.width;
-//        Ext.fly(this.ctx.canvas).dom.height = this.height;
+        Ext.fly(this.ctx.canvas).dom.width = this.width;
+        Ext.fly(this.ctx.canvas).dom.height = this.height;
 
         //this.ctx.canvas.width = this.width;
         //this.ctx.canvas.height = this.height;
 
-        this.ctx.setTransform(1, 0, 0, -1, transXY.x, this.height - transXY.y);
+
 
         // 注册事件方法,注意事件方法要运行在WFGraph对象中,不能运行在window下
         /*this.ctx.canvas.onmousedown = function (scope) {
-            return function (event) {
-                return scope.canvasMouseDownHandler.call(scope, event);  // 返回一个上下文在scope(this)里的对canvasMouseDownHandler的调用,EXT可能有更好的解决方法
-            } 
-            } (this);*/
+        return function (event) {
+        return scope.canvasMouseDownHandler.call(scope, event);  // 返回一个上下文在scope(this)里的对canvasMouseDownHandler的调用,EXT可能有更好的解决方法
+        } 
+        } (this);*/
 
         
 
@@ -69,15 +65,22 @@ function WFGraph(config) {
     }
 
     this.redrawAll = function () {
+        this.ctx.setTransform(1, 0, 0, -1, transXY.x, this.height - transXY.y);
         this.ctx.clearRect(-transXY.x, -transXY.y, this.width, this.height);
 
-        for (var n in this.data.Lines) {
+        this.ctx.drawLineWithArrow({ x: -10, y: 0 }, { x: 45, y: 0 });
+        this.ctx.drawLineWithArrow({ x: 0, y: -10}, { x: 0, y: 45 });
+
+        var n;
+        for (n in this.data.Lines) {
             this.drawLine(this.data.Lines[n]);
         }
 
-        for (var n in this.data.nodes) {
+        for (n in this.data.nodes) {
             this.drawNode(this.data.nodes[n]);
         }
+
+        //alert('dddd');
     }
 
     this.drawLine = function (line) {
@@ -98,7 +101,7 @@ function WFGraph(config) {
         // 因为节点图片本身点据一定空间,连线要让开这部分空间,因此需要重新测算起点和终点,具体大小应该根据图片自动设置,以后改进
         this.ctx.drawLineWithArrow(
                     { x: end.x + (start.x - end.x) * (dis - 20) / dis, y: end.y + (start.y - end.y) * (dis - 20) / dis }, //起点让20px
-                    { x: start.x + (end.x - start.x) * (dis - 20) / dis, y: start.y + (end.y - start.y) * (dis - 20) / dis } //终点让30px
+                    {x: start.x + (end.x - start.x) * (dis - 20) / dis, y: start.y + (end.y - start.y) * (dis - 20) / dis} //终点让30px
                 );
     }
 
@@ -118,47 +121,86 @@ function WFGraph(config) {
 
     //
     this.selected = null;
+    this.operateState = null; // moveCanvas
+
+    this.tranp = function (point) {
+        return {
+            x: point.x - transXY.x - Ext.fly(this.ctx.canvas).getOffsetsTo(document.body)[0] + Ext.fly(document.body).getScroll().left,
+            y: this.height - transXY.y - point.y + Ext.fly(this.ctx.canvas).getOffsetsTo(document.body)[1] - Ext.fly(document.body).getScroll().top
+        }
+    }
+
+    var canvasMove = function (event) {
+        Ext.fly(this.ctx.canvas).setStyle('cursor', 'move');
+        if (this.operateState) {
+            transXY = { x: transXY.x + event.x - this.operateState.x, y: transXY.y - event.y + this.operateState.y };
+            this.redrawAll();
+            this.operateState = { x: event.x, y: event.y };
+        }
+    }
+
+    var canvasMouseDownHandler = function (event) {
+        //event = event.browserEvent;  //使用了normalized: false,不需要转化
+        for (var n in this.data.nodes) {
+            if (this.ctx.distance(this.data.nodes[n].position, this.tranp({ x: event.x, y: event.y })) < 16) {
+                this.selected = n;
+
+                //this.ctx.canvas.onmousemove = function (scope) { return function (event) { return scope.canvasMouseMoveHandler.call(scope, event); } } (this);
+                Ext.fly(this.ctx.canvas).on('mousemove', canvasMouseMoveHandler, this, { normalized: false });  // 上面也可以用
+
+                //this.ctx.canvas.onmouseup = function (scope) { return function (event) { return scope.canvasMouseUpHandler.call(scope, event); } } (this);
+                Ext.fly(this.ctx.canvas).on('mouseup', canvasMouseUpHandler, this);  // 上面也可以用
+
+                return;
+            }
+        }
+
+        this.operateState = { x: event.x, y: event.y }; //
+        
+        Ext.fly(this.ctx.canvas).on('mousemove', canvasMove, this, { normalized: false });  // 上面也可以用
+        Ext.fly(this.ctx.canvas).on('mouseup', function () { this.operateState = null; Ext.fly(this.ctx.canvas).un('mousemove', canvasMove); }, this, { normalized: false });  // 上面也可以用
+    }
 
     var canvasMouseUpHandler = function (event) {
         this.selected = null;
         Ext.fly(this.ctx.canvas).un('mousemove', canvasMouseMoveHandler);
         Ext.fly(this.ctx.canvas).un('mouseup', canvasMouseUpHandler);
         //this.ctx.canvas.onmousemove = this.ctx.canvas.onmouseup = null;
+        
     }
 
     var canvasMouseMoveHandler = function (event) {
         //event = event.browserEvent;
-        this.data.nodes[this.selected].position = this.tranp({x:event.x,y:event.y});
-        this.redrawAll();
-    }
-
-    this.tranp = function (point){
-        return {
-            x: point.x - transXY.x - Ext.fly(this.ctx.canvas).getOffsetsTo(document.body)[0] + Ext.fly(document.body).getScroll().left,
-            y: this.height - transXY.y - point.y + Ext.fly(this.ctx.canvas).getOffsetsTo(document.body)[1] - Ext.fly(document.body).getScroll().top 
+        if (this.selected) {
+            this.data.nodes[this.selected].position = this.tranp({ x: event.x, y: event.y });
+            this.redrawAll();
         }
     }
 
+    var canvasDblClick = function (event) {
+        for (var n in this.data.nodes) {
+            if (this.ctx.distance(this.data.nodes[n].position, this.tranp({ x: event.x, y: event.y })) < 16) {
+                this.selected = n;
+                break;
+            }
+        }
+        alert(this.selected);
+        this.selected = null;
+    }
+
+
     Ext.fly(this.ctx.canvas).on( // 注册mousedown事件响应
         'mousedown',
-        function (event) {
-            //event = event.browserEvent;  //使用了normalized: false,不需要转化
-            for (var n in this.data.nodes) {
-                if (this.ctx.distance(this.data.nodes[n].position, this.tranp({ x: event.x, y: event.y })) < 16) {
-                    this.selected = n;
+        canvasMouseDownHandler,
+        this,
+        { normalized: false }
+    );
 
-                    //this.ctx.canvas.onmousemove = function (scope) { return function (event) { return scope.canvasMouseMoveHandler.call(scope, event); } } (this);
-                    Ext.fly(this.ctx.canvas).on('mousemove', canvasMouseMoveHandler, this, { normalized: false });  // 上面也可以用
-
-                    //this.ctx.canvas.onmouseup = function (scope) { return function (event) { return scope.canvasMouseUpHandler.call(scope, event); } } (this);
-                    Ext.fly(this.ctx.canvas).on('mouseup', canvasMouseUpHandler, this);  // 上面也可以用
-                    
-                    break;
-                }
-            }
-        },
-        this
-        , { normalized: false }
+    Ext.fly(this.ctx.canvas).on( // 注册mousedown事件响应
+        'dblclick',
+        canvasDblClick,
+        this,
+        { normalized: false }
     );
 
     this.fullCanvas();
@@ -181,7 +223,7 @@ CanvasRenderingContext2D.prototype.drawLineWithArrow = function (start, end) {
     this.save(); //保存状态
 
     // 将原点移动终点
-    this.translate(end.x,end.y);
+    this.translate(end.x, end.y);
 
     // 计算直线角度
     var angle = Math.atan((end.y - start.y) / (end.x - start.x));
@@ -201,3 +243,10 @@ CanvasRenderingContext2D.prototype.drawLineWithArrow = function (start, end) {
 
     this.restore(); //恢复状态
 }
+
+WFGraph.nodeImgs = {
+    Handle: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/handle.png"),
+    XORSplit: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/split.png"),
+    Start: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/start.png"),
+    Finish: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/stop.png")
+};

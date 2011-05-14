@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using EntityObjectContext;
+using EntityObjectLib.WF;
 
 namespace BuizApp.Areas.workflow.Controllers
 {
-    public class DefineController : Controller
+    public class ManageController : Controller
     {
         //
         // GET: /workflow/workflowManage/
@@ -22,7 +24,18 @@ namespace BuizApp.Areas.workflow.Controllers
         /// <returns></returns>
         public ActionResult define()
         {
-            return this.Redirect("~/canvas/canvas.htm");
+            return View();
+        }
+
+        public ActionResult getTemplate()
+        {
+            string id = Request.Params["templateId"];
+            using (MyDB mydb = new MyDB())
+            {
+                WFTemplate template = mydb.WFTemplates.Find(id);
+
+            }
+            return null;
         }
     }
 }

@@ -107,15 +107,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="canvas\canvas.htm" />
-    <Content Include="canvas\excanvas.js" />
-    <Content Include="canvas\handle.png" />
-    <Content Include="canvas\json.js" />
-    <Content Include="canvas\mytest.htm" />
-    <Content Include="canvas\split.png" />
-    <Content Include="canvas\Start.png" />
-    <Content Include="canvas\stop.png" />
-    <Content Include="canvas\WFModel.js" />
+    <Content Include="Content\canvas\canvas.htm" />
+    <Content Include="Content\canvas\excanvas.js" />
+    <Content Include="Content\canvas\handle.png" />
+    <Content Include="Content\canvas\json.js" />
+    <Content Include="Content\canvas\mytest.htm" />
+    <Content Include="Content\canvas\split.png" />
+    <Content Include="Content\canvas\Start.png" />
+    <Content Include="Content\canvas\stop.png" />
+    <Content Include="Content\canvas\WFModel.js" />
     <Content Include="Content\ExtJS\bootstrap.js" />
     <Content Include="Content\ExtJS\classes\ChartPortlet.js" />
     <Content Include="Content\ExtJS\classes\GridPortlet.js" />
@@ -1149,7 +1149,7 @@
     <Content Include="Areas\office\Views\myOffice\myCarlendar.cshtml" />
     <Content Include="Areas\office\Views\myOffice\myMemo.cshtml" />
     <Content Include="Areas\workflow\Views\Instance\createForm.cshtml" />
-    <Content Include="Areas\workflow\Views\define.cshtml" />
+    <Content Include="Areas\workflow\Views\Manage\define.cshtml" />
     <Content Include="Areas\workflow\Views\Web.config" />
     <Content Include="Areas\workflow\Views\Instance\create.cshtml" />
     <Content Include="Areas\default\Views\Login\dddx.cshtml" />
