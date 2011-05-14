@@ -189,3 +189,34 @@
     margin:2px;
     cursor: pointer;
 }
+
+
+.iconWFStart
+{
+    background: url(canvas/start16.png) top left no-repeat !important;
+}
+
+.iconWFStop
+{
+    background: url(canvas/stop16.png) top left no-repeat !important;
+}
+
+.iconWFSplit
+{
+    background: url(canvas/Split16.png) top left no-repeat !important;
+}
+
+.iconWFHandle
+{
+    background: url(canvas/Handle16.png) top left no-repeat !important;
+}
+
+.iconWFArrow
+{
+    background: url(canvas/Arrow16.png) top left no-repeat !important;
+}
+
+.iconWFMove
+{
+    background: url(canvas/move16.png) top left no-repeat !important;
+}
