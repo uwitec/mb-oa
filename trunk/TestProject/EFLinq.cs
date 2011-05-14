@@ -9,6 +9,7 @@ using EntityObjectLib;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
+using System.Data.Entity;
 
 
 namespace TestProject1
@@ -91,5 +92,48 @@ namespace TestProject1
 
             return;
         }
+
+        [TestMethod]
+        public void lazy()
+        {
+            using (MyDB mydb = new MyDB())
+            {
+                mydb.Configuration.LazyLoadingEnabled = false;
+                Organization org = mydb.Organizations.First();
+                mydb.Users.Load();
+                User[] users = org.Users.ToArray();
+            }
+        }
+
+        [TestMethod]
+        public void exeSQL()
+        {
+            using (MyDB mydb = new MyDB())
+            {
+                User u = mydb.Database.SqlQuery<User>("select s.*,u.* from users u left join subjects s on u.id=s.id").First();
+            }
+        }
+
+        [TestMethod]
+        public void getSQL()
+        {
+            using (MyDB mydb = new MyDB())
+            {
+                IQueryable<User> users = mydb.Users.Where(u => u.Code.Contains("lx"));
+                string sql = users.ToString();
+            }
+        }
+
+        [TestMethod]
+        public void sss()
+        {
+            using (MyDB mydb = new MyDB())
+            {
+                User user = mydb.Users.First(u => u.Code.Contains("lx"));
+                mydb.Entry(user).Collection(u => u.CreateWFTemplates).Query().Load();
+            }
+        }
+
+        //http://www.cnblogs.com/LingzhiSun/
     }
 }
