@@ -35,6 +35,13 @@ new WFGraph({ id: "myCanvas", data: sampleData });
 4.那些在当前可视区域外的节点或连线如何进入可视区域
 */
 function WFGraph(config) {
+    WFGraph.nodeImgs = {
+        Handle: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("handle.png"),
+        XORSplit: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("split.png"),
+        Start: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("start.png"),
+        Finish: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("stop.png")
+    };
+
     var transXY = { x: 20, y: 20 }; //转换后的坐标系原点距离容器左下角
     this.data = config.data;
     this.ctx = Ext.fly(config.id).dom.getContext('2d');
@@ -91,7 +98,7 @@ function WFGraph(config) {
         // 因为节点图片本身点据一定空间,连线要让开这部分空间,因此需要重新测算起点和终点,具体大小应该根据图片自动设置,以后改进
         this.ctx.drawLineWithArrow(
                     { x: end.x + (start.x - end.x) * (dis - 20) / dis, y: end.y + (start.y - end.y) * (dis - 20) / dis }, //起点让20px
-                    { x: start.x + (end.x - start.x) * (dis - 30) / dis, y: start.y + (end.y - start.y) * (dis - 30) / dis } //终点让30px
+                    { x: start.x + (end.x - start.x) * (dis - 20) / dis, y: start.y + (end.y - start.y) * (dis - 20) / dis } //终点让30px
                 );
     }
 
@@ -132,17 +139,20 @@ function WFGraph(config) {
         }
     }
 
-    Ext.fly(this.ctx.canvas).on(
+    Ext.fly(this.ctx.canvas).on( // 注册mousedown事件响应
         'mousedown',
         function (event) {
             //event = event.browserEvent;  //使用了normalized: false,不需要转化
             for (var n in this.data.nodes) {
                 if (this.ctx.distance(this.data.nodes[n].position, this.tranp({ x: event.x, y: event.y })) < 16) {
                     this.selected = n;
-                    Ext.fly(this.ctx.canvas).on('mousemove', canvasMouseMoveHandler, this, { normalized: false }); //normalized:false表示是HTML正常事件参数,否则要使用event.browserEvent
-                    Ext.fly(this.ctx.canvas).on('mouseup', canvasMouseUpHandler, this);
+
                     //this.ctx.canvas.onmousemove = function (scope) { return function (event) { return scope.canvasMouseMoveHandler.call(scope, event); } } (this);
+                    Ext.fly(this.ctx.canvas).on('mousemove', canvasMouseMoveHandler, this, { normalized: false });  // 上面也可以用
+
                     //this.ctx.canvas.onmouseup = function (scope) { return function (event) { return scope.canvasMouseUpHandler.call(scope, event); } } (this);
+                    Ext.fly(this.ctx.canvas).on('mouseup', canvasMouseUpHandler, this);  // 上面也可以用
+                    
                     break;
                 }
             }
@@ -154,40 +164,40 @@ function WFGraph(config) {
     this.fullCanvas();
 }
 
-WFGraph.nodeImgs = {
-    Handle: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("handle.png"),
-    XORSplit: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("split.png"),
-    Start: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("start.png"),
-    Finish: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("stop.png")
-};
 
+// 扩展方法,计算两点间的距离
 CanvasRenderingContext2D.prototype.distance = function (start, end) {
     return Math.sqrt(Math.pow(start.x - end.x, 2) + Math.pow(start.y - end.y, 2));
 }
 
+// 扩展方法,画终点是箭头的直线
 CanvasRenderingContext2D.prototype.drawLineWithArrow = function (start, end) {
+    //画线
     this.beginPath();
     this.moveTo(start.x, start.y);
     this.lineTo(end.x, end.y);
     this.stroke();
 
-    this.save();
+    this.save(); //保存状态
 
-    var dis = this.distance(start, end);
-    this.translate(start.x + (end.x - start.x) * (dis) / dis, start.y + (end.y - start.y) * (dis) / dis);
+    // 将原点移动终点
+    this.translate(end.x,end.y);
 
+    // 计算直线角度
     var angle = Math.atan((end.y - start.y) / (end.x - start.x));
+
+    // 将X轴与直线重合,且起点到终点的方法为X轴正方向
     this.rotate(end.x < start.x ? Math.PI + angle : angle);
 
+    // 填充箭头
     this.fillStyle = "rgba(0, 0, 0, 1)";
     this.lineJoin = 'miter'; //'round','bevel','miter'
     this.beginPath();
-    this.moveTo(0, 5);
-    this.lineTo(4, 0);
-    this.lineTo(0, -5);
-    this.lineTo(13, 0);
-
+    this.moveTo(-13, 5);
+    this.lineTo(-9, 0);
+    this.lineTo(-13, -5);
+    this.lineTo(0, 0);
     this.fill();
 
-    this.restore();
+    this.restore(); //恢复状态
 }
