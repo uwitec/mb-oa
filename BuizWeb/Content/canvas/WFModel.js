@@ -59,9 +59,10 @@ function WFGraph(config) {
         } 
         } (this);*/
 
-        
-
-        this.redrawAll();
+        if (this.data) {
+            transXY = { x: this.data.OffsetX, y: this.data.OffsetY };
+            this.redrawAll();
+        }
     }
 
     this.redrawAll = function () {
@@ -69,7 +70,7 @@ function WFGraph(config) {
         this.ctx.clearRect(-transXY.x, -transXY.y, this.width, this.height);
 
         this.ctx.drawLineWithArrow({ x: -10, y: 0 }, { x: 45, y: 0 });
-        this.ctx.drawLineWithArrow({ x: 0, y: -10}, { x: 0, y: 45 });
+        this.ctx.drawLineWithArrow({ x: 0, y: -10 }, { x: 0, y: 45 });
 
         var n;
         for (n in this.data.lines) {
@@ -176,12 +177,37 @@ function WFGraph(config) {
                             this,
                             { normalized: false }
                         ); //Ext.fly(this.ctx.canvas).on
+                    Ext.fly(this.ctx.canvas).on('mouseup',
+                            function (event) {
+                                if (this.operateState.params && this.operateState.params.selected) {
+                                    Ext.Ajax.request({
+                                        url: '/workflow/Manage/modifyTemplate',
+                                        params: {
+                                            templateId: this.data.ID,
+                                            mode: 'select',
+                                            nodeID: this.operateState.params.selected.ID,
+                                            x: this.operateState.params.selected.position.x,
+                                            y: this.operateState.params.selected.position.y
+                                        },
+                                        success: function (response) {
+                                            //alert('保存成功!');
+                                            //wfg.redrawAll();
+                                            Ext.getCmp('graphStatus').setText('节点移动...'); //这句不应该回这里
+                                        },
+                                        failure: function (response) {
+                                            alert(response.responseText);
+                                        }
+                                    });
+                                }
+                                this.resetOperateState();
+                            }, // function (event) 
+                            this,
+                            { normalized: false }
+                    )
                 }
             },
             mousemove: null,
-            mouseup: function (event) {
-                this.resetOperateState();
-            },
+            mouseup: null,
             dblclick: function (event) {
                 var n = this.captureNode(event) || this.captureLine(event);
                 if (n)
@@ -211,6 +237,23 @@ function WFGraph(config) {
             },
             mousemove: null,
             mouseup: function (event) {
+                Ext.Ajax.request({
+                    url: '/workflow/Manage/modifyTemplate',
+                    params: {
+                        templateId: this.data.ID,
+                        mode: 'move',
+                        x: transXY.x,
+                        y: transXY.y
+                    },
+                    success: function (response) {
+                        //alert('保存成功!');
+                        //wfg.redrawAll();
+                        Ext.getCmp('graphStatus').setText('画布移动...'); //这句不应该回这里
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    }
+                });
                 this.operateState.params = null;
             },
             dblclick: null
@@ -222,8 +265,35 @@ function WFGraph(config) {
         mode: 'newHandle',
         listeners: {
             mousedown: function (event) {
-                this.data.nodes.push({ ID: GUID(), name: 'new', type: 'Handle', position: this.tranp(event) });
-                this.redrawAll();
+                var nodeID = GUID();
+                // 打开表单编辑，提交再生成后
+                new Ext.window.Window({
+                    id: 'fwin',
+                    title: '流程模板信息',
+                    modal: true,
+                    closable: true,
+                    //animateTarget: this,
+                    width: 600,
+                    //height: 500,
+                    layout: 'fit',
+                    bodyPadding: 0,
+                    items: [
+                        new MB.form.WFTemplate({
+                            templateId: this.data.ID,
+                            //id: '',
+                            x: this.tranp(event).x,
+                            y: this.tranp(event).y,
+                            close: function () { Ext.getCmp('fwin').close(); },
+                            submitSccess: function (form, action) {
+                                alert("submitSccess");
+                                wfg.data.nodes.push({ ID: form.getValues()["ID"], name: form.getValues()["Name"], type: 'WFNodeHandle', position: { x: form.getValues()['x'], y: form.getValues()['y']} });
+                                wfg.redrawAll();
+                                this.close();
+                            },
+                            submitFailure: function (form, action) { alert("submitFailure"); }
+                        })
+                    ]
+                }).show();
             },
             mousemove: null,
             mouseup: null,
@@ -236,7 +306,7 @@ function WFGraph(config) {
         mode: 'newEvent',
         listeners: {
             mousedown: function (event) {
-                this.data.nodes.push({ ID: GUID(), name: 'new', type: 'Event', position: this.tranp(event) });
+                this.data.nodes.push({ ID: GUID(), name: 'new', type: 'WFNodeEvent', position: this.tranp(event) });
                 this.redrawAll();
             },
             mousemove: null,
@@ -250,7 +320,7 @@ function WFGraph(config) {
         mode: 'newSplit',
         listeners: {
             mousedown: function (event) {
-                this.data.nodes.push({ ID: GUID(), name: 'new', type: 'XORSplit', position: this.tranp(event) });
+                this.data.nodes.push({ ID: GUID(), name: 'new', type: 'WFNodeXORSplit', position: this.tranp(event) });
                 this.redrawAll();
             },
             mousemove: null,
@@ -416,9 +486,9 @@ CanvasRenderingContext2D.prototype.drawLineWithArrow = function (start, end) {
 }
 
 WFGraph.nodeImgs = {
-    Handle: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/handle.png"),
-    XORSplit: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/split.png"),
-    Start: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/start.png"),
-    Event: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/event24.png"),
-    Finish: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/stop.png")
+    WFNodeHandle: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/handle.png"),
+    WFNodeXORSplit: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/split.png"),
+    WFNodeStart: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/start.png"),
+    WFNodeEvent: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/event24.png"),
+    WFNodeFinish: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/stop.png")
 };
