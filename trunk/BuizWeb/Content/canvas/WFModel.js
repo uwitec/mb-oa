@@ -232,6 +232,20 @@ function WFGraph(config) {
         params: null
     };
 
+    var newEventOperateState = {
+        mode: 'newEvent',
+        listeners: {
+            mousedown: function (event) {
+                this.data.nodes.push({ ID: GUID(), name: 'new', type: 'Event', position: this.tranp(event) });
+                this.redrawAll();
+            },
+            mousemove: null,
+            mouseup: null,
+            dblclick: null
+        },
+        params: null
+    };
+
     var newSplitOperateState = {
         mode: 'newSplit',
         listeners: {
@@ -284,7 +298,7 @@ function WFGraph(config) {
                         if (line.from == n.ID || line.to == n.ID) {
                             var b = this.data.lines.indexOf(line);
                             if (b >= 0) {
-                                this.data.nodes.splice(b, 1);
+                                this.data.lines.splice(b, 1);
                             }
                         }  // end of if
                     }
@@ -293,6 +307,16 @@ function WFGraph(config) {
                         this.data.nodes.splice(a, 1);
                     }
                     this.redrawAll();
+                }
+                else {
+                    n = this.captureLine(event);
+                    if (n && confirm("确认删除该连接吗?")) {
+                        var a = this.data.lines.indexOf(n);
+                        if (a >= 0) {
+                            this.data.lines.splice(a, 1);
+                        }
+                        this.redrawAll();
+                    }
                 }
             }
         },
@@ -306,7 +330,8 @@ function WFGraph(config) {
         newHandle: newHandleOperateState,
         newSplit: newSplitOperateState,
         newTrans: newTransOperateState,
-        'delete': deleteOperateState
+        'delete': deleteOperateState,
+        newEvent: newEventOperateState
     };
 
     // 操作状态的模式及参数
@@ -394,5 +419,6 @@ WFGraph.nodeImgs = {
     Handle: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/handle.png"),
     XORSplit: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/split.png"),
     Start: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/start.png"),
+    Event: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/event24.png"),
     Finish: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/stop.png")
 };
