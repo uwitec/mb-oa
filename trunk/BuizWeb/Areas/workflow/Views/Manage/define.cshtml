@@ -13,16 +13,18 @@
 			    { ID: '6', name: '人工处理', type: 'Handle', position: { x: 110, y: 37} },
 			    { ID: '7', name: '结束节点', type: 'Finish', position: { x: 666, y: 88} }
 		    ],
-                Lines: [
-			    { from: '1', to: '2', middlePoint: { x: 11, y: 11} },
-			    { from: '2', to: '3', middlePoint: { x: 11, y: 11} },
-			    { from: '2', to: '4', middlePoint: { x: 11, y: 11} },
-			    { from: '3', to: '4', middlePoint: { x: 11, y: 11} },
-			    { from: '5', to: '6', middlePoint: { x: 11, y: 11} },
-			    { from: '5', to: '7', middlePoint: { x: 11, y: 11} },
-                { from: '4', to: '5', middlePoint: { x: 11, y: 11} }
+                lines: [
+			    { ID: '1', from: '1', to: '2', name: '活动12' }, //name:如果是处理节点,取动作,如果是条件结点,取条件
+			    { ID: '1', from: '2', to: '3', name: '活动23' },
+			    { ID: '1', from: '2', to: '4', name: '活动24' },
+			    { ID: '1', from: '3', to: '4', name: '活动34' },
+			    { ID: '1', from: '5', to: '6', name: '活动56' },
+			    { ID: '1', from: '5', to: '7', name: '活动57' },
+                { ID: '1', from: '4', to: '5', name: '活动45' }
 		    ]
-        };
+            };
+
+            var wfg;
 
         Ext.onReady(function () {
             Ext.create('Ext.container.Viewport', {
@@ -33,64 +35,66 @@
                     xtype: 'panel',
                     border: 1,
                     layout: 'border',
-                    defaults:{border:1},
+                    defaults: { border: 1 },
                     title: '流程管理 - 流程建模',
-                    items:[{
-                            region:'center',
-                            xtype: 'panel',
-                            //title: '流程图',
-                            lbar: [
-                                { xtype: 'button', iconCls: 'iconWFMove', text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { } },
-                              { xtype: 'button', iconCls: 'iconWFHandle', text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { } },
-                              { xtype: 'button', iconCls: 'iconWFSplit', text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { } },
-                              { xtype: 'button', iconCls: 'iconWFArrow', text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { } },
-                              { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { } },
-                              { xtype: 'button', iconCls: 'iconSave', text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { } },
-                              { xtype: 'tbseparator' },
-                              { xtype: 'tbfill' },
-                              { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { } }
+                    items: [{
+                        region: 'center',
+                        xtype: 'panel',
+                        //title: '流程图',
+                        lbar: [
+                                { xtype: 'button', iconCls: 'iconWFSelect', enableToggle: true, toggleGroup: 'operateState', pressed: true, text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { wfg.setOperateState('select') } },
+                                { xtype: 'button', iconCls: 'iconWFMove', enableToggle: true, toggleGroup: 'operateState', text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { wfg.setOperateState('move') } },
+                                { xtype: 'button', iconCls: 'iconWFHandle', enableToggle: true, toggleGroup: 'operateState', text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { wfg.setOperateState('newHandle') } },
+                                { xtype: 'button', iconCls: 'iconWFSplit', enableToggle: true, toggleGroup: 'operateState', text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { wfg.setOperateState('newSplit') } },
+                                { xtype: 'button', iconCls: 'iconWFArrow', enableToggle: true, toggleGroup: 'operateState', text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { wfg.setOperateState('newTrans') } },
+                                { xtype: 'button', iconCls: 'iconDelete', enableToggle: true, toggleGroup: 'operateState', text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { wfg.setOperateState('delete') } },
+                                { xtype: 'tbseparator' },
+                                { xtype: 'button', iconCls: 'iconSave', text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { } },
+                                { xtype: 'tbfill' },
+                                { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { } }
                             ],
-                            contentEl: 'divCanvas'
+                        contentEl: 'divCanvas'
+                    }, {
+                        region: 'west',
+                        xtype: 'grid',
+                        //title: '流程模板列表',
+                        store: new Ext.data.Store({
+                            fields: ['ID', 'Code', 'Name'],
+                            proxy: {
+                                type: 'ajax',
+                                url: '/data/privilege/OrganizationTree'
+                            }
+                        }),
+                        columns: [{
+                            header: '编码',
+                            dataIndex: 'Code',
+                            width: 80
                         }, {
-                            region:'west',
-                            xtype: 'grid',
-                            //title: '流程模板列表',
-                            store: new Ext.data.Store({
-                                fields:['ID','Code','Name'],
-                                proxy: {
-                                    type: 'ajax',
-                                    url: '/data/privilege/OrganizationTree'
-                                }
-                            }),
-                            columns:[{
-                                header:'编码',
-                                dataIndex:'Code',
-                                width: 80
-                            },{
-                                header:'名称',
-                                dataIndex:'Name',
-                                flex:1
-                            }],
-                            split: true,
-                            tbar: [
+                            header: '名称',
+                            dataIndex: 'Name',
+                            flex: 1
+                        }],
+                        split: true,
+                        tbar: [
                               { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '新建组织', tooltipType: 'title', handler: function (source, e) { } },
                               { xtype: 'tbseparator' },
                               { xtype: 'tbfill' },
                               { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { } }
                             ],
-                            width:200
-                        }
+                        width: 200
+                    }
                     ]
                 }
                 ]
             });
 
-            
+
         });
 
         window.onload = function () { //当前只能放在这里,如果放在Ext.onReady中加载,显示不出图片,但移动节点后可显示,不知道为什么?
             //alert('window.onload');
-            new WFGraph({ id: "myCanvas", data: sampleData });
+            wfg = new WFGraph({ id: "myCanvas", data: sampleData });
+            // prob: 怎样让EXTJS与用户对象协作
         }
     </script>
 }
