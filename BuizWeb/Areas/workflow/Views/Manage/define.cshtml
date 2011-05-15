@@ -11,7 +11,8 @@
 			    { ID: '4', name: '条件分支', type: 'XORSplit', position: { x: 311, y: 311} },
 			    { ID: '5', name: '人工处理', type: 'Handle', position: { x: 600, y: 330} },
 			    { ID: '6', name: '人工处理', type: 'Handle', position: { x: 110, y: 37} },
-			    { ID: '7', name: '结束节点', type: 'Finish', position: { x: 666, y: 88} }
+			    { ID: '7', name: '结束节点', type: 'Finish', position: { x: 666, y: 88} },
+                { ID: '12', name: '事件节点', type: 'Event', position: { x: 616, y: 118} }
 		    ],
                 lines: [
 			    { ID: '1', from: '1', to: '2', name: '活动12' }, //name:如果是处理节点,取动作,如果是条件结点,取条件
@@ -45,6 +46,7 @@
                                 { xtype: 'button', iconCls: 'iconWFSelect', enableToggle: true, toggleGroup: 'operateState', pressed: true, text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { wfg.setOperateState('select') } },
                                 { xtype: 'button', iconCls: 'iconWFMove', enableToggle: true, toggleGroup: 'operateState', text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { wfg.setOperateState('move') } },
                                 { xtype: 'button', iconCls: 'iconWFHandle', enableToggle: true, toggleGroup: 'operateState', text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { wfg.setOperateState('newHandle') } },
+                                { xtype: 'button', iconCls: 'iconWFEvent', enableToggle: true, toggleGroup: 'operateState', text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { wfg.setOperateState('newEvent') } },
                                 { xtype: 'button', iconCls: 'iconWFSplit', enableToggle: true, toggleGroup: 'operateState', text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { wfg.setOperateState('newSplit') } },
                                 { xtype: 'button', iconCls: 'iconWFArrow', enableToggle: true, toggleGroup: 'operateState', text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { wfg.setOperateState('newTrans') } },
                                 { xtype: 'button', iconCls: 'iconDelete', enableToggle: true, toggleGroup: 'operateState', text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { wfg.setOperateState('delete') } },
