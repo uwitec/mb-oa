@@ -27,6 +27,10 @@ namespace EntityObjectLib.WF
         /// </summary>
         public string BuizName { get; set; }
 
+        public int OffsetX { get; set; }
+
+        public int OffsetY { get; set; }
+
         /// <summary>
         /// 创建人
         /// </summary>

@@ -787,3 +787,190 @@ MB.form.Memo = function (config) {
 
     return this.form;
 }
+
+
+MB.form.WFTemplate = function (config) {
+    this.name = "流程模板表单";
+    this.form = new Ext.form.FormPanel({
+        //url: '/system/auth/CreateResource',
+        params: { sid: config.id, jid: 'ssss' },
+        layout: {
+            type: 'vbox',
+            align: 'stretch'
+        },
+        height: 400,
+        width: '100%',
+        autoHeight: true,
+        stateful: false,
+        fieldDefaults: { labelAlign: 'left', msgTarget: 'none', anchor: '100%', margin: 4, labelWidth: 60 },
+        items: [
+            { xtype: 'hiddenfield', name: 'templateId', value: config.templateId, hidden: true },
+            { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
+            { xtype: 'hiddenfield', name: 'x', value: config.x, hidden: true },
+            { xtype: 'hiddenfield', name: 'y', value: config.y, hidden: true },
+            { xtype: 'textfield', name: 'Name', fieldLabel: '模板名称' },
+             {
+                 xtype: 'fieldcontainer',
+                 layout: 'hbox',
+                 fieldDefaults: { labelAlign: 'left', msgTarget: 'none', labelWidth: 60, flex: 1 },
+                 items: [
+                    { xtype: 'textfield', name: 'ViewCode', fieldLabel: '视图表单' },
+                    { xtype: 'splitter', width: 30 },
+                    { xtype: 'checkboxfield', name: 'IsCountersign', fieldLabel: '是否会签' }
+                    ]
+             },
+        //{ xtype: 'textareafield', name: 'Description', flex: 1, fieldLabel: '节点描述' },
+        {
+        xtype: 'tabpanel',
+        plain: true,
+        activeTab: 0,
+        margin: 4,
+        flex: 1,
+        items: [{
+            title: '处理人',
+            layout: 'fit',
+            items: [
+                {
+                    xtype: 'grid',
+                    tbar: [
+                        { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) {
+                        }
+                        }
+                    ],
+                    store: new Ext.data.Store({
+                        fields: ['ID', 'Code', 'Name', 'Category'],
+                        proxy: {
+                            type: 'ajax',
+                            extraParams: { id: config.id, templateId: config.templateId },
+                            url: '/workflow/manage/getNodeHandlers',
+                            reader: {
+                                type: 'json',
+                                root: 'data'
+                            }
+                        },
+                        autoLoad: true,
+                        listeners: {
+                            load: function (store, records, successful) {
+                                if (!successful) {
+                                    alert('数据加载失败');
+                                }
+                                else {
+                                }
+                            }
+                        }
+                    }),
+                    columns: [
+                        new Ext.grid.RowNumberer(),
+                        {
+                            header: '代码',
+                            dataIndex: 'Code',
+                            width: 80
+                        }, {
+                            header: '名称',
+                            dataIndex: 'Name',
+                            flex: 1
+                        }, {
+                            header: '类别',
+                            dataIndex: 'Category',
+                            flex: 1
+                        }, {
+                            xtype: 'actioncolumn',
+                            icon: '/content/images/delete.gif',
+                            width: 30,
+                            tooltip: '删除',
+                            handler: function (grid, rowIndex, colIndex) {
+                                //var rec = grid.getStore().getAt(rowIndex);
+                                //alert("Terminate " + rec.get('firstname'));
+                                alert(rowIndex);
+                            }
+                        }
+                        ]
+                }
+                ]
+        }, {
+            title: '访问权限',
+            layout: 'fit',
+            items: [
+                {
+                    xtype: 'grid',
+                    tbar: [
+                        { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) { } },
+                    ],
+                    store: new Ext.data.Store({
+                        fields: ['ID', 'Code', 'Name', 'ACL'],
+                        proxy: {
+                            type: 'ajax',
+                            extraParams: { id: config.id, templateId: config.templateId },
+                            url: '/workflow/manage/getNodeACLs',
+                            reader: {
+                                type: 'json',
+                                root: 'data'
+                            }
+                        },
+                        autoLoad: true,
+                        listeners: {
+                            load: function (store, records, successful) {
+                                if (!successful) {
+                                    alert('数据加载失败');
+                                }
+                                else {
+                                }
+                            }
+                        }
+                    }),
+                    columns: [
+                        new Ext.grid.RowNumberer(),
+                        {
+                            header: '字段编码',
+                            dataIndex: 'Code',
+                            width: 80
+                        }, {
+                            header: '字段名称',
+                            dataIndex: 'Name',
+                            flex: 1
+                        }, {
+                            header: '访问权限',
+                            dataIndex: 'ACL',
+                            flex: 1
+                        }, {
+                            xtype: 'actioncolumn',
+                            icon: '/content/images/delete.gif',
+                            width: 30,
+                            tooltip: '删除',
+                            handler: function (grid, rowIndex, colIndex) {
+                                //var rec = grid.getStore().getAt(rowIndex);
+                                //alert("Terminate " + rec.get('firstname'));
+                                alert(rowIndex);
+                            }
+                        }
+                        ]
+                }
+                ]
+        }]
+    }
+        ],
+    buttons: [
+            { text: '保存', handler: function () {
+                this.up('form').getForm().submit({
+                    url: '/workflow/manage/addNodeHandle',
+                    success: function (form, action) { form.setValues({ ID: action.result.data }); if (config && config.submitSccess) config.submitSccess(form, action) },
+                    failure: function (form, action) { if (config && config.submitFailure) config.submitFailure(form, action) }
+                }
+                );
+            }
+            },
+            { text: '取消', handler: function () { if (config && config.close) config.close() } }
+        ]
+})
+
+if (config.id) {
+    this.form.getForm().load({
+        url: '/system/auth/getResource',
+        params: { id: config.id }
+    }
+        );
+}
+
+return this.form;
+}
+

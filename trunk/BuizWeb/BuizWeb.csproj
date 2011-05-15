@@ -109,12 +109,14 @@
   <ItemGroup>
     <Content Include="Content\canvas\arrow16.png" />
     <Content Include="Content\canvas\canvas.htm" />
+    <Content Include="Content\canvas\event24.png" />
     <Content Include="Content\canvas\excanvas.js" />
     <Content Include="Content\canvas\handle.png" />
     <Content Include="Content\canvas\handle16.png" />
     <Content Include="Content\canvas\json.js" />
     <Content Include="Content\canvas\move16.PNG" />
     <Content Include="Content\canvas\mytest.htm" />
+    <Content Include="Content\canvas\Select16.png" />
     <Content Include="Content\canvas\split.png" />
     <Content Include="Content\canvas\split16.png" />
     <Content Include="Content\canvas\Start.png" />
@@ -929,6 +931,7 @@
     <Content Include="Content\images\application_go.png" />
     <Content Include="Content\images\application_view_list.png" />
     <Content Include="Content\images\book.png" />
+    <Content Include="Content\images\chart.png" />
     <Content Include="Content\images\close.png" />
     <Content Include="Content\images\cog.gif" />
     <Content Include="Content\images\cog.png" />
@@ -941,6 +944,7 @@
     <Content Include="Content\images\email.gif" />
     <Content Include="Content\images\error.gif" />
     <Content Include="Content\images\error.png" />
+    <Content Include="Content\images\event.png" />
     <Content Include="Content\images\feed_add.png" />
     <Content Include="Content\images\feed_delete.png" />
     <Content Include="Content\images\feed_error.png" />
@@ -952,6 +956,7 @@
     <Content Include="Content\images\imagecode.jpg" />
     <Content Include="Content\images\image_add.png" />
     <Content Include="Content\images\information.png" />
+    <Content Include="Content\images\memo.png" />
     <Content Include="Content\images\menuItem.gif" />
     <Content Include="Content\images\plugin.gif" />
     <Content Include="Content\images\plugin_add.gif" />
@@ -960,6 +965,7 @@
     <Content Include="Content\images\rss.png" />
     <Content Include="Content\images\rss_go.png" />
     <Content Include="Content\images\save.png" />
+    <Content Include="Content\images\search.gif" />
     <Content Include="Content\images\SILK.txt" />
     <Content Include="Content\images\table_refresh.png" />
     <Content Include="Content\images\transmit.gif" />

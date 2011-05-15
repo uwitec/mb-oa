@@ -135,5 +135,35 @@ namespace TestProject1
         }
 
         //http://www.cnblogs.com/LingzhiSun/
+
+        [TestMethod]
+        public void rrr()
+        {
+            MyDB mydb = new MyDB();
+            mydb.Users.Load();
+            IEnumerable<User> us2 = mydb.Users.Local.Where(u => 1==1);
+            
+            User user1 = mydb.Users.First(u => u.Code.Contains("lxx"));
+            user1.Name = "asdfasdfasdf";
+            User nu = new User
+            {
+                ID = Guid.NewGuid().ToString(),
+                Code = "lxx"
+            };
+            mydb.Users.Add(nu);
+
+            MyDB mydb1 = new MyDB();
+            User user3 = mydb1.Users.First(u => u.Code.Contains("lxx"));
+            user3.MSN = "wwwwwwwwwwwwww";
+
+            User user2 = mydb.Users.First(u => u.Code.Contains("lxx"));
+            user2.MSN = "ssssssssssssssss";
+            //mydb.Users.Remove(user2);
+
+            IEnumerable<User> us1 = mydb.Users.Where(u => 1==1);
+
+            
+
+        }
     }
 }
