@@ -107,14 +107,20 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\canvas\arrow16.png" />
     <Content Include="Content\canvas\canvas.htm" />
     <Content Include="Content\canvas\excanvas.js" />
     <Content Include="Content\canvas\handle.png" />
+    <Content Include="Content\canvas\handle16.png" />
     <Content Include="Content\canvas\json.js" />
+    <Content Include="Content\canvas\move16.PNG" />
     <Content Include="Content\canvas\mytest.htm" />
     <Content Include="Content\canvas\split.png" />
+    <Content Include="Content\canvas\split16.png" />
     <Content Include="Content\canvas\Start.png" />
+    <Content Include="Content\canvas\Start16.png" />
     <Content Include="Content\canvas\stop.png" />
+    <Content Include="Content\canvas\stop16.png" />
     <Content Include="Content\canvas\WFModel.js" />
     <Content Include="Content\ExtJS\bootstrap.js" />
     <Content Include="Content\ExtJS\classes\ChartPortlet.js" />
