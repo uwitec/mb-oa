@@ -271,6 +271,7 @@ function WFGraph(config) {
                     title: '流程处理节点信息',
                     modal: true,
                     closable: true,
+                    id: 'fwin',
                     //animateTarget: this,
                     width: 600,
                     //height: 500,
@@ -279,15 +280,15 @@ function WFGraph(config) {
                     items: [
                         new MB.form.WFNodeHandle({
                             templateId: this.data.ID,
-                            //id: '',
+                            //id:'',
                             x: this.tranp(event).x,
                             y: this.tranp(event).y,
-                            close: function () { this.up('windows').close(); },
+                            close: function () { Ext.getCmp('fwin').close(); },
                             submitSccess: function (form, action) {
                                 alert("submitSccess");
-                                wfg.data.nodes.push({ ID: form.getValues()["ID"], name: form.getValues()["Name"], type: 'WFNodeHandle', position: { x: form.getValues()['x'], y: form.getValues()['y']} });
+                                wfg.data.nodes.push({ ID: form.getValues()["ID"], name: form.getValues()["Name"], type: 'WFNodeHandle', position: { x: parseInt(form.getValues()['x']), y: parseInt(form.getValues()['y'])} });
                                 wfg.redrawAll();
-                                this.close();
+                                this.close(); 
                             },
                             submitFailure: function (form, action) { alert("submitFailure"); }
                         })
@@ -323,6 +324,7 @@ function WFGraph(config) {
                 // 打开表单编辑，提交再生成后
                 new Ext.window.Window({
                     title: '分支节点信息',
+                    id: 'fwin',
                     modal: true,
                     closable: true,
                     //animateTarget: this,
@@ -333,13 +335,13 @@ function WFGraph(config) {
                     items: [
                         new MB.form.WFNodeXORSplit({
                             templateId: this.data.ID,
-                            //id: '',
+                            //id:'',
                             x: this.tranp(event).x,
                             y: this.tranp(event).y,
-                            close: function () { this.up('windows').close(); },
+                            close: function () { Ext.getCmp('fwin').close(); },
                             submitSccess: function (form, action) {
                                 alert("submitSccess");
-                                wfg.data.nodes.push({ ID: form.getValues()["ID"], name: form.getValues()["Name"], type: 'WFNodeXORSplit', position: { x: form.getValues()['x'], y: form.getValues()['y']} });
+                                wfg.data.nodes.push({ ID: form.getValues()["ID"], name: form.getValues()["Name"], type: 'WFNodeXORSplit', position: { x: parseInt(form.getValues()['x']), y: parseInt(form.getValues()['y'])} });
                                 wfg.redrawAll();
                                 this.close();
                             },
@@ -377,6 +379,7 @@ function WFGraph(config) {
                                     case 'WFNodeHandle':
                                         new Ext.window.Window({
                                             title: '节点连接信息',
+                                            id: 'fwin',
                                             modal: true,
                                             closable: true,
                                             width: 600,
@@ -387,8 +390,8 @@ function WFGraph(config) {
                                                 templateId: this.data.ID, // 一定要传,取实体上下文
                                                 from: this.operateState.params.preNode.ID,
                                                 to: n.ID,
-                                                //id: '',
-                                                close: function () { this.up('windows').close(); },
+                                                //id:'',
+                                                close: function () { Ext.getCmp('fwin').close(); },
                                                 submitSccess: function (form, action) {
                                                     alert("submitSccess");
                                                     wfg.data.lines.push({ ID: form.getValues()["ID"], name: form.getValues()["Name"], from: form.getValues()["from"], to: form.getValues()["to"] });
@@ -404,6 +407,7 @@ function WFGraph(config) {
                                     case 'WFNodeXORSplit':
                                         new Ext.window.Window({
                                             title: '节点连接信息',
+                                            id: 'fwin',
                                             modal: true,
                                             closable: true,
                                             width: 600,
@@ -414,8 +418,8 @@ function WFGraph(config) {
                                                 templateId: this.data.ID, // 一定要传,取实体上下文
                                                 from: this.operateState.params.preNode.ID,
                                                 to: n.ID,
-                                                //id: '',
-                                                close: function () { this.up('windows').close(); },
+                                                //id:'',
+                                                close: function () { Ext.getCmp('fwin').close(); },
                                                 submitSccess: function (form, action) {
                                                     alert("submitSccess");
                                                     wfg.data.lines.push({ ID: form.getValues()["ID"], name: form.getValues()["Expression"], from: form.getValues()["from"], to: form.getValues()["to"] });
@@ -543,6 +547,8 @@ function WFGraph(config) {
 
     // 设置操作状态
     this.setOperateState = function (model) {
+        this.operateState.params = null;
+
         Ext.fly(this.ctx.canvas).clearListeners(); //清除所有事件监听
 
         this.operateState = operateStates[model];
