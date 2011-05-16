@@ -12,50 +12,50 @@
     <script type="text/javascript">
         Ext.onReady(function () {
             Ext.create('Ext.window.Window', {
-                title: '苏迈克斯协同办公系统－登录',
+                title: '<div style="margin-bottom:4px;">苏迈克斯协同办公系统－登录</div>',
                 renderTo: Ext.getBody(),
-                //height: 200,
+                //height: 400,
                 width: 400,
                 modal: true,
                 closable: false,
                 layout: 'fit',
-                items: [Ext.create('Ext.form.FormPanel', {
-                url: '/login',
-                bodyPadding: 10,
-                bodyBorder: 0,
-                border: 0,
-                //width: 200,
-                //layout: 'anchor',
-                defaults: {
-                    anchor: '100%',
-                    labelWidth:60
-                },
-                defaultType: 'textfield',
-                items: [
-                    { name: 'name' , fieldLabel: '用户名' ,value: '@Model.name' ,allowBlank: false},
+                items: [{
+                    xtype:'form',
+                    url: '/login',
+                    bodyPadding: 10,
+                    border: 0,
+                    //width: 200,
+                    //layout: 'anchor',
+                    defaults: {
+                        anchor: '100%',
+                        labelWidth: 60
+                    },
+                    defaultType: 'textfield',
+                    items: [
+                    { name: 'name', fieldLabel: '用户名', value: '@Model.name', allowBlank: false },
                     { name: 'pwd', inputType: 'password', fieldLabel: ' 口令', value: '@Model.pwd' },
-                    { 
-                        xtype:'fieldcontainer', 
+                    {
+                        xtype: 'fieldcontainer',
                         //name: 'jym', 
-                        fieldLabel: ' 校验码' , 
+                        fieldLabel: ' 校验码',
                         msgTarget: 'under',
                         layout: 'hbox',
                         defaults: {
-                                hideLabel: true
-                            },
+                            hideLabel: true
+                        },
                         items: [
-                            {xtype: 'textfield',    fieldLabel: 'Phone 1', name: 'phone-1', width: 60},
-                            {xtype: 'displayfield', html: '<img src=\'@Url.Content("~/Content/images/imagecode.jpg")\' alt="ddd"/>', margin: '0 40 0 4',width: 40},
-                            {xtype: 'checkboxfield' , name: 'phone-1', boxLabel:"两周内自动登录",flex:1}
+                            { xtype: 'textfield', fieldLabel: 'Phone 1', name: 'phone-1', width: 60 },
+                            { xtype: 'displayfield', html: '<img src=\'@Url.Content("~/Content/images/imagecode.jpg")\' alt="ddd"/>', margin: '0 40 0 4', width: 40 },
+                            { xtype: 'checkboxfield', name: 'phone-1', boxLabel: "两周内自动登录", flex: 1 }
                         ]
                     }
                 ],
-                standardSubmit: true,
-                buttons: [
+                    standardSubmit: true,
+                    buttons: [
                     { text: '登录', handler: function () { this.up('form').getForm().submit(); } },
-                    { text: '找回密码',margin: '0 4 0 10 ', handler: function () { this.up('form').getForm().submit(); } }
+                    { text: '找回密码', margin: '0 4 0 10 ', handler: function () { this.up('form').getForm().submit(); } }
                 ]
-            })]
+                }]
             }).show();
         });
     </script>
