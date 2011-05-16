@@ -2,6 +2,9 @@
 @{
     Layout = null;
 }
+<!--
+处理实例节点
+-->
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,8 +25,11 @@
 </head>
 <body>
     <form name="form1" method="post" action="/workflow/instance/handle">
+    <!--模板ID-->
     <input type="hidden" name="TemplateID" value="@Model.WFInst.WFTemplate.ID" />
+    <!--实例节点ID-->
     <input type="hidden" name="instNodeID" value="@Model.ID" />
+    <!--实例节点对应的模板节点ID-->
     <input type="hidden" name="nodeID" value="@Model.WFNode.ID" />
     <input type="hidden" name="actionID" value="" />
     <!--业务视图开始-->

@@ -38,6 +38,15 @@ namespace EntityObjectLib
         public DateTime LeaveTime { get; set; }
 
         /// <summary>
+        /// 处理情况摘要
+        /// 开始节点: 无
+        /// 处理结点: 节点名称:,处理人:,处理意见:
+        /// 分支结点: 满足条件:
+        /// 结束节点: 结束
+        /// </summary>
+        public string Summary { get; set; }
+
+        /// <summary>
         /// 节点状态:处理中,已处理
         /// </summary>
         public string State { get; set; }

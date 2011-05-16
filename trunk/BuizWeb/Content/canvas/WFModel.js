@@ -109,7 +109,7 @@ function WFGraph(config) {
 
         // 因为节点图片本身点据一定空间,连线要让开这部分空间,因此需要重新测算起点和终点,具体大小应该根据图片自动设置,以后改进
         this.ctx.drawLineWithArrow(l.begin, l.end);
-        this.drawText(line.name, (l.begin.x + l.end.x) / 2, (l.begin.y + l.end.y) / 2);
+        this.drawText(line.name, (4*l.begin.x + l.end.x) / 5, (4*l.begin.y + l.end.y) / 5);
     }
 
     this.drawNode = function (n) {
@@ -459,17 +459,24 @@ function WFGraph(config) {
             click: function (event) {
                 var n = this.captureNode(event);
                 if (n && confirm("确认删除该节点吗?")) { //如果删除的是节点,该节点必须没有被使用到
+                    if (n.type == 'WFNodeStart' || n.type == 'WFNodeFinish') {
+                        alert('开始节点和结束节点不能删除!');
+                        return;
+                    }
+
                     var hasLine = false;
                     for (var line in this.data.lines) {
                         if (this.data.lines[line].from == n.ID || this.data.lines[line].to == n.ID) {
-                                hasLine = true;
-                                break;
+                            hasLine = true;
+                            break;
                         }  // end of if
                     }
                     /*
                     */
-                    if (hasLine)
+                    if (hasLine) {
                         alert('该节点被其他节点使用到,不能删除!');
+                        return;
+                    }
                     else {
                         // 删除节点
                         Ext.Ajax.request({

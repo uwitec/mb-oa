@@ -8,6 +8,9 @@ using EntityObjectLib.WF;
 using System.Data.Entity;
 using EntityObjectLib;
 using System.Reflection;
+using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
+using System.Linq.Dynamic;
 
 namespace BuizApp.Areas.workflow.Controllers
 {
@@ -29,6 +32,7 @@ namespace BuizApp.Areas.workflow.Controllers
         /// <summary>
         /// URL: /workflow/Instance/create/id
         /// id: 模板ID
+        /// 发起流程
         /// </summary>
         /// <returns></returns>
         public ActionResult create(string id)
@@ -57,7 +61,7 @@ namespace BuizApp.Areas.workflow.Controllers
                         WFInst = inst
                     }
                 };
-
+                // 这里有一个设计约束:开始节点后一定是个处理节点
                 return View("toHandle", inst.CurrentNode);
             }
         }
@@ -80,12 +84,13 @@ namespace BuizApp.Areas.workflow.Controllers
             using (MyDB mydb = new MyDB())
             {
                 WFInstNode instNode = mydb.WFInstNodes.FirstOrDefault(n => n.ID.Equals(instNodeID));
-                #region 如果实例节点ID不在数据库中,则需要创建流程实例
-                if (instNode == null) 
+                WFTemplate template = mydb.WFTemplates.Find(TemplateID);
+
+                System.Reflection.Assembly ass = System.Reflection.Assembly.LoadFrom(Server.MapPath("~/bin/EntityObjectLib.dll"));
+                Type t = ass.GetType("EntityObjectLib." + template.BuizCode);
+
+                if (instNode == null)
                 {
-                    WFTemplate template = mydb.WFTemplates.Find(TemplateID);
-                    System.Reflection.Assembly ass = System.Reflection.Assembly.LoadFrom(Server.MapPath("~/bin/EntityObjectLib.dll"));
-                    Type t = ass.GetType("EntityObjectLib." + template.BuizCode);
                     EntityObjectLib.WFInst inst = Activator.CreateInstance(t) as EntityObjectLib.WFInst;
                     //Object inst = Activator.CreateInstance(t);
                     foreach (string key in Request.Form.Keys)
@@ -94,7 +99,7 @@ namespace BuizApp.Areas.workflow.Controllers
                         if (pi != null)
                         {
                             pi.SetValue(
-                                inst, 
+                                inst,
                                 //Request.Form[key],
                                 Convert.ChangeType(Request.Form[key], pi.PropertyType.UnderlyingSystemType),
                                 null);
@@ -106,15 +111,14 @@ namespace BuizApp.Areas.workflow.Controllers
                     inst.Creator = mydb.Users.Find(UserID);
                     inst.CreateTime = DateTime.Now;
 
-                    inst.WFInstNodes = new List<WFInstNode>(){
-                        new WFInstNode
-                        {
-                            ID = instNodeID,
-                            WFNode = mydb.WFNodes.Find(nodeID),
-                            State = "处理中",
-                            EntryTime = DateTime.Now,
-                            WFInst = inst,
-                            WFInstNodeHandlers = new List<WFInstNodeHandler>()
+                    instNode = new WFInstNode
+                    {
+                        ID = instNodeID,
+                        WFNode = mydb.WFNodes.Find(nodeID),
+                        State = "处理中",
+                        EntryTime = DateTime.Now,
+                        WFInst = inst,
+                        WFInstNodeHandlers = new List<WFInstNodeHandler>()
                             {
                                 new WFInstNodeHandler
                                 {
@@ -122,65 +126,206 @@ namespace BuizApp.Areas.workflow.Controllers
                                     State = "待处理" //如果是"处理中",即表明一个人已经接收,准备处理,其他人不能处理
                                 }
                             }
-                        }
                     };
 
-                    mydb.WFInsts.Add(inst);
+                    mydb.WFInstNodes.Add(instNode);
                     mydb.SaveChanges();
-
-                    instNode = mydb.WFInstNodes.FirstOrDefault(n => n.ID.Equals(instNodeID));
                 }
-                #endregion
-
-                // 此时 instNode 已经不为空
-
-                WFNodeAction action = mydb.WFNodeActions.Find(actionID);
-                WFNode next = action.NextNode;
-                if (next != null)
-                {
-                    // 当前节点处理完成,准备转入下一节点
-                    instNode.State = "已处理";
-                    instNode.LeaveTime = DateTime.Now;
-
-                    // 节点处理人
-                    WFInstNodeHandler handler = instNode.WFInstNodeHandlers.First(h=>h.Handler.ID.Equals(UserID));
-                    handler.HandleTime = DateTime.Now;
-                    handler.Opinion = action.Name;
-                    handler.State = "已处理";
-                    foreach(WFInstNodeHandler other in instNode.WFInstNodeHandlers.Where(h=>!h.Handler.ID.Equals(UserID)))
-                    {
-                        handler.State = "已失效";
-                    }
-
-                    if (next is WFNodeHandle)
-                    {
-                        WFInstNode inode = new WFInstNode
-                        {
-                            WFNode = next,
-                            WFInst = instNode.WFInst,
-                            WFInstNodeHandlers = ((WFNodeHandle)next).Subjects.OfType<User>().Select(a => new WFInstNodeHandler { Handler= a}).ToArray()
-                        };
-
-                        mydb.WFInstNodes.Add(inode);
-                    }
-                    else if (next is WFNodeXORSplit)
-                    {
-
-                    }
-                    else if (next is WFNodeFinish)
-                    {
-
-                    }
-                    else
-                    {
-
-                    }
-                }
-
-                mydb.SaveChanges();
             }
+                        
+
+            this.process(instNodeID, this.HttpContext);
+
+
             return View("handleSuccess");
         }
+
+        /// <summary>
+        /// 已完成当前节点工作,将流程实例推入下一个节点
+        /// 1,判断下一个节点的类型
+        /// 2.如果是处理节点,则创建实例节点,分配处理人
+        /// 3.如果是分支节点,则创建实例节点,调用处理该节点
+        /// 4.如果是结束节点,创建结束节点,调用处理该节点
+        /// </summary>
+        /// <param name="instID">流程实例ID</param>
+        /// <param name="nextNodeID">下一个节点ID</param>
+        /// <param name="ctx">HTTP上下文</param>
+        private void entry(string instID, string nextNodeID, HttpContextBase ctx)
+        {
+            using (MyDB mydb = new MyDB())
+            {
+                WFNode next = mydb.WFNodes.Find(nextNodeID);
+                WFInst inst = mydb.WFInsts.Find(instID);
+
+                if (next is WFNodeHandle)
+                {
+                    WFInstNode inode = new WFInstNode
+                    {
+                        EntryTime = DateTime.Now,
+                        State = "处理中",
+                        WFNode = next,
+                        WFInst = inst,
+                        WFInstNodeHandlers = ((WFNodeHandle)next).Subjects.OfType<User>().Select(a => new WFInstNodeHandler { Handler = a }).ToArray()
+                    };
+                    mydb.WFInstNodes.Add(inode);
+                    mydb.SaveChanges();
+                }
+                else if (next is WFNodeXORSplit)
+                {
+                    //WFNodeXORSplit Split = next as WFNodeXORSplit;
+                    WFInstNode inode = new WFInstNode
+                    {
+                        EntryTime = DateTime.Now,
+                        State = "处理中",
+                        WFNode = next,
+                        WFInst = inst
+                    };
+                    mydb.WFInstNodes.Add(inode);
+                    mydb.SaveChanges();
+                    this.process(inode.ID, this.HttpContext);
+                }
+                else if (next is WFNodeFinish)
+                {
+                    //WFNodeXORSplit Split = next as WFNodeXORSplit;
+                    WFInstNode inode = new WFInstNode
+                    {
+                        EntryTime = DateTime.Now,
+                        State = "处理中",
+                        WFNode = next,
+                        WFInst = inst
+                    };
+                    mydb.WFInstNodes.Add(inode);
+                    mydb.SaveChanges();
+                    this.process(inode.ID, this.HttpContext);
+                }
+                else
+                {
+                }
+            }
+        }
+
+        /// <summary>
+        /// 处理当前流程实例节点
+        /// 1.判断节点类型
+        /// 2.如果是处理节点,则取活动CODE,找到下一个节点,调用推入
+        /// 3.如果是分支节点,则计算表达式,找到下一个节点,调用推入
+        /// 4.如果是结束节点,完成结束必须的工作
+        /// </summary>
+        /// <param name="instNodeID">当前流程实例节点ID</param>
+        /// <param name="ctx">HTTP上下文</param>
+        private void process(string instNodeID, HttpContextBase ctx)
+        {
+            using (MyDB mydb = new MyDB())
+            {
+                WFInstNode current = mydb.WFInstNodes.Find(instNodeID);
+                WFInst inst = current.WFInst;
+
+                if (current.WFNode is WFNodeHandle)
+                {
+                    string actionID = Request.Form["actionID"];
+                    string UserID = ctx.User.Identity.Name;
+                    WFNodeAction action = mydb.WFNodeActions.Find(actionID);
+                    WFNode next = action.NextNode;
+                    if (next != null)
+                    {
+                        System.Reflection.Assembly ass = System.Reflection.Assembly.LoadFrom(Server.MapPath("~/bin/EntityObjectLib.dll"));
+                        Type t = ass.GetType("EntityObjectLib." + inst.WFTemplate.BuizCode);
+                        PropertyInfo[] PropertyInfos = t.GetProperties().ToArray();
+
+                        foreach (string key in Request.Form.Keys)
+                        {
+                            PropertyInfo pi = t.GetProperty(key);
+                            
+                            if (pi != null)
+                            {
+                                DisplayAttribute[] attrs = pi.GetCustomAttributes(typeof(DisplayAttribute), true) as DisplayAttribute[];
+                                if (attrs.Length > 0)
+                                {
+                                    pi.SetValue(
+                                        inst,
+                                        //Request.Form[key],
+                                        Convert.ChangeType(Request.Form[key], pi.PropertyType.UnderlyingSystemType),
+                                        null);
+                                }
+
+                            }
+                        }
+                        // 当前节点处理完成,准备转入下一节点
+                        current.State = "已处理";
+                        current.LeaveTime = DateTime.Now;
+                        current.Summary = string.Format("节点名称:{0},处理人:{1},动作:{2}", current.WFNode.Name, mydb.Subjects.Find(UserID).Name, action.Name);
+
+                        // 节点处理人
+                        WFInstNodeHandler handler = current.WFInstNodeHandlers.First(h => h.Handler.ID.Equals(UserID));
+                        handler.HandleTime = DateTime.Now;
+                        handler.Opinion = action.Name;
+                        handler.State = "已处理";
+                        // 其他的处理人置为失效
+                        foreach (WFInstNodeHandler other in current.WFInstNodeHandlers.Where(h => !h.Handler.ID.Equals(UserID)))
+                        {
+                            handler.State = "已失效";
+                        }
+                        mydb.SaveChanges();
+                        this.entry(inst.ID,next.ID,ctx);
+                        return;
+                    }
+                }
+                else if (current.WFNode is WFNodeXORSplit)
+                {
+                    WFNodeXORSplit Split = current.WFNode as WFNodeXORSplit;
+
+                    System.Reflection.Assembly ass = System.Reflection.Assembly.LoadFrom(Server.MapPath("~/bin/EntityObjectLib.dll"));
+                    Type t = ass.GetType("EntityObjectLib." + inst.WFTemplate.BuizCode);
+                    PropertyInfo[] PropertyInfos = t.GetProperties().ToArray();
+
+                    IEnumerable<WFNodeExpression> exps = Split.WFNodeExpressions.OrderBy(exp => exp.OrderNO).Select(exp => exp);
+                    foreach (WFNodeExpression exp in exps)
+                    {
+                        string expString = exp.Expression;
+                        foreach (PropertyInfo pi in PropertyInfos)
+                        {
+                            DisplayAttribute[] attrs = pi.GetCustomAttributes(typeof(DisplayAttribute), true) as DisplayAttribute[];
+                            if (attrs.Length > 0)
+                            {
+                                string Name = attrs[0].Name;
+
+                                expString = expString.Replace(
+                                    string.Format("{{{0}}}", Name),
+                                    pi.Name
+                                    );
+                            }
+                        }
+
+                        expString = string.Format("select count(*) as v from {2}s where ID=\"{0}\" and {1}", current.WFInst.ID, expString, inst.WFTemplate.BuizCode);
+                        //int count = mydb.WFInsts.Where(expString).Count();
+                        int count = mydb.Database.SqlQuery<int>(expString, new object[] { }).ToArray()[0];
+                        if (count > 0)// 条件满足,短路,找下一节点
+                        {
+                            current.Summary = string.Format("节点名称:{0},满足条件:{1}", current.WFNode.Name, exp.Expression);
+                            current.LeaveTime = DateTime.Now;
+                            current.State = "已处理";
+                            mydb.SaveChanges();
+                            this.entry(inst.ID, exp.Next.ID, ctx);
+                            return;
+                        }
+                    }
+                    
+                }
+                else if (current.WFNode is WFNodeFinish)
+                {
+                    current.Summary = "流程结束";
+                    current.LeaveTime = DateTime.Now;
+                    current.State = "已处理";
+                    inst.State = "已处理";
+                    mydb.SaveChanges();
+                    return;
+                }
+                else
+                {
+                }
+            }
+        }
+
 
         public ActionResult workList()
         {
@@ -207,6 +352,7 @@ namespace BuizApp.Areas.workflow.Controllers
                 mydb.Entry(node).Reference<WFNode>(n => n.WFNode).Load();
                 mydb.Entry(node.WFInst).Reference<WFTemplate>(n => n.WFTemplate).Load();
                 mydb.Entry((WFNodeHandle)node.WFNode).Collection<WFNodeAction>(n=>n.Actions).Load();
+                mydb.Entry(node.WFInst).Collection<WFInstNode>(inst => inst.WFInstNodes).Load();
                 return View("tohandle", node);
             }
         }
