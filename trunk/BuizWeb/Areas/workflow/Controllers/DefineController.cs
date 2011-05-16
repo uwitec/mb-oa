@@ -326,7 +326,7 @@ namespace BuizApp.Areas.workflow.Controllers
                 }
 
                 WFNodeExpression expression = mydb.WFNodeExpressions.Find(LineID);
-                if (action != null)
+                if (expression != null)
                 {
                     mydb.WFNodeExpressions.Remove(expression);
                     return Json(new { success = true });
