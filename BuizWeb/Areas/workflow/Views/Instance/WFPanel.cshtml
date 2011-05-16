@@ -2,11 +2,40 @@
     Layout = null;
     //EntityObjectLib.WF.WFNodeAction[] actions = ((EntityObjectLib.WF.WFNodeHandle)Model.WFInstNodes[0].WFNode).Actions.ToArray();
     EntityObjectLib.WF.WFNodeAction[] actions = ((EntityObjectLib.WF.WFNodeHandle)Model.WFNode).Actions.ToArray();
+        //EntityObjectLib.WFInstNode[] instNodes = Model.WFInst.WFInstNodes.ToArray();
 }
 <div>
     <h3>
         流程历史</h3>
-    <span>流程状态:</span><span>@Model.WFInst.State</span>
+    <span>流程状态:</span><span>@Model.WFInst.State</span><br />
+    <table border="1px" cellpadding="2" cellspacing="0">
+        <tr>
+            <td>
+                进入时间
+            </td>
+            <td>
+                退出时间
+            </td>
+            <td>
+                当前状态
+            </td>
+            <td>
+                摘要
+            </td>
+        </tr>
+        @foreach (EntityObjectLib.WFInstNode instNode in ((ICollection<EntityObjectLib.WFInstNode>)Model.WFInst.WFInstNodes).OrderBy(n => n.EntryTime))
+        {
+            <tr>
+                <td>@instNode.EntryTime
+                </td>
+                <td>@instNode.LeaveTime
+                </td>
+                <td>@instNode.State
+                </td>
+                <td>@instNode.Summary
+                </td>
+            </tr>
+        }</table>
 </div>
 <div>
     <h3>
