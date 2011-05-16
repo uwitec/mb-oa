@@ -181,6 +181,7 @@ namespace BuizApp.Areas.workflow.Controllers
             string Name = Request.Form["Name"];
             string ViewCode = Request.Form["ViewCode"];
             bool IsCountersign = Request.Form["IsCountersign"] != null;
+            string[] Handlers = Request.Form["Handlers"].Split(",".ToCharArray());
 
             int x = int.Parse(Request.Form["x"]);
             int y = int.Parse(Request.Form["y"]);
@@ -197,7 +198,8 @@ namespace BuizApp.Areas.workflow.Controllers
                     Name = Name,
                     ViewCode = ViewCode,
                     IsCountersign = IsCountersign,
-                    WFTemplate = template
+                    WFTemplate = template,
+                    Subjects = mydb.Subjects.Where(s => Handlers.Contains(s.ID)).ToArray()
                 };
 
                 mydb.WFNodeHandles.Add(node);
@@ -205,6 +207,141 @@ namespace BuizApp.Areas.workflow.Controllers
             }
             return Json(new { success = false });
         }
-        
+
+        public ActionResult addNodeXOR()
+        {
+            string templateId = Request.Form["templateId"];
+            string id = Request.Form["id"];
+            string Name = Request.Form["Name"];
+
+            int x = int.Parse(Request.Form["x"]);
+            int y = int.Parse(Request.Form["y"]);
+
+            if (Session[templateId] != null)
+            {
+                MyDB mydb = Session[templateId] as MyDB;
+                WFTemplate template = mydb.WFTemplates.Find(templateId);
+                WFNodeXORSplit node = new WFNodeXORSplit
+                {
+                    ID = Guid.NewGuid().ToString(),
+                    PositionX = x,
+                    PositionY = y,
+                    Name = Name,
+                    WFTemplate = template
+                };
+
+                mydb.WFNodeXORSplits.Add(node);
+                return Json(new { success = true, data = node.ID });
+            }
+            return Json(new { success = false });
+        }
+        //
+
+        public ActionResult addNodeAction()
+        {
+            string templateId = Request.Form["templateId"];
+            string from = Request.Form["from"];
+            string to = Request.Form["to"];
+            string Name = Request.Form["Name"];
+            string Code = Request.Form["Code"];
+
+            if (Session[templateId] != null)
+            {
+                MyDB mydb = Session[templateId] as MyDB;
+                WFTemplate template = mydb.WFTemplates.Find(templateId);
+                WFNodeAction action = new WFNodeAction
+                {
+                    ID = Guid.NewGuid().ToString(),
+                    Code = Code,
+                    Name = Name,
+                    WFNode = mydb.WFNodeHandles.Find(from),
+                    NextNode = mydb.WFNodes.Find(to)
+                };
+
+                mydb.WFNodeActions.Add(action);
+                return Json(new { success = true, data = action.ID });
+            }
+            return Json(new { success = false });
+        }
+
+        public ActionResult addNodeExpression()
+        {
+            string templateId = Request.Form["templateId"];
+            string from = Request.Form["from"];
+            string to = Request.Form["to"];
+            string Expression = Request.Form["Expression"];
+            string Description = Request.Form["Description"];
+            int OrderNO = int.Parse(Request.Form["OrderNO"]);
+
+            if (Session[templateId] != null)
+            {
+                MyDB mydb = Session[templateId] as MyDB;
+                WFTemplate template = mydb.WFTemplates.Find(templateId);
+                WFNodeExpression expression = new WFNodeExpression
+                {
+                    ID = Guid.NewGuid().ToString(),
+                    Expression = string.IsNullOrEmpty(Expression) ? "1==1" : Expression,
+                    Description = Description,
+                    OrderNO = OrderNO,
+                    WFNode = mydb.WFNodeXORSplits.Find(from),
+                    Next = mydb.WFNodes.Find(to)
+                };
+
+                mydb.WFNodeExpressions.Add(expression);
+                return Json(new { success = true, data = expression.ID });
+            }
+            return Json(new { success = false });
+        }
+
+        public ActionResult deleteNode()
+        {
+            string templateId = Request.Form["templateId"];
+            string nodeID = Request.Form["nodeID"];
+
+            if (Session[templateId] != null)
+            {
+                MyDB mydb = Session[templateId] as MyDB;
+                WFNode node = mydb.WFNodes.Find(nodeID);
+                mydb.WFNodes.Remove(node); 
+                return Json(new { success = true});
+            }
+            return Json(new { success = false });
+        }
+
+        public ActionResult deleteLine()
+        {
+            string templateId = Request.Form["templateId"];
+            string LineID = Request.Form["LineID"];
+
+            if (Session[templateId] != null)
+            {
+                MyDB mydb = Session[templateId] as MyDB;
+
+                /// 连接线可能有三种情况:来自于活动,表达式,或分支节点的缺省
+                WFNodeAction action = mydb.WFNodeActions.Find(LineID);
+                if (action != null)
+                {
+                    mydb.WFNodeActions.Remove(action);
+                    return Json(new { success = true });
+                }
+
+                WFNodeExpression expression = mydb.WFNodeExpressions.Find(LineID);
+                if (action != null)
+                {
+                    mydb.WFNodeExpressions.Remove(expression);
+                    return Json(new { success = true });
+                }
+
+                WFNodeXORSplit split = mydb.WFNodeXORSplits.Find(LineID);
+                if (split != null)
+                {
+                    split.Next = null;
+                    return Json(new { success = true });
+                }
+
+                return Json(new { success = false });
+            }
+            return Json(new { success = false });
+        }
     }
 }

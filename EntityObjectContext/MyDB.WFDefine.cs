@@ -116,8 +116,8 @@ namespace EntityObjectContext
             modelBuilder.Entity<WFNodeXORSplit>().ToTable("WFNodeXORSplits");
 
             modelBuilder.Entity<WFNodeXORSplit>()
-                .HasRequired(s => s.Next)
-                .WithOptional()
+                .HasOptional(s => s.Next)
+                .WithMany()
                 .Map(m => m.MapKey("Next"));
 
             modelBuilder.Entity<WFNodeFinish>().ToTable("WFNodeFinishs");

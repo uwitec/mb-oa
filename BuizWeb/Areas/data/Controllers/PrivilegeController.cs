@@ -324,6 +324,14 @@ namespace BuizApp.Areas.data.Controllers
             };
         }
 
+        public JsonResult subject_IdNames()
+        {
+            using (MyDB mydb = new MyDB())
+            {
+                return Json(mydb.Subjects.Select(s => new { @value=s.ID, text=s.Name }).ToArray(), JsonRequestBehavior.AllowGet);
+            }
+        }
+
         #region 私有方法
         private string getJsonString(object o)
         {
