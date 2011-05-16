@@ -9,7 +9,7 @@ var MB = function () { };
 MB.form = function () { };
 
 
-MB.Checked = function(){alert("adsfasdf")};
+MB.Checked = function () { alert("adsfasdf") };
 
 /**用于存放表单的通用配置项
 */
@@ -18,9 +18,9 @@ MB.form.FormConfig = {
 
 /** 模块数据表单
 config:
-    submitSccess: fn // 提交成功
-    submitFailure: fn //提交失败
-    close: fn //关闭
+submitSccess: fn // 提交成功
+submitFailure: fn //提交失败
+close: fn //关闭
 */
 MB.form.Module = function (config) {
     this.name = "模块表单";
@@ -36,7 +36,7 @@ MB.form.Module = function (config) {
             { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
             { xtype: 'textfield', name: 'moduleCode', fieldLabel: '模块编码' },
             { xtype: 'textfield', name: 'moduleName', fieldLabel: '模块名称' },
-            { xtype: 'textareafield', name: 'moduleDescription', columnWidth: 1, fieldLabel: '模块说明'}
+            { xtype: 'textareafield', name: 'moduleDescription', columnWidth: 1, fieldLabel: '模块说明' }
         ],
         buttons: [
             { text: '保存', handler: function () {
@@ -67,9 +67,9 @@ MB.form.Module = function (config) {
 
 /** 资源数据表单
 config:
-    submitSccess: fn // 提交成功
-    submitFailure: fn //提交失败
-    close: fn //关闭
+submitSccess: fn // 提交成功
+submitFailure: fn //提交失败
+close: fn //关闭
 */
 MB.form.Resource = function (config) {
     this.name = "资源表单";
@@ -85,14 +85,14 @@ MB.form.Resource = function (config) {
             { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
             { xtype: 'textfield', name: 'resourceCode', fieldLabel: '功能编码' },
             { xtype: 'textfield', name: 'resourceName', fieldLabel: '功能名称' },
-            { xtype: 'combo', name: 'moduleID', fieldLabel: '所属模块', 
+            { xtype: 'combo', name: 'moduleID', fieldLabel: '所属模块',
                 forceSelection: true,
-                blankText:'请选择所属模块',
-                emptyText:'请选择所属模块',
+                blankText: '请选择所属模块',
+                emptyText: '请选择所属模块',
                 valueField: 'ID',
                 displayField: 'moduleName',
                 editable: false,
-                store:  new Ext.data.Store({
+                store: new Ext.data.Store({
                     fields: ['ID', 'moduleName'],
                     proxy: {
                         type: 'ajax',
@@ -106,10 +106,10 @@ MB.form.Resource = function (config) {
                     autoLoad: true
                 }),
                 lisenters: {
-                    //afterrender: function(){ select(0)}
-                }
-            },
-            { xtype: 'textareafield', name: 'resourceDescription', columnWidth: 1, fieldLabel: '功能说明'}
+                //afterrender: function(){ select(0)}
+            }
+        },
+            { xtype: 'textareafield', name: 'resourceDescription', columnWidth: 1, fieldLabel: '功能说明' }
         ],
         buttons: [
             { text: '保存', handler: function () {
@@ -151,14 +151,14 @@ MB.form.User = function (config) {
             { xtype: 'textfield', name: 'Name', fieldLabel: '用户名称' },
             { xtype: 'textfield', name: 'Password', fieldLabel: '初始口令' },
             { xtype: 'textfield', name: 'Password1', fieldLabel: '确认初始口令' },
-            { xtype: 'combo', name: 'OrgID', fieldLabel: '所在部门', 
+            { xtype: 'combo', name: 'OrgID', fieldLabel: '所在部门',
                 forceSelection: true,
-                blankText:'请选择所属部门',
-                emptyText:'请选择所属部门',
+                blankText: '请选择所属部门',
+                emptyText: '请选择所属部门',
                 valueField: 'ID',
                 displayField: 'Name',
                 editable: false,
-                store:  new Ext.data.Store({
+                store: new Ext.data.Store({
                     fields: ['ID', 'Name'],
                     proxy: {
                         type: 'ajax',
@@ -172,9 +172,9 @@ MB.form.User = function (config) {
                     autoLoad: true
                 }),
                 lisenters: {
-                    //afterrender: function(){ select(0)}
-                }
-            },
+                //afterrender: function(){ select(0)}
+            }
+        },
             { xtype: 'datefield', name: 'ExpireDate', fieldLabel: '到期时间' },
             { xtype: 'fieldset', title: '联系方式', collapsible: true, columnWidth: 1, layout: 'column', margin: 10, items: [
                 { xtype: 'textfield', name: 'Mobile', fieldLabel: '手机', columnWidth: .34 },
@@ -213,7 +213,7 @@ MB.form.User = function (config) {
 
 /** 权限数据表单
 */
-MB.form.Privilege= function (config) {
+MB.form.Privilege = function (config) {
     this.name = "权限表单";
     this.form = new Ext.form.FormPanel({
         layout: 'column',
@@ -224,18 +224,18 @@ MB.form.Privilege= function (config) {
         items: [
             { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
             { xtype: 'textfield', name: 'privilegeCode', fieldLabel: '操作编码', value: '' },
-            { xtype: 'textfield', name: 'privilegeName', fieldLabel: '操作名称', value: ''  },
+            { xtype: 'textfield', name: 'privilegeName', fieldLabel: '操作名称', value: '' },
             { xtype: 'checkboxfield', name: 'needAuth', boxLabel: '是否需要授权', checked: true },
-            { xtype: 'checkboxfield', name: 'isMenuEntry', boxLabel: '是否菜单入口', checked:false },
-            { xtype: 'combo', name: 'resourceID', fieldLabel: '所属功能', 
+            { xtype: 'checkboxfield', name: 'isMenuEntry', boxLabel: '是否菜单入口', checked: false },
+            { xtype: 'combo', name: 'resourceID', fieldLabel: '所属功能',
                 forceSelection: true,
-                blankText:'请选择所属功能',
-                emptyText:'请选择所属功能',
+                blankText: '请选择所属功能',
+                emptyText: '请选择所属功能',
                 valueField: 'ID',
                 displayField: 'resourceName',
                 editable: false,
-//                listConfig: new Ext.view.BoundList({}),
-                store:  new Ext.data.Store({
+                //                listConfig: new Ext.view.BoundList({}),
+                store: new Ext.data.Store({
                     fields: ['ID', 'resourceName'],
                     proxy: {
                         type: 'ajax',
@@ -249,10 +249,10 @@ MB.form.Privilege= function (config) {
                     autoLoad: true
                 }),
                 lisenters: {
-                    //afterrender: function(){ select(0)}
-                }
-            },
-            { xtype: 'textareafield', name: 'privilegeDescription', columnWidth: 1, fieldLabel: '模块说明'}
+                //afterrender: function(){ select(0)}
+            }
+        },
+            { xtype: 'textareafield', name: 'privilegeDescription', columnWidth: 1, fieldLabel: '模块说明' }
         ],
         buttons: [
             { text: '保存', handler: function () {
@@ -293,7 +293,7 @@ MB.form.Role = function (config) {
             { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
             { xtype: 'textfield', name: 'roleCode', fieldLabel: '角色编码' },
             { xtype: 'textfield', name: 'roleName', fieldLabel: '角色名称' },
-            { xtype: 'textareafield', name: 'roleDescription', columnWidth: 1, fieldLabel: '角色说明'}
+            { xtype: 'textareafield', name: 'roleDescription', columnWidth: 1, fieldLabel: '角色说明' }
         ],
         buttons: [
             { text: '保存', handler: function () {
@@ -331,7 +331,7 @@ MB.form.RolePrivilegeParam = function (config) {
         fieldDefaults: { labelAlign: 'top', msgTarget: 'none', width: '100%', anchor: '100%', columnWidth: .5, margin: "4px 10px" },
         items: [
             { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
-            { xtype: 'textareafield', name: 'Parameters', columnWidth: 1, fieldLabel: '角色权限参数'}
+            { xtype: 'textareafield', name: 'Parameters', columnWidth: 1, fieldLabel: '角色权限参数' }
         ],
         buttons: [
             { text: '保存', handler: function () {
@@ -629,7 +629,7 @@ MB.form.EventRemind = function (config) {
                     { xtype: 'datefield', flex: 1, name: 'RemindDate', fieldLabel: '提醒时间' },
                     { xtype: 'splitter', width: 40 },
                     { xtype: 'timefield', width: 100, name: 'RemindTime' },
-                    { xtype: 'fieldcontainer', flex: 1}
+                    { xtype: 'fieldcontainer', flex: 1 }
                     ]
             },
             { xtype: 'textareafield', name: 'RemindContent', flex: 1, fieldLabel: '内容' },
@@ -695,7 +695,7 @@ MB.form.EventState = function (config) {
                     { xtype: 'datefield', flex: 1, name: 'StateDate', fieldLabel: '状态时间' },
                     { xtype: 'splitter', width: 40 },
                     { xtype: 'timefield', width: 100, name: 'StateTime' },
-                    { xtype: 'fieldcontainer', flex: 1}
+                    { xtype: 'fieldcontainer', flex: 1 }
                     ]
             },
             {
@@ -789,8 +789,8 @@ MB.form.Memo = function (config) {
 }
 
 
-MB.form.WFTemplate = function (config) {
-    this.name = "流程模板表单";
+MB.form.WFNodeHandle = function (config) {
+    this.name = "流程处理节点表单";
     this.form = new Ext.form.FormPanel({
         //url: '/system/auth/CreateResource',
         params: { sid: config.id, jid: 'ssss' },
@@ -808,7 +808,7 @@ MB.form.WFTemplate = function (config) {
             { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
             { xtype: 'hiddenfield', name: 'x', value: config.x, hidden: true },
             { xtype: 'hiddenfield', name: 'y', value: config.y, hidden: true },
-            { xtype: 'textfield', name: 'Name', fieldLabel: '模板名称' },
+            { xtype: 'textfield', name: 'Name', fieldLabel: '节点名称' },
              {
                  xtype: 'fieldcontainer',
                  layout: 'hbox',
@@ -816,8 +816,40 @@ MB.form.WFTemplate = function (config) {
                  items: [
                     { xtype: 'textfield', name: 'ViewCode', fieldLabel: '视图表单' },
                     { xtype: 'splitter', width: 30 },
-                    { xtype: 'checkboxfield', name: 'IsCountersign', fieldLabel: '是否会签' }
+                    { xtype: 'checkboxfield', name: 'IsCountersign', fieldLabel: '是否会签' },
                     ]
+             },
+             { 
+                xtype: 'combo',
+                 fieldLabel: '操作人', 
+                 name: 'Handlers',
+                 store: new Ext.data.Store({
+                     fields: ['value', 'text'],
+                     proxy: {
+                         type: 'ajax',
+                         url: '/data/Privilege/subject_IdNames',
+                         reader: {
+                             type: 'json',
+                             root: 'data'
+                         }
+                         //extraParams: {mrId:'',depth:0}, //传参数,在Request.Params["mrId"]
+                     },
+                     autoLoad: true,
+                     listeners: {
+                         load: function (store, records, successful) {
+                             if (!successful) {
+                                 alert('数据加载失败');
+                             }
+                             else {
+                                 //alert('数据加载成功');
+                             }
+                         }
+                     }
+                 }),
+                 queryMode: 'local',
+                 displayField: 'text',
+                 valueField: 'value',
+                 multiSelect: true
              },
         //{ xtype: 'textareafield', name: 'Description', flex: 1, fieldLabel: '节点描述' },
         {
@@ -826,71 +858,11 @@ MB.form.WFTemplate = function (config) {
         activeTab: 0,
         margin: 4,
         flex: 1,
-        items: [{
-            title: '处理人',
-            layout: 'fit',
-            items: [
-                {
-                    xtype: 'grid',
-                    tbar: [
-                        { xtype: 'button', iconCls: 'iconNew', tooltip: '新增', tooltipType: 'title', handler: function (source, e) {
-                        }
-                        }
-                    ],
-                    store: new Ext.data.Store({
-                        fields: ['ID', 'Code', 'Name', 'Category'],
-                        proxy: {
-                            type: 'ajax',
-                            extraParams: { id: config.id, templateId: config.templateId },
-                            url: '/workflow/manage/getNodeHandlers',
-                            reader: {
-                                type: 'json',
-                                root: 'data'
-                            }
-                        },
-                        autoLoad: true,
-                        listeners: {
-                            load: function (store, records, successful) {
-                                if (!successful) {
-                                    alert('数据加载失败');
-                                }
-                                else {
-                                }
-                            }
-                        }
-                    }),
-                    columns: [
-                        new Ext.grid.RowNumberer(),
-                        {
-                            header: '代码',
-                            dataIndex: 'Code',
-                            width: 80
-                        }, {
-                            header: '名称',
-                            dataIndex: 'Name',
-                            flex: 1
-                        }, {
-                            header: '类别',
-                            dataIndex: 'Category',
-                            flex: 1
-                        }, {
-                            xtype: 'actioncolumn',
-                            icon: '/content/images/delete.gif',
-                            width: 30,
-                            tooltip: '删除',
-                            handler: function (grid, rowIndex, colIndex) {
-                                //var rec = grid.getStore().getAt(rowIndex);
-                                //alert("Terminate " + rec.get('firstname'));
-                                alert(rowIndex);
-                            }
-                        }
-                        ]
-                }
-                ]
-        }, {
-            title: '访问权限',
-            layout: 'fit',
-            items: [
+        items: [
+            {
+                title: '访问权限',
+                layout: 'fit',
+                items: [
                 {
                     xtype: 'grid',
                     tbar: [
@@ -946,7 +918,7 @@ MB.form.WFTemplate = function (config) {
                         ]
                 }
                 ]
-        }]
+            }]
     }
         ],
     buttons: [
@@ -974,3 +946,140 @@ if (config.id) {
 return this.form;
 }
 
+MB.form.WFNodeXORSplit = function (config) {
+    this.name = "流程分支节点表单";
+    this.form = new Ext.form.FormPanel({
+        params: { sid: config.id, jid: 'ssss' },
+        layout: {
+            type: 'vbox',
+            align: 'stretch'
+        },
+        height: 400,
+        width: '100%',
+        autoHeight: true,
+        stateful: false,
+        fieldDefaults: { labelAlign: 'left', msgTarget: 'none', anchor: '100%', margin: 4, labelWidth: 60 },
+        items: [
+            { xtype: 'hiddenfield', name: 'templateId', value: config.templateId, hidden: true },
+            { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
+            { xtype: 'hiddenfield', name: 'x', value: config.x, hidden: true },
+            { xtype: 'hiddenfield', name: 'y', value: config.y, hidden: true },
+            { xtype: 'textfield', name: 'Name', fieldLabel: '节点名称' }
+        ],
+        buttons: [
+            { text: '保存', handler: function () {
+                this.up('form').getForm().submit({
+                    url: '/workflow/manage/addNodeXOR',
+                    success: function (form, action) { form.setValues({ ID: action.result.data }); if (config && config.submitSccess) config.submitSccess(form, action) },
+                    failure: function (form, action) { if (config && config.submitFailure) config.submitFailure(form, action) }
+                }
+                );
+            }
+            },
+            { text: '取消', handler: function () { if (config && config.close) config.close() } }
+        ]
+})
+
+if (config.id) {
+    this.form.getForm().load({
+        url: '/system/auth/getResource',
+        params: { id: config.id }
+    }
+        );
+}
+
+return this.form;
+}
+
+MB.form.WFNodeAction = function (config) {
+    this.name = "流程分支节点表单";
+    this.form = new Ext.form.FormPanel({
+        params: { sid: config.id, jid: 'ssss' },
+        layout: {
+            type: 'vbox',
+            align: 'stretch'
+        },
+        height: 400,
+        width: '100%',
+        autoHeight: true,
+        stateful: false,
+        fieldDefaults: { labelAlign: 'left', msgTarget: 'none', anchor: '100%', margin: 4, labelWidth: 60 },
+        items: [
+            { xtype: 'hiddenfield', name: 'templateId', value: config.templateId, hidden: true },
+            { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
+            { xtype: 'hiddenfield', name: 'from', value: config.from, hidden: true },
+            { xtype: 'hiddenfield', name: 'to', value: config.to, hidden: true },
+            { xtype: 'textfield', name: 'Code', fieldLabel: '动作代码' },
+            { xtype: 'textfield', name: 'Name', fieldLabel: '动作名称' }
+        ],
+        buttons: [
+            { text: '保存', handler: function () {
+                this.up('form').getForm().submit({
+                    url: '/workflow/manage/addNodeAction',
+                    success: function (form, action) { form.setValues({ ID: action.result.data }); if (config && config.submitSccess) config.submitSccess(form, action) },
+                    failure: function (form, action) { if (config && config.submitFailure) config.submitFailure(form, action) }
+                }
+                );
+            }
+            },
+            { text: '取消', handler: function () { if (config && config.close) config.close() } }
+        ]
+    })
+
+    if (config.id) {
+        this.form.getForm().load({
+            url: '/system/auth/getResource',
+            params: { id: config.id }
+        }
+        );
+    }
+
+    return this.form;
+}
+
+MB.form.WFNodeExpression = function (config) {
+    this.name = "流程分支节点表单";
+    this.form = new Ext.form.FormPanel({
+        params: { sid: config.id, jid: 'ssss' },
+        layout: {
+            type: 'vbox',
+            align: 'stretch'
+        },
+        height: 400,
+        width: '100%',
+        autoHeight: true,
+        stateful: false,
+        fieldDefaults: { labelAlign: 'left', msgTarget: 'none', anchor: '100%', margin: 4, labelWidth: 60 },
+        items: [
+            { xtype: 'hiddenfield', name: 'templateId', value: config.templateId, hidden: true },
+            { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
+            { xtype: 'hiddenfield', name: 'from', value: config.from, hidden: true },
+            { xtype: 'hiddenfield', name: 'to', value: config.to, hidden: true },
+            { xtype: 'textfield', name: 'Expression', fieldLabel: '表达式' },
+            { xtype: 'textfield', name: 'Description', fieldLabel: '说明' },
+            { xtype: 'textfield', name: 'OrderNO', fieldLabel: '顺序号' ,value:'10' }
+        ],
+        buttons: [
+            { text: '保存', handler: function () {
+                this.up('form').getForm().submit({
+                    url: '/workflow/manage/addNodeExpression',
+                    success: function (form, action) { form.setValues({ ID: action.result.data }); if (config && config.submitSccess) config.submitSccess(form, action) },
+                    failure: function (form, action) { if (config && config.submitFailure) config.submitFailure(form, action) }
+                }
+                );
+            }
+            },
+            { text: '取消', handler: function () { if (config && config.close) config.close() } }
+        ]
+    })
+
+    if (config.id) {
+        this.form.getForm().load({
+            url: '/system/auth/getResource',
+            params: { id: config.id }
+        }
+        );
+    }
+
+    return this.form;
+}

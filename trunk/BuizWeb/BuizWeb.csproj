@@ -109,11 +109,11 @@
   <ItemGroup>
     <Content Include="Content\canvas\arrow16.png" />
     <Content Include="Content\canvas\canvas.htm" />
+    <Content Include="Content\canvas\event16.png" />
     <Content Include="Content\canvas\event24.png" />
     <Content Include="Content\canvas\excanvas.js" />
     <Content Include="Content\canvas\handle.png" />
     <Content Include="Content\canvas\handle16.png" />
-    <Content Include="Content\canvas\json.js" />
     <Content Include="Content\canvas\move16.PNG" />
     <Content Include="Content\canvas\mytest.htm" />
     <Content Include="Content\canvas\Select16.png" />

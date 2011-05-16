@@ -170,12 +170,12 @@ function WFGraph(config) {
                             function (event) {
                                 //event = event.browserEvent;
                                 if (this.operateState.params && this.operateState.params.selected) {
-                                    this.operateState.params.selected.position = this.tranp({ x: event.x, y: event.y });
+                                    this.operateState.params.selected.position = this.tranp({ x: event.getPageX(), y: event.getPageY() });
                                     this.redrawAll();
                                 }
                             }, // function (event) 
                             this,
-                            { normalized: false }
+                            { normalized: true }
                         ); //Ext.fly(this.ctx.canvas).on
                     Ext.fly(this.ctx.canvas).on('mouseup',
                             function (event) {
@@ -268,8 +268,7 @@ function WFGraph(config) {
                 var nodeID = GUID();
                 // 打开表单编辑，提交再生成后
                 new Ext.window.Window({
-                    id: 'fwin',
-                    title: '流程模板信息',
+                    title: '流程处理节点信息',
                     modal: true,
                     closable: true,
                     //animateTarget: this,
@@ -278,12 +277,12 @@ function WFGraph(config) {
                     layout: 'fit',
                     bodyPadding: 0,
                     items: [
-                        new MB.form.WFTemplate({
+                        new MB.form.WFNodeHandle({
                             templateId: this.data.ID,
                             //id: '',
                             x: this.tranp(event).x,
                             y: this.tranp(event).y,
-                            close: function () { Ext.getCmp('fwin').close(); },
+                            close: function () { this.up('windows').close(); },
                             submitSccess: function (form, action) {
                                 alert("submitSccess");
                                 wfg.data.nodes.push({ ID: form.getValues()["ID"], name: form.getValues()["Name"], type: 'WFNodeHandle', position: { x: form.getValues()['x'], y: form.getValues()['y']} });
@@ -320,10 +319,35 @@ function WFGraph(config) {
         mode: 'newSplit',
         listeners: {
             mousedown: function (event) {
-                this.data.nodes.push({ ID: GUID(), name: 'new', type: 'WFNodeXORSplit', position: this.tranp(event) });
-                this.redrawAll();
+                var nodeID = GUID();
+                // 打开表单编辑，提交再生成后
+                new Ext.window.Window({
+                    title: '分支节点信息',
+                    modal: true,
+                    closable: true,
+                    //animateTarget: this,
+                    width: 600,
+                    //height: 500,
+                    layout: 'fit',
+                    bodyPadding: 0,
+                    items: [
+                        new MB.form.WFNodeXORSplit({
+                            templateId: this.data.ID,
+                            //id: '',
+                            x: this.tranp(event).x,
+                            y: this.tranp(event).y,
+                            close: function () { this.up('windows').close(); },
+                            submitSccess: function (form, action) {
+                                alert("submitSccess");
+                                wfg.data.nodes.push({ ID: form.getValues()["ID"], name: form.getValues()["Name"], type: 'WFNodeXORSplit', position: { x: form.getValues()['x'], y: form.getValues()['y']} });
+                                wfg.redrawAll();
+                                this.close();
+                            },
+                            submitFailure: function (form, action) { alert("submitFailure"); }
+                        })
+                    ]
+                }).show();
             },
-            mousemove: null,
             mouseup: null,
             dblclick: null
         },
@@ -337,10 +361,77 @@ function WFGraph(config) {
                 var n = this.captureNode(event);
                 if (this.operateState.params && this.operateState.params.preNode) {
                     if (n) {
-                        if (n.ID != this.operateState.params.preNode.ID) { //还有一种情况,如果连接已经存在
-                            this.data.lines.push({ ID: GUID(), from: this.operateState.params.preNode.ID, to: n.ID, name: '未命名' });
-                            this.operateState.params = { preNode: null };
-                            this.redrawAll();
+                        if (n.ID != this.operateState.params.preNode.ID) {
+                            var findFlag = false;
+                            for (var l in this.data.lines) {//判断连接已经存在
+                                if (this.data.lines[l].from == this.operateState.params.preNode.ID && this.data.lines[l].to == n.ID) {
+                                    findFlag = true;
+                                    break;
+                                }
+                            }
+                            if (findFlag) {
+                                alert('连接已经存在!!');
+                            }
+                            else { // 所有检查通过
+                                switch (this.operateState.params.preNode.type) {
+                                    case 'WFNodeHandle':
+                                        new Ext.window.Window({
+                                            title: '节点连接信息',
+                                            modal: true,
+                                            closable: true,
+                                            width: 600,
+                                            layout: 'fit',
+                                            bodyPadding: 0,
+                                            items: [
+                                            new MB.form.WFNodeAction({
+                                                templateId: this.data.ID, // 一定要传,取实体上下文
+                                                from: this.operateState.params.preNode.ID,
+                                                to: n.ID,
+                                                //id: '',
+                                                close: function () { this.up('windows').close(); },
+                                                submitSccess: function (form, action) {
+                                                    alert("submitSccess");
+                                                    wfg.data.lines.push({ ID: form.getValues()["ID"], name: form.getValues()["Name"], from: form.getValues()["from"], to: form.getValues()["to"] });
+                                                    wfg.operateState.params = { preNode: null };
+                                                    wfg.redrawAll();
+                                                    this.close();
+                                                },
+                                                submitFailure: function (form, action) { alert("submitFailure"); }
+                                            })
+                                        ]
+                                        }).show();
+                                        break;
+                                    case 'WFNodeXORSplit':
+                                        new Ext.window.Window({
+                                            title: '节点连接信息',
+                                            modal: true,
+                                            closable: true,
+                                            width: 600,
+                                            layout: 'fit',
+                                            bodyPadding: 0,
+                                            items: [
+                                            new MB.form.WFNodeExpression({
+                                                templateId: this.data.ID, // 一定要传,取实体上下文
+                                                from: this.operateState.params.preNode.ID,
+                                                to: n.ID,
+                                                //id: '',
+                                                close: function () { this.up('windows').close(); },
+                                                submitSccess: function (form, action) {
+                                                    alert("submitSccess");
+                                                    wfg.data.lines.push({ ID: form.getValues()["ID"], name: form.getValues()["Expression"], from: form.getValues()["from"], to: form.getValues()["to"] });
+                                                    wfg.operateState.params = { preNode: null };
+                                                    wfg.redrawAll();
+                                                    this.close();
+                                                },
+                                                submitFailure: function (form, action) { alert("submitFailure"); }
+                                            })
+                                        ]
+                                        }).show();
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
                         }
                         else {
                             alert('两端的节点必须是不同的!');
@@ -363,29 +454,67 @@ function WFGraph(config) {
         listeners: {
             click: function (event) {
                 var n = this.captureNode(event);
-                if (n && confirm("确认删除该节点及其所有连接吗?")) {
+                if (n && confirm("确认删除该节点吗?")) { //如果删除的是节点,该节点必须没有被使用到
+                    var hasLine = false;
                     for (var line in this.data.lines) {
-                        if (line.from == n.ID || line.to == n.ID) {
-                            var b = this.data.lines.indexOf(line);
-                            if (b >= 0) {
-                                this.data.lines.splice(b, 1);
-                            }
+                        if (this.data.lines[line].from == n.ID || this.data.lines[line].to == n.ID) {
+                                hasLine = true;
+                                break;
                         }  // end of if
                     }
-                    var a = this.data.nodes.indexOf(n);
-                    if (a >= 0) {
-                        this.data.nodes.splice(a, 1);
+                    /*
+                    */
+                    if (hasLine)
+                        alert('该节点被其他节点使用到,不能删除!');
+                    else {
+                        // 删除节点
+                        Ext.Ajax.request({
+                            url: '/workflow/Manage/deleteNode',
+                            params: {
+                                templateId: this.data.ID,
+                                nodeID: n.ID
+                            },
+                            success: function (response, opts) {
+                                var i;
+                                for (i = 0; i < wfg.data.nodes.length; i++) {
+                                    if (wfg.data.nodes[i].ID == opts.params.nodeID) //response.request.options.params.nodeID
+                                        break;
+                                }
+                                if (i < wfg.data.nodes.length) {
+                                    wfg.data.nodes.splice(i, 1);
+                                }
+                                wfg.redrawAll();
+                            },
+                            failure: function (response) {
+                                alert(response.responseText);
+                            }
+                        });
                     }
-                    this.redrawAll();
                 }
-                else {
-                    n = this.captureLine(event);
+                else { // 不是删除节点,就是删除连线
+                    n = this.captureLine(event); //取line
                     if (n && confirm("确认删除该连接吗?")) {
-                        var a = this.data.lines.indexOf(n);
-                        if (a >= 0) {
-                            this.data.lines.splice(a, 1);
-                        }
-                        this.redrawAll();
+                        Ext.Ajax.request({
+                            url: '/workflow/Manage/deleteLine',
+                            params: {
+                                templateId: this.data.ID,
+                                LineID: n.ID
+                            },
+                            success: function (response, opts) {
+                                var i;
+                                for (i = 0; i < wfg.data.lines.length; i++) {
+                                    if (wfg.data.lines[i].ID == opts.params.LineID) //response.request.options.params.nodeID
+                                        break;
+                                }
+                                if (i < wfg.data.lines.length) {
+                                    wfg.data.lines.splice(i, 1);
+                                }
+                                wfg.redrawAll();
+                            },
+                            failure: function (response) {
+                                alert(response.responseText);
+                            }
+                        });
                     }
                 }
             }
