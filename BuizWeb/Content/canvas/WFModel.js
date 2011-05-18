@@ -72,30 +72,48 @@ function WFGraph(config) {
         this.ctx.drawLineWithArrow({ x: -10, y: 0 }, { x: 45, y: 0 });
         this.ctx.drawLineWithArrow({ x: 0, y: -10 }, { x: 0, y: 45 });
 
+        /*
         var n;
         for (n in this.data.lines) {
-            this.drawLine(this.data.lines[n]);
-        }
+        this.drawLine(this.data.lines[n]);
+        }*/
+        /*
+        var i, length;
+        for (i = 0, length = this.data.lines.length; i < length; i++) {
+            this.drawLine(this.data.lines[i]);
+        }*/
 
+        Ext.Array.forEach(this.data.lines, function (line) { this.drawLine(line) }, this);
+
+        /*
         for (n in this.data.nodes) {
-            this.drawNode(this.data.nodes[n]);
-        }
+        this.drawNode(this.data.nodes[n]);
+        }*/
+        /*
+        for (i = 0, length = this.data.nodes.length; i < length; i++) {
+            this.drawNode(this.data.nodes[i]);
+        }*/
+        Ext.Array.forEach(this.data.nodes, function (node) { this.drawNode(node) }, this);
 
         //alert('dddd');
     }
 
     this.getLine = function (line) {
-        var start = {}, end = {}, n;
+        var start = {}, end = {};//, n, length = this.data.nodes.length;
 
         // 找当前连线相关的头尾节点
-        for (n in this.data.nodes) {
+        /*
+        for (n = 0; n < length; n++) {
             if (this.data.nodes[n].ID == line.from) {
                 start = this.data.nodes[n].position
             }
             if (this.data.nodes[n].ID == line.to) {
                 end = this.data.nodes[n].position
             }
-        }
+        }*/
+
+        start = this.data.nodes[Ext.Array.pluck(this.data.nodes, "ID").indexOf(line.from)].position;
+        end = this.data.nodes[Ext.Array.pluck(this.data.nodes, "ID").indexOf(line.to)].position; 
 
         var dis = this.ctx.distance(start, end);
         var lineBegin = { x: end.x + (start.x - end.x) * (dis - 20) / dis, y: end.y + (start.y - end.y) * (dis - 20) / dis }; //起点让20px
@@ -134,9 +152,8 @@ function WFGraph(config) {
     }
 
     this.captureNode = function (event) {
-        var node = null;
-        for (var n in this.data.nodes) {
-            // 如果选中节点,注册移动事件处理为节点移动
+        var node = null, n, length = this.data.nodes.length;
+        for (n = 0; n < length; n++) {
             if (this.ctx.distance(this.data.nodes[n].position, this.tranp({ x: event.x, y: event.y })) < 16) {
                 node = this.data.nodes[n]; // 选中的节点,处理后直接返回
                 break;
@@ -146,11 +163,11 @@ function WFGraph(config) {
     }
 
     this.captureLine = function (event) {
-        var line = null;
-        for (var l in this.data.lines) {
+        var line = null, i, length = this.data.nodes.length;
+        for (i = 0; i < length; i++) {
             // 如果选中节点,注册移动事件处理为节点移动
-            if (this.ctx.minDistance(this.tranp({ x: event.x, y: event.y }), this.getLine(this.data.lines[l])) < 6) {
-                line = this.data.lines[l];
+            if (this.ctx.minDistance(this.tranp({ x: event.x, y: event.y }), this.getLine(this.data.lines[i])) < 6) {
+                line = this.data.lines[i];
                 break;
             }
         }
@@ -464,13 +481,15 @@ function WFGraph(config) {
                         return;
                     }
 
-                    var hasLine = false;
+                    /*var hasLine = false;
+                    
                     for (var line in this.data.lines) {
-                        if (this.data.lines[line].from == n.ID || this.data.lines[line].to == n.ID) {
-                            hasLine = true;
-                            break;
-                        }  // end of if
-                    }
+                    if (this.data.lines[line].from == n.ID || this.data.lines[line].to == n.ID) {
+                    hasLine = true;
+                    break;
+                    }  // end of if
+                    }*/
+                    var hasLine = Ext.Array.some(this.data.lines, function (line) { return line.from == n.ID || line.to == n.ID }, this);
                     /*
                     */
                     if (hasLine) {
@@ -485,16 +504,17 @@ function WFGraph(config) {
                                 templateId: this.data.ID,
                                 nodeID: n.ID
                             },
+                            scope: this,
                             success: function (response, opts) {
                                 var i;
                                 for (i = 0; i < wfg.data.nodes.length; i++) {
-                                    if (wfg.data.nodes[i].ID == opts.params.nodeID) //response.request.options.params.nodeID
+                                    if (this.data.nodes[i].ID == opts.params.nodeID) //response.request.options.params.nodeID
                                         break;
                                 }
-                                if (i < wfg.data.nodes.length) {
-                                    wfg.data.nodes.splice(i, 1);
+                                if (i < this.data.nodes.length) {
+                                    this.data.nodes.splice(i, 1);
                                 }
-                                wfg.redrawAll();
+                                this.redrawAll();
                             },
                             failure: function (response) {
                                 alert(response.responseText);
@@ -511,16 +531,19 @@ function WFGraph(config) {
                                 templateId: this.data.ID,
                                 LineID: n.ID
                             },
+                            scope: this,
                             success: function (response, opts) {
-                                var i;
-                                for (i = 0; i < wfg.data.lines.length; i++) {
-                                    if (wfg.data.lines[i].ID == opts.params.LineID) //response.request.options.params.nodeID
-                                        break;
+                                var i = -1;
+                                /*for (i = 0; i < wfg.data.lines.length; i++) {
+                                if (wfg.data.lines[i].ID == opts.params.LineID) //response.request.options.params.nodeID
+                                break;
+                                }*/
+                                i = Ext.Array.pluck(this.data.lines, "ID").indexOf(opts.params.LineID); //没找到返回－1
+                                if (i > 0) {
+                                    this.data.lines.splice(i, 1);
+                                    //Ext.Array.remove(wfg.data.lines, wfg.data.lines[i]);
                                 }
-                                if (i < wfg.data.lines.length) {
-                                    wfg.data.lines.splice(i, 1);
-                                }
-                                wfg.redrawAll();
+                                this.redrawAll();
                             },
                             failure: function (response) {
                                 alert(response.responseText);
@@ -634,3 +657,5 @@ WFGraph.nodeImgs = {
     WFNodeEvent: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/event24.png"),
     WFNodeFinish: function (imgSrc) { var img = new Image(); img.src = imgSrc; return img; } ("/content/canvas/stop.png")
 };
+
+Array.prototype.remove = function () { }
