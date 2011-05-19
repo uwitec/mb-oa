@@ -230,3 +230,8 @@
 {
     background: url(canvas/event16.png) top left no-repeat !important;
 }
+
+.x-edit-createImg
+{
+    background: url(images/edit-image.png) top left no-repeat !important;
+}

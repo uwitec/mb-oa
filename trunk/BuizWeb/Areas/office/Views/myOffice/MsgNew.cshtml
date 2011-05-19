@@ -11,6 +11,119 @@
         }
     </style>
     <script type="text/javascript">
+        Ext.form.HtmlEditor.test = Ext.extend(Ext.util.Observable, {
+            init: function(cmp){
+                this.cmp = cmp;
+                this.cmp.on('render', this.onRender, this);
+            },
+            onRender: function(){
+                var cmp = this.cmp;
+                var btn = this.cmp.getToolbar().add({
+                    iconCls: 'x-edit-createImg',
+                    handler: function(){
+                        this.cmp.insertAtCursor('333333333333333333');
+                    },
+                    scope: this,
+                    tooltip: 'test'
+                });
+            }
+        });
+
+        Ext.form.HtmlEditor.Image = Ext.extend(Ext.util.Observable, {
+	        langTitle: '插入图片',
+            urlSizeVars: ['width','height'],
+            basePath: '/',
+            init: function(cmp){
+                this.cmp = cmp;
+                this.cmp.on('render', this.onRender, this);
+                this.cmp.on('initialize', this.onInit, this, {single: true});
+            },
+            onEditorMouseUp : function(e){
+                Ext.get(e.getTarget()).select('img').each(function(el){
+                    var w = el.getAttribute('width'), h = el.getAttribute('height'), src = el.getAttribute('src')+' ';
+                    src = src.replace(new RegExp(this.urlSizeVars[0]+'=[0-9]{1,5}([&| ])'), this.urlSizeVars[0]+'='+w+'$1');
+                    src = src.replace(new RegExp(this.urlSizeVars[1]+'=[0-9]{1,5}([&| ])'), this.urlSizeVars[1]+'='+h+'$1');
+                    el.set({src:src.replace(/\s+$/,"")});
+                }, this);
+        
+            },
+            onInit: function(){
+                Ext.EventManager.on(this.cmp.getDoc(), {
+			        'mouseup': this.onEditorMouseUp,
+			        buffer: 100,
+			        scope: this
+		        });
+            },
+            onRender: function() {
+                var btn = this.cmp.getToolbar().add({
+                    iconCls: 'x-edit-createImg',
+                    handler: this.selectImage,
+                    scope: this,
+                    tooltip: this.langTitle,
+                    overflowText: this.langTitle
+                });
+            },
+            selectImage: function(){
+                var editor = this;
+                var pos = this.cmp.getPosition();
+                Ext.create('Ext.window.Window',{
+                    title:'上传图片',
+                    layout:'fit',
+                    //modal: true,
+                    width: 400,
+                    border: 0,
+                    items: [
+                        {
+                            xtype:'form',
+                            bodyPadding: 6,
+                            items:[{ 
+                                xtype:'filefield',
+                                id: 'imgFile',
+                                labelWidth: 60,
+                                fieldLabel: '选择图片',
+                                anchor: '100%',
+                                buttonText: '选择...',
+                                value: ''
+                            }],
+                            buttons: [
+                                {
+                                    text: '上传', 
+                                    handler: function(btn, e){
+                                        var form = this.up('form').getForm();
+                                        if(form.isValid()){
+                                            form.submit({
+                                                url: '/office/myOffice/imgSend',
+                                                //waitMsg: 'Uploading your photo...',
+                                                success: function(form, action) {
+                                                    //debugger;
+                                                    btn.up('window').close();
+                                                    var img={Name:'img',src: action.result.fileName};
+                                                    editor.insertImage(img);
+                                                }
+
+                                            });
+                                        }
+                                    }
+                                },
+                                {
+                                    text: '取消',
+                                    handler: function(){this.up('window').close();}
+                                }
+                            ]
+                        }
+                    ]
+                }).show();
+            },
+            insertImage: function(img) { //有问题,没有插入到之前的光标位置
+                //debugger;
+                editor.cmp.setActive(true);
+                editor.cmp.setPosition(pos);
+                this.cmp.insertAtCursor('<img src="'+this.basePath+ img.src + '" title="'+img.Name+'" alt="'+img.Name+'">');
+                //this.cmp.setActive(true);
+                //this.cmp.insertAtCursor('333333333333333333');
+            }
+        });
+
         Ext.onReady(function () {
             var treeSelectUser = new Ext.tree.TreePanel({
                 store: new Ext.data.TreeStore({
@@ -127,8 +240,11 @@
                         fieldLabel: '消息正文',
                         xtype: 'htmleditor',
                         labelAlign: 'top',
+                        fontFamilies: ['Tahoma','宋体','楷体','仿宋','黑体'],
+                        createLinkText: '请输入URL:',
                         name: 'Content',
                         flex: 1,
+                        plugins: [new Ext.form.HtmlEditor.test(), new Ext.form.HtmlEditor.Image()],
                         value: '@Html.Raw(@ViewBag.Content)' //直接写不行
                     }, {
                         xtype: 'filefield',
