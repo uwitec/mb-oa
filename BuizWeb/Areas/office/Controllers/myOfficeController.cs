@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using EntityObjectContext;
 using EntityObjectLib;
+using System.IO;
 
 namespace BuizApp.Areas.office.Controllers
 {
@@ -117,6 +118,19 @@ namespace BuizApp.Areas.office.Controllers
             return View();
         }
 
+        public ActionResult imgSend()
+        {
+            using (MyDB mydb = new MyDB())
+            {
+                HttpPostedFileBase file = Request.Files[0];
+                FileInfo fi = new FileInfo(file.FileName);
+                string fileName = string.Format("{0}{1}", Guid.NewGuid().ToString(), fi.Extension);
+                file.SaveAs(Server.MapPath("~/" + fileName));
+
+                Response.Clear();
+                return Json(new { success = true, fileName }, "text/html");
+            }
+        }
 
 
         [HttpPost]
@@ -133,7 +147,7 @@ namespace BuizApp.Areas.office.Controllers
             string infoID = Guid.NewGuid().ToString();
             using (MyDB mydb = new MyDB())
             {
-                List<EntityObjectLib.File> files = new List<File>();
+                List<EntityObjectLib.File> files = new List<EntityObjectLib.File>();
                 for (int i = 0; i < Request.Files.Count; i++)
                 {
 

@@ -1,0 +1,41 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>test2</title>
+    <script type="text/javascript">
+        var list = [{ id: 1, name: 'chw' }, { id: 2, name: 'lilin'}];
+        for (var i in list) {
+            document.write(i);
+            if (list.hasOwnProperty(i))
+                document.write(':hasOwnProperty');
+            if (typeof (list[i]) == 'function')
+                document.write(':Function');
+            document.writeln('<br/>');
+        }
+        document.write('<br/>--------------------------------------------------<br/>');
+        Array.prototype.remove = function () { }
+        for (var i in list) {
+            document.write(i);
+            if (list.hasOwnProperty(i))
+                document.write(':hasOwnProperty');
+            if (list.constructor.prototype.hasOwnProperty(i))
+                document.write(':prototype.hasOwnProperty');
+            if (typeof (list[i]) == 'function')
+                document.write(':Function');
+            document.writeln('<br/>');
+        }
+        document.write('<br/>--------------------------------------------------<br/>');
+        document.write(list[0]);
+    </script>
+</head>
+<body>
+    <div>
+        
+    </div>
+</body>
+</html>
