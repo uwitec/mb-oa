@@ -118,8 +118,8 @@
             },
             insertImage: function(img) { //有问题,没有插入到之前的光标位置
                 //debugger;
-                editor.cmp.setActive(true);
-                editor.cmp.setPosition(pos);
+                //editor.cmp.setActive(true);
+                //editor.cmp.setPosition(pos);
                 this.cmp.insertAtCursor('<img src="'+this.basePath+ img.src + '" title="'+img.Name+'" alt="'+img.Name+'">');
                 //this.cmp.setActive(true);
                 //this.cmp.insertAtCursor('333333333333333333');
@@ -201,11 +201,8 @@
                         { xtype: 'button', iconCls: 'helpIcon', tooltip: '帮助', tooltipType: 'title', handle: function (source, e) { alert('帮助!') } },
                         { xtype: 'button', iconCls: 'iconClose', text: '', tooltip: '关闭', tooltipType: 'title', handler: function (source, e) { window.parent.closeMe(window) } }
                         ],
-                    bbar: [
-                        { xtype: 'button', text: 'Button 1', handler: function (source, e) { openWindow(); } }
-                        ],
                     defaults: { labelWidth: 80, layout: 'anchor', anchor: '100%', xtype: 'textfield' },
-                    fieldDefaults: { labelAlign: 'left', msgTarget: 'none', margin: "4px 10px" },
+                    fieldDefaults: { labelAlign: 'left', msgTarget: 'none', margin: "1px 10px" },
                     items: [{
                         fieldLabel: '来源消息ID',
                         xtype: 'hiddenfield',
@@ -260,7 +257,7 @@
                         margin: '4px 10px',
                         autoScroll: true,
                         contentEl: 'fileUploadDiv'
-                    },{
+                    }/*,{
                         xtype: 'filefield',
                         fieldLabel: '附件',
                         //buttonOnly: true,
@@ -286,7 +283,7 @@
                                 this.up('form').doLayout();
                             }
                         }
-                    }
+                    }*/
                     ],
                     buttons: [
                         { text: '发送', handler: function () {

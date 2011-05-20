@@ -84,10 +84,10 @@
                         echkbox.setAttribute("name", "hidFiles");
                         document.getElementById(fileUploadDiv).appendChild(hidFiles);
                     }*/
-                    uploadResult.innerHTML = "共上传了 " + this.customSettings.amount + "个文件, 共计 " + Math.round(this.customSettings.size / 1024) + "KB&nbsp;:&nbsp;&nbsp;";
+                    document.getElementById("uploadStatus").innerHTML = "共上传了 " + this.customSettings.amount + "个文件, 共计 " + Math.round(this.customSettings.size / 1024) + "KB&nbsp;:&nbsp;&nbsp;";
 
                     for (var id in this.customSettings.files) {
-                        uploadResult.innerHTML = uploadResult.innerHTML + "<div  style='margin-right:20px;display:inline-block;'><a href='" + id + "'>" + this.customSettings.files[id] + "</a><img src='/content/images/cross.gif' alt='删除' title='删除'/></div>";
+                        uploadResult.innerHTML = uploadResult.innerHTML + "<span  style='margin-right:20px;display:inline-block;'><a href='" + id + "'>" + this.customSettings.files[id] + "</a><img src='/content/images/cross.gif' alt='删除' title='删除'/></span>";
                         hidFiles.value = hidFiles.value + "," + id;
                     }
                     //status.innerHTML = "共上传了 " + this.customSettings.amount + "个文件, 共计 " + Math.round(this.customSettings.size / 1024) + "KB";
