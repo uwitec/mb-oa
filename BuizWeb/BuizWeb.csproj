@@ -941,6 +941,7 @@
     <Content Include="Content\images\control_rewind.png" />
     <Content Include="Content\images\cross.gif" />
     <Content Include="Content\images\delete.gif" />
+    <Content Include="Content\images\edit-image.png" />
     <Content Include="Content\images\email.gif" />
     <Content Include="Content\images\error.gif" />
     <Content Include="Content\images\error.png" />
@@ -991,6 +992,10 @@
     <Content Include="Content\javascript\samples\ArrayStore.js" />
     <Content Include="Content\javascript\samples\dataModel.js" />
     <Content Include="Content\site.css" />
+    <Content Include="Content\swfupload\swfupload.js" />
+    <Content Include="Content\swfupload\swfupload.swf" />
+    <Content Include="Content\swfupload\swfuploadbutton.swf" />
+    <Content Include="Content\swfupload\MBupload.js" />
     <Content Include="Global.asax" />
     <Content Include="install.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1019,6 +1024,7 @@
     <Folder Include="Areas\system\Models\" />
     <Folder Include="Areas\test\Models\" />
     <Folder Include="Areas\workflow\Models\" />
+    <Folder Include="uploads\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\TestEF.db3">
@@ -1174,6 +1180,7 @@
     <Content Include="Areas\workflow\Views\Instance\workList.cshtml" />
     <Content Include="Areas\workflow\Views\Instance\auditForm.cshtml" />
     <Content Include="Areas\test\Views\t1\test2.cshtml" />
+    <Content Include="Areas\test\Views\t1\testSwfUpload.cshtml" />
     <None Include="Content\ExtJS\resources\sass\config.rb" />
     <None Include="Content\ExtJS\resources\sass\ext-all-access.scss" />
     <None Include="Content\ExtJS\resources\sass\ext-all-scoped.scss" />
