@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using EntityObjectContext;
 using EntityObjectLib;
 using System.IO;
+using System.Web.Configuration;
 
 namespace BuizApp.Areas.office.Controllers
 {
@@ -61,7 +62,7 @@ namespace BuizApp.Areas.office.Controllers
                 ViewBag.info = info;
                 ViewBag.Creator = info.Creator.Name;
                 ViewBag.Receivers = string.Join(",", info.Receivers.Select(r => r.Receiver.Name).ToArray());
-                ViewBag.files = info.InfoFiles.Select(f => string.Format("<a href='/{1}' target='_blank'>{0}</a>", f.File.Name, f.File.Name)).ToArray();
+                ViewBag.files = info.InfoFiles.Select(f => string.Format("<a href='/uploads/{1}' target='_blank'>{0}</a>", f.File.Name, f.File.ID + f.File.Suffix)).ToArray();
                 ViewBag.children = info.Children.Select(inf => string.Format("<a href=javascript:this.parent.addTab('/office/myOffice/MsgShow?ID={0}','消息:{3}') target='_blank'>[{1}]{2}:{3}</a>", inf.ID, inf.CreateDate, inf.Creator.Name, inf.Title)).ToArray();
             }
             return View();
@@ -132,6 +133,38 @@ namespace BuizApp.Areas.office.Controllers
             }
         }
 
+        public string fileUpload()
+        {
+            // 保存传来的文件
+            HttpPostedFileBase file = Request.Files["Filedata"]; // 在FileData里
+            FileInfo fi = new FileInfo(file.FileName);
+            string fileID = Guid.NewGuid().ToString();
+            string uploadDir = WebConfigurationManager.AppSettings["uploadDir"];
+            file.SaveAs(Server.MapPath(uploadDir + fileID + fi.Extension));
+
+            using (MyDB mydb = new MyDB())
+            {
+                EntityObjectLib.File f = new EntityObjectLib.File
+                {
+                    ID = fileID,
+                    CreateDate = DateTime.Now,
+                    Name = file.FileName,
+                    Creator = mydb.Users.Find(HttpContext.User.Identity.Name),
+                    UploadPath = uploadDir,
+                    Suffix = fi.Extension
+                };
+                mydb.Files.Add(f);
+                mydb.SaveChanges();
+            }
+            
+            //System.Threading.Thread.Sleep(3000);
+
+            //// 回传
+            Response.StatusCode = 200; //成功
+            return fileID;
+
+        }
+
 
         [HttpPost]
         [ValidateInput(false)]
@@ -143,10 +176,40 @@ namespace BuizApp.Areas.office.Controllers
             string Title = Request.Form["Title"];
             string Content = Request.Form["Content"].Replace("\r\n",""); //去掉回车
             string ParentID = Server.HtmlEncode(Request.Form["ParentID"]);
+            string hiddenFileIDs = Request.Form["hiddenFileIDs"];
 
             string infoID = Guid.NewGuid().ToString();
             using (MyDB mydb = new MyDB())
             {
+                EntityObjectLib.File[] files = mydb.Files.Where(f => hiddenFileIDs.Contains(f.ID)).ToArray();
+                EntityObjectLib.Info info = new Info
+                {
+                    ID = infoID,
+                    Title = Title,
+                    Content = Content,
+                    CreateDate = DateTime.Now,
+                    SendDate = DateTime.Now,
+                    Creator = mydb.Users.Find(HttpContext.User.Identity.Name),
+                    SendTypes = "",
+                    Receivers = string.IsNullOrEmpty(Receivers) ? null : Receivers.Split(",".ToCharArray()).Select(r => new EntityObjectLib.InfoInbox
+                    {
+                        ID = Guid.NewGuid().ToString(),
+                        Receiver = mydb.Users.FirstOrDefault(u => r.Equals(u.Name + "(" + u.Code + ")")),
+                        ReceiveTypes = ""
+                    }).ToArray(),
+                    InfoFiles = files.Select(f =>
+                            new InfoFile
+                            {
+                                ID = Guid.NewGuid().ToString(),
+                                File = f,
+                                FileName = f.Name,
+                                UploadDate = DateTime.Now
+                            }
+                        ).ToArray(),
+                    Parent = mydb.Infos.Find(ParentID)/*,
+                    Board = mydb.InfoBoards.First()*/
+                };
+                /*
                 List<EntityObjectLib.File> files = new List<EntityObjectLib.File>();
                 for (int i = 0; i < Request.Files.Count; i++)
                 {
@@ -167,32 +230,7 @@ namespace BuizApp.Areas.office.Controllers
                         files.Add(file);
                     }
                 }
-
-                EntityObjectLib.Info info = new Info
-                {
-                    ID = infoID,
-                    Title = Title,
-                    Content = Content,
-                    CreateDate = DateTime.Now,
-                    SendDate = DateTime.Now,
-                    Creator = mydb.Users.Find(HttpContext.User.Identity.Name),
-                    SendTypes = "",
-                    Receivers = string.IsNullOrEmpty(Receivers)?null:Receivers.Split(",".ToCharArray()).Select(r => new EntityObjectLib.InfoInbox
-                    {
-                        ID = Guid.NewGuid().ToString(),
-                        Receiver = mydb.Users.FirstOrDefault(u => r.Equals(u.Name + "(" + u.Code + ")")),
-                        ReceiveTypes = ""
-                    }).ToArray(),
-                    InfoFiles = files.Select(f => new EntityObjectLib.InfoFile
-                    {
-                        ID = Guid.NewGuid().ToString(),
-                        FileName = f.Name,
-                        UploadDate = DateTime.Now,
-                        File = f
-                    }).ToArray(),
-                    Parent = mydb.Infos.Find(ParentID),
-                    Board = mydb.InfoBoards.First()
-                };
+                */
 
                 mydb.Infos.Add(info);
 

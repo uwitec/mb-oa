@@ -1,14 +1,14 @@
-﻿function CreateUploadCtl(fileUploadDiv) {
+﻿function CreateUploadCtl(fileUploadDiv,hiddenID) {
 
     if (!document.getElementById("spanButtonPlaceholder")) {
         var spanButtonPlaceholder = document.createElement("div");
         spanButtonPlaceholder.id = "spanButtonPlaceholder";
         document.getElementById(fileUploadDiv).appendChild(spanButtonPlaceholder);
     }
-     
+
     new SWFUpload({
         // Backend Settings
-        upload_url: "/test/t1/upload", //上传处理
+        upload_url: "/office/myoffice/fileUpload", //上传处理
         post_params: {},
 
         // 文件上传参数设置
@@ -45,7 +45,7 @@
         upload_error_handler: function (file, errorCode, message) {
         },
         upload_success_handler: function (file, serverData) { //上传成功,在upload_complete_handler之前执行
-            debugger;
+            //debugger;
             try {
                 var status = document.getElementById("uploadStatus");
                 if (!status) {
@@ -76,9 +76,19 @@
                         uploadResult.id = "uploadResult";
                         document.getElementById(fileUploadDiv).appendChild(uploadResult);
                     }
+
+                    var hidFiles = document.getElementById(hiddenID);
+                    /*if (!hidFiles) {
+                        echkbox.setAttribute("type", "hidden");
+                        echkbox.setAttribute("id", "hidFiles");
+                        echkbox.setAttribute("name", "hidFiles");
+                        document.getElementById(fileUploadDiv).appendChild(hidFiles);
+                    }*/
                     uploadResult.innerHTML = "共上传了 " + this.customSettings.amount + "个文件, 共计 " + Math.round(this.customSettings.size / 1024) + "KB&nbsp;:&nbsp;&nbsp;";
+
                     for (var id in this.customSettings.files) {
                         uploadResult.innerHTML = uploadResult.innerHTML + "<div  style='margin-right:20px;display:inline-block;'><a href='" + id + "'>" + this.customSettings.files[id] + "</a><img src='/content/images/cross.gif' alt='删除' title='删除'/></div>";
+                        hidFiles.value = hidFiles.value + "," + id;
                     }
                     //status.innerHTML = "共上传了 " + this.customSettings.amount + "个文件, 共计 " + Math.round(this.customSettings.size / 1024) + "KB";
                 }

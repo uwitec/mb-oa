@@ -10,6 +10,8 @@
             background: url(/Content/images/book.png) no-repeat 2px 2px;
         }
     </style>
+    <script type="text/javascript" src="/content/swfupload/swfupload.js"></script>
+    <script type="text/javascript" src="/content/swfupload/MBupload.js"></script>
     <script type="text/javascript">
         Ext.form.HtmlEditor.test = Ext.extend(Ext.util.Observable, {
             init: function(cmp){
@@ -246,7 +248,19 @@
                         flex: 1,
                         plugins: [new Ext.form.HtmlEditor.test(), new Ext.form.HtmlEditor.Image()],
                         value: '@Html.Raw(@ViewBag.Content)' //直接写不行
-                    }, {
+                    },{
+                        fieldLabel: '上传文件ID列表',
+                        xtype: 'hiddenfield',
+                        id: 'hiddenFileIDs',
+                        name: 'hiddenFileIDs',
+                        value: ''
+                    },{
+                        xtype: 'panel',
+                        height: 50,
+                        margin: '4px 10px',
+                        autoScroll: true,
+                        contentEl: 'fileUploadDiv'
+                    },{
                         xtype: 'filefield',
                         fieldLabel: '附件',
                         //buttonOnly: true,
@@ -288,6 +302,14 @@
                     ]
                 }]
             });
+
+            CreateUploadCtl('fileUploadDiv',Ext.getCmp('hiddenFileIDs').inputEl.id);
         });
+
+
     </script>
 }
+<div style="display: none;">
+    <div id="fileUploadDiv">
+    </div>
+</div>
