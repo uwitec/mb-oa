@@ -1056,6 +1056,10 @@
       <Project>{2F5AEFF0-F64F-4E11-BEBB-1A41DB911AD1}</Project>
       <Name>RazorFromDB</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RTBuizModel\RTBuizModel.csproj">
+      <Project>{CDFCCD40-FBAD-4258-BB0F-A249636BE686}</Project>
+      <Name>RTBuizModel</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\test\Views\Web.config" />

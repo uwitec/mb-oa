@@ -57,6 +57,10 @@
       <Project>{FF25DC29-7456-46D4-86F2-22BC2D8C02E8}</Project>
       <Name>EntityObjectLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RTBuizModel\RTBuizModel.csproj">
+      <Project>{CDFCCD40-FBAD-4258-BB0F-A249636BE686}</Project>
+      <Name>RTBuizModel</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
