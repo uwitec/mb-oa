@@ -19,6 +19,13 @@ namespace BuizApp.Areas.workflow.Controllers
         //
         // GET: /workflow/Instance/ 
 
+        public Type getType(WFTemplate template)
+        {
+            //System.Reflection.Assembly ass = System.Reflection.Assembly.LoadFrom(Server.MapPath("~/bin/EntityObjectLib.dll"));
+            System.Reflection.Assembly ass = System.Reflection.Assembly.LoadFrom(Server.MapPath("~/bin/RTBuizModel.dll"));
+            return ass.GetType("EntityObjectLib." + template.BuizCode);
+        }
+
         public ActionResult Index()
         {
             using (MyDB mydb = new MyDB())
@@ -47,8 +54,7 @@ namespace BuizApp.Areas.workflow.Controllers
                     ((WFNodeHandle)next).Actions.Select(a=>a);
                 }
 
-                System.Reflection.Assembly ass = System.Reflection.Assembly.LoadFrom(Server.MapPath("~/bin/EntityObjectLib.dll"));
-                Type t = ass.GetType("EntityObjectLib." + template.BuizCode);
+                Type t = getType(template);
                 EntityObjectLib.WFInst inst = Activator.CreateInstance(t) as EntityObjectLib.WFInst;
                 inst.WFTemplate = template;
                 inst.State = "处理中";
@@ -86,8 +92,7 @@ namespace BuizApp.Areas.workflow.Controllers
                 WFInstNode instNode = mydb.WFInstNodes.FirstOrDefault(n => n.ID.Equals(instNodeID));
                 WFTemplate template = mydb.WFTemplates.Find(TemplateID);
 
-                System.Reflection.Assembly ass = System.Reflection.Assembly.LoadFrom(Server.MapPath("~/bin/EntityObjectLib.dll"));
-                Type t = ass.GetType("EntityObjectLib." + template.BuizCode);
+                Type t = getType(template);
 
                 if (instNode == null)
                 {
@@ -228,8 +233,8 @@ namespace BuizApp.Areas.workflow.Controllers
                     WFNode next = action.NextNode;
                     if (next != null)
                     {
-                        System.Reflection.Assembly ass = System.Reflection.Assembly.LoadFrom(Server.MapPath("~/bin/EntityObjectLib.dll"));
-                        Type t = ass.GetType("EntityObjectLib." + inst.WFTemplate.BuizCode);
+                        Type t = getType(inst.WFTemplate);
+
                         PropertyInfo[] PropertyInfos = t.GetProperties().ToArray();
 
                         foreach (string key in Request.Form.Keys)
@@ -274,8 +279,8 @@ namespace BuizApp.Areas.workflow.Controllers
                 {
                     WFNodeXORSplit Split = current.WFNode as WFNodeXORSplit;
 
-                    System.Reflection.Assembly ass = System.Reflection.Assembly.LoadFrom(Server.MapPath("~/bin/EntityObjectLib.dll"));
-                    Type t = ass.GetType("EntityObjectLib." + inst.WFTemplate.BuizCode);
+                    Type t = getType(inst.WFTemplate);
+
                     PropertyInfo[] PropertyInfos = t.GetProperties().ToArray();
 
                     IEnumerable<WFNodeExpression> exps = Split.WFNodeExpressions.OrderBy(exp => exp.OrderNO).Select(exp => exp);

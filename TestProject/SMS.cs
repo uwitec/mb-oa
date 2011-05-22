@@ -15,7 +15,7 @@ namespace TestProject1
         [TestMethod]
         public void TestMethod1()
         {
-            SMSSend("18951163698", "这是一条测试信息");
+            //SMSSend("18951163698", "这是一条测试信息");
         }
 
         private bool SMSSend( string mobile, string msg)

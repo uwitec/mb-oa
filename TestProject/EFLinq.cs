@@ -136,6 +136,9 @@ namespace TestProject1
 
         //http://www.cnblogs.com/LingzhiSun/
 
+        /// <summary>
+        /// 测试同一个的上下文中,实体的加载是从缓存还是从数据库
+        /// </summary>
         [TestMethod]
         public void rrr()
         {
@@ -165,5 +168,17 @@ namespace TestProject1
             
 
         }
+
+        ///// <summary>
+        ///// 根据名称创建实体对象
+        ///// </summary>
+        //[TestMethod]
+        //public void createES()
+        //{
+        //    MyDB mydb = new MyDB();
+        //    DbSet<ApplyExpense> ApplyExpenses = mydb.Set<ApplyExpense>();
+        //    ApplyExpense s = ApplyExpenses.First();
+
+        //}
     }
 }
