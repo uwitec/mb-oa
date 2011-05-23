@@ -35,6 +35,16 @@ namespace EntityObjectLib.WF
         public virtual WFNode Next { get; set; }
 
         /// <summary>
+        /// 中间点X坐标
+        /// </summary>
+        public int? PositionX { get; set; }
+
+        /// <summary>
+        /// 中点间Y坐标
+        /// </summary>
+        public int? PositionY { get; set; }
+
+        /// <summary>
         /// 顺序号,根据此顺序进行表达式判断,遇到第一个为真的就跳转,即短路
         /// </summary>
         public int OrderNO { get; set; }

@@ -13,6 +13,6 @@ namespace EntityObjectLib.WF
         /// <summary>
         /// 缺省迁移节点,如果所有条件都不满足,则向该节点迁移
         /// </summary>
-        public virtual WFNode Next { get; set; }
+        //public virtual WFNode Next { get; set; }
     }
 }
