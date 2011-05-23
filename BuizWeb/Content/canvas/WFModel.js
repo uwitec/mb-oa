@@ -99,41 +99,74 @@ function WFGraph(config) {
     }
 
     this.getLine = function (line) {
-        var start = {}, end = {};//, n, length = this.data.nodes.length;
+        var start = {}, end = {}; //, n, length = this.data.nodes.length;
 
         // 找当前连线相关的头尾节点
         /*
         for (n = 0; n < length; n++) {
-            if (this.data.nodes[n].ID == line.from) {
-                start = this.data.nodes[n].position
-            }
-            if (this.data.nodes[n].ID == line.to) {
-                end = this.data.nodes[n].position
-            }
+        if (this.data.nodes[n].ID == line.from) {
+        start = this.data.nodes[n].position
+        }
+        if (this.data.nodes[n].ID == line.to) {
+        end = this.data.nodes[n].position
+        }
         }*/
 
         start = this.data.nodes[Ext.Array.pluck(this.data.nodes, "ID").indexOf(line.from)].position;
-        end = this.data.nodes[Ext.Array.pluck(this.data.nodes, "ID").indexOf(line.to)].position; 
+        end = this.data.nodes[Ext.Array.pluck(this.data.nodes, "ID").indexOf(line.to)].position;
 
-        var dis = this.ctx.distance(start, end);
-        var lineBegin = { x: end.x + (start.x - end.x) * (dis - 20) / dis, y: end.y + (start.y - end.y) * (dis - 20) / dis }; //起点让20px
-        var lineEnd = { x: start.x + (end.x - start.x) * (dis - 20) / dis, y: start.y + (end.y - start.y) * (dis - 20) / dis }; //终点让30px
+        
+        var dis, lineBegin, lineEnd;
+        if (line.middlePoint) {
+            dis = this.ctx.distance(start, line.middlePoint);
+            lineBegin = { x: line.middlePoint.x + (start.x - line.middlePoint.x) * (dis - 20) / dis, y: line.middlePoint.y + (start.y - line.middlePoint.y) * (dis - 20) / dis }; //起点让20px
+            dis = this.ctx.distance(line.middlePoint,end);
+            lineEnd = { x: line.middlePoint.x + (end.x - line.middlePoint.x) * (dis - 20) / dis, y: line.middlePoint.y + (end.y - line.middlePoint.y) * (dis - 20) / dis }; //终点让30px
+        }
+        else {
+            dis = this.ctx.distance(start, end);
+            lineBegin = { x: end.x + (start.x - end.x) * (dis - 20) / dis, y: end.y + (start.y - end.y) * (dis - 20) / dis }; //起点让20px
+            lineEnd = { x: start.x + (end.x - start.x) * (dis - 20) / dis, y: start.y + (end.y - start.y) * (dis - 20) / dis }; //终点让30px
+        }
 
-        return { begin: lineBegin, end: lineEnd };
+        return { begin: lineBegin, end: lineEnd, middlePoint: line.middlePoint };
     }
 
     this.drawLine = function (line) {
         var l = this.getLine(line);
-
+        var old = this.ctx.strokeStyle;
+        this.ctx.strokeStyle = '#666';
         // 因为节点图片本身点据一定空间,连线要让开这部分空间,因此需要重新测算起点和终点,具体大小应该根据图片自动设置,以后改进
-        this.ctx.drawLineWithArrow(l.begin, l.end);
-        this.drawText(line.name, (4*l.begin.x + l.end.x) / 5, (4*l.begin.y + l.end.y) / 5);
+        this.ctx.drawLineWithArrow(l.begin, l.end, l.middlePoint); // 画一条折线,middlePoint为中间经过的点
+        if (l.middlePoint) {
+            this.drawText(line.name, (2 * l.begin.x + l.middlePoint.x) / 3, (2 * l.begin.y + l.middlePoint.y) / 3); //将文本写在起点和中间点之间,如果中间点不存在,则用终点替代
+        }
+        else {
+            this.drawText(line.name, (4 * l.begin.x + l.end.x) / 5, (4 * l.begin.y + l.end.y) / 5);
+        }
+
+        this.ctx.strokeStyle = old;
+    }
+
+    this.drawLineBold = function (line) {
+        var oldLineWidth = this.ctx.lineWidth;
+        this.ctx.lineWidth = 2;
+        var oldStrokeStyle = this.ctx.strokeStyle;
+        this.ctx.strokeStyle = '#111';
+        this.drawLine(line);
+        this.ctx.strokeStyle = oldStrokeStyle;
+        this.ctx.lineWidth = oldLineWidth;
     }
 
     this.drawNode = function (n) {
         // 当前使用的图片是24px的,所以让12
         this.ctx.drawImage(WFGraph.nodeImgs[n.type], n.position.x - 12, n.position.y - 12);
         this.drawText(n.name, n.position.x - 12, n.position.y - 12);
+    }
+
+    this.drawNodeRec = function (n) {
+        // 当前使用的图片是24px的,所以让12
+        this.ctx.strokeRect(n.position.x - 14, n.position.y - 14, 28, 28);
     }
 
     this.drawText = function (text, x, y) {
@@ -163,10 +196,21 @@ function WFGraph(config) {
     }
 
     this.captureLine = function (event) {
-        var line = null, i, length = this.data.nodes.length;
+        var line = null, i, length = this.data.lines.length, BE;
         for (i = 0; i < length; i++) {
             // 如果选中节点,注册移动事件处理为节点移动
-            if (this.ctx.minDistance(this.tranp({ x: event.x, y: event.y }), this.getLine(this.data.lines[i])) < 6) {
+            BE = this.getLine(this.data.lines[i])
+            if (BE.middlePoint) {
+                var minDis = Math.min(
+                    this.ctx.minDistance(this.tranp({ x: event.x, y: event.y }), { begin: BE.begin, end: BE.middlePoint }),
+                    this.ctx.minDistance(this.tranp({ x: event.x, y: event.y }), { begin: BE.middlePoint, end: BE.end })
+                    );
+                if (minDis < 6) {
+                    line = this.data.lines[i];
+                    break;
+                }
+            }
+            else if (this.ctx.minDistance(this.tranp({ x: event.x, y: event.y }), BE) < 6) {
                 line = this.data.lines[i];
                 break;
             }
@@ -180,8 +224,8 @@ function WFGraph(config) {
         listeners: {
             mousedown: function (event) {
                 //event = event.browserEvent;  //使用了normalized: false,不需要转化
-                var n = this.captureNode(event);
-                if (n) {
+                var n = null;
+                if (n = this.captureNode(event)) {
                     this.operateState.params = { selected: n };
                     Ext.fly(this.ctx.canvas).on('mousemove',
                             function (event) {
@@ -222,8 +266,71 @@ function WFGraph(config) {
                             { normalized: false }
                     )
                 }
+                else {
+                    if (n = this.captureLine(event)) { // 如果选中连线,则视为调整连线中间点
+                        this.operateState.params = { selected: n };
+                        Ext.fly(this.ctx.canvas).on('mousemove',
+                            function (event) {
+                                //event = event.browserEvent;
+                                if (this.operateState.params && this.operateState.params.selected) {
+                                    var pos = this.tranp({ x: event.getPageX(), y: event.getPageY() });
+                                    //debugger;
+                                    if (this.ctx.minDistance(pos, this.getLine(n)) > 6) {
+                                        this.operateState.params.selected.middlePoint = pos;
+                                    }
+                                    else {
+                                        this.operateState.params.selected.middlePoint = null; //接近节点直连线,则消除中间点
+                                    }
+                                    this.redrawAll();
+                                }
+                            }, // function (event) 
+                            this,
+                            { normalized: true }
+                        ); //Ext.fly(this.ctx.canvas).on
+                        Ext.fly(this.ctx.canvas).on('mouseup',
+                            function (event) {
+                                if (this.operateState.params && this.operateState.params.selected) {
+                                    Ext.Ajax.request({
+                                        url: '/workflow/Manage/modifyTemplate',
+                                        params: {
+                                            templateId: this.data.ID,
+                                            mode: 'select',
+                                            lineID: this.operateState.params.selected.ID,
+                                            x: this.operateState.params.selected.middlePoint ? this.operateState.params.selected.middlePoint.x : null,
+                                            y: this.operateState.params.selected.middlePoint ? this.operateState.params.selected.middlePoint.y : null
+                                        },
+                                        success: function (response) {
+                                            //alert('保存成功!');
+                                            //wfg.redrawAll();
+                                            Ext.getCmp('graphStatus').setText('中间点...'); //这句不应该回这里
+                                        },
+                                        failure: function (response) {
+                                            alert(response.responseText);
+                                        }
+                                    });
+                                }
+                                this.resetOperateState();
+                            }, // function (event) 
+                            this,
+                            { normalized: false }
+                    )
+                    }
+                }
             },
-            mousemove: null,
+            mousemove: function (event) {
+                this.redrawAll(); //用于消除原选择框,笨!!!
+                var pos = this.tranp({ x: event.x, y: event.y })
+                Ext.getCmp('graphStatus').setText('[' + pos.x + ',' + pos.y + ']'); //这句不应该回这里
+                var overEl;
+                if (overEl = this.captureNode(event)) {
+                    this.drawNodeRec(overEl);
+                }
+                else {
+                    if (overEl = this.captureLine(event)) {
+                        this.drawLineBold(overEl);
+                    }
+                }
+            },
             mouseup: null,
             dblclick: function (event) {
                 var n = this.captureNode(event) || this.captureLine(event);
@@ -439,7 +546,7 @@ function WFGraph(config) {
                                                 close: function () { Ext.getCmp('fwin').close(); },
                                                 submitSccess: function (form, action) {
                                                     alert("submitSccess");
-                                                    wfg.data.lines.push({ ID: form.getValues()["ID"], name: form.getValues()["Expression"], from: form.getValues()["from"], to: form.getValues()["to"] });
+                                                    wfg.data.lines.push({ ID: form.getValues()["ID"], name: '[' + form.getValues()["OrderNO"] + ']' + form.getValues()["Expression"], from: form.getValues()["from"], to: form.getValues()["to"] });
                                                     wfg.operateState.params = { preNode: null };
                                                     wfg.redrawAll();
                                                     this.close();
@@ -539,7 +646,7 @@ function WFGraph(config) {
                                 break;
                                 }*/
                                 i = Ext.Array.pluck(this.data.lines, "ID").indexOf(opts.params.LineID); //没找到返回－1
-                                if (i > 0) {
+                                if (i >= 0) {
                                     this.data.lines.splice(i, 1);
                                     //Ext.Array.remove(wfg.data.lines, wfg.data.lines[i]);
                                 }
@@ -549,6 +656,20 @@ function WFGraph(config) {
                                 alert(response.responseText);
                             }
                         });
+                    }
+                }
+            },
+            mousemove: function (event) {
+                this.redrawAll();
+                var pos = this.tranp({ x: event.x, y: event.y })
+                Ext.getCmp('graphStatus').setText('[' + pos.x + ',' + pos.y + ']'); //这句不应该回这里
+                var overEl;
+                if (overEl = this.captureNode(event)) {
+                    this.drawNodeRec(overEl);
+                }
+                else {
+                    if (overEl = this.captureLine(event)) {
+                        this.drawLineBold(overEl);
                     }
                 }
             }
@@ -619,10 +740,14 @@ CanvasRenderingContext2D.prototype.minDistance = function (point, segment) {
 }
 
 // 扩展方法,画终点是箭头的直线
-CanvasRenderingContext2D.prototype.drawLineWithArrow = function (start, end) {
+CanvasRenderingContext2D.prototype.drawLineWithArrow = function (start, end, middlePoint) {
     //画线
     this.beginPath();
     this.moveTo(start.x, start.y);
+    if (middlePoint) {
+        this.lineTo(middlePoint.x, middlePoint.y);
+        start = middlePoint;
+    }
     this.lineTo(end.x, end.y);
     this.stroke();
 

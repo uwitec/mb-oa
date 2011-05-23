@@ -115,7 +115,7 @@ namespace TestProject1
                         new WFNodeXORSplit
                         {
                              Name="费用金额分支",
-                             Next = null, //缺省节点
+                             //Next = null, //缺省节点
                              WFNodeExpressions = new []
                              {
                                  new WFNodeExpression
@@ -177,7 +177,7 @@ namespace TestProject1
                 wft.Nodes.OfType<WFNodeHandle>().First(n => n.Name.Equals("副总审核")).Actions.First(a => a.Code.Equals("pass")).NextNode = wft.Nodes.First(n => n.Name.Equals("费用金额分支"));
                 wft.Nodes.OfType<WFNodeHandle>().First(n => n.Name.Equals("副总审核")).Actions.First(a => a.Code.Equals("deny")).NextNode = wft.Nodes.OfType<WFNodeFinish>().First();
 
-                wft.Nodes.OfType<WFNodeXORSplit>().First(n => n.Name.Equals("费用金额分支")).Next = wft.Nodes.OfType<WFNodeFinish>().First();
+                //wft.Nodes.OfType<WFNodeXORSplit>().First(n => n.Name.Equals("费用金额分支")).Next = wft.Nodes.OfType<WFNodeFinish>().First();
                 wft.Nodes.OfType<WFNodeXORSplit>().First(n => n.Name.Equals("费用金额分支")).WFNodeExpressions.First(exp => exp.Expression.Equals("{费用金额}>10000")).Next = wft.Nodes.First(n => n.Name.Equals("总经理审核"));
                 wft.Nodes.OfType<WFNodeXORSplit>().First(n => n.Name.Equals("费用金额分支")).WFNodeExpressions.First(exp => exp.Expression.Equals("{费用金额}>5000")).Next = wft.Nodes.First(n => n.Name.Equals("总经理审核"));
 

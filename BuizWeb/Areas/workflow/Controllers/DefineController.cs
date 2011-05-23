@@ -36,7 +36,7 @@ namespace BuizApp.Areas.workflow.Controllers
         {
             string id = Request.Params["templateId"];
             //if (Session[id] == null)
-                Session[id] = new MyDB();
+            Session[id] = new MyDB();
             MyDB mydb = Session[id] as MyDB;
 
             WFTemplate template = mydb.WFTemplates.Find(id);
@@ -56,13 +56,35 @@ namespace BuizApp.Areas.workflow.Controllers
                         lines =
                             template.Nodes.SelectMany(n => n.FromActions)
                             .Where(a => a.NextNode != null)
-                            .Select(a => new { a.ID, name = a.Name, from = a.WFNode.ID, to = a.NextNode.ID })
+                            .Select(a => new
+                            {
+                                a.ID,
+                                name = a.Name,
+                                from = a.WFNode.ID,
+                                to = a.NextNode.ID,
+                                middlePoint = a.PositionX != null && a.PositionY != null ? new { x = a.PositionX, y = a.PositionY } : null
+                            })
                             .Union(
                                 template.Nodes.SelectMany(n => n.FromExpressions)
-                                .Select(e => new { e.ID, name = e.Expression, from = e.WFNode.ID, to = e.Next.ID })
+                                .Select(e => new
+                                {
+                                    e.ID,
+                                    name = string.Format("[{0}]{1}", e.OrderNO, e.Expression),
+                                    from = e.WFNode.ID,
+                                    to = e.Next.ID,
+                                    middlePoint = e.PositionX != null && e.PositionY != null ? new { x = e.PositionX, y = e.PositionY } : null
+                                })
                             )
                             .Union(
-                                template.Nodes.OfType<WFNodeStart>().Select(s => new { s.ID, name = "", from = s.ID, to = s.Next.ID })
+                                template.Nodes.OfType<WFNodeStart>()
+                                .Select(s => new
+                                {
+                                    s.ID,
+                                    name = "",
+                                    from = s.ID,
+                                    to = s.Next.ID,
+                                    middlePoint = false ? new { x = null as int?, y = null as int? } : null
+                                })
                             )
                             .ToArray()
                     }
@@ -108,13 +130,55 @@ namespace BuizApp.Areas.workflow.Controllers
             {
                 case "select":
                     {
-                        string nodeID = Request.Params["nodeID"];
-                        int x = int.Parse(Request.Params["x"]);
-                        int y = int.Parse(Request.Params["y"]);
+                        if (Request.Params["nodeID"] != null)
+                        {
+                            string nodeID = Request.Params["nodeID"];
+                            int x = int.Parse(Request.Params["x"]);
+                            int y = int.Parse(Request.Params["y"]);
 
-                        WFNode node = mydb.WFNodes.Find(nodeID);
-                        node.PositionX = x;
-                        node.PositionY = y;
+                            WFNode node = mydb.WFNodes.Find(nodeID);
+                            node.PositionX = x;
+                            node.PositionY = y;
+                        }
+                        else if (Request.Params["lineID"] != null)
+                        {
+                            string LineID = Request.Params["lineID"];
+                            if (string.IsNullOrEmpty(Request.Params["x"]) || string.IsNullOrEmpty(Request.Params["y"]))
+                            {
+                                WFNodeAction action = mydb.WFNodeActions.Find(LineID);
+                                if (action != null)
+                                {
+                                    action.PositionX = null;
+                                    action.PositionY = null;
+                                }
+
+                                WFNodeExpression expression = mydb.WFNodeExpressions.Find(LineID);
+                                if (expression != null)
+                                {
+                                    expression.PositionX = null;
+                                    expression.PositionY = null;
+                                }
+                            }
+                            else
+                            {
+                                int x = int.Parse(Request.Params["x"]);
+                                int y = int.Parse(Request.Params["y"]);
+
+                                WFNodeAction action = mydb.WFNodeActions.Find(LineID);
+                                if (action != null)
+                                {
+                                    action.PositionX = x;
+                                    action.PositionY = y;
+                                }
+
+                                WFNodeExpression expression = mydb.WFNodeExpressions.Find(LineID);
+                                if (expression != null)
+                                {
+                                    expression.PositionX = x;
+                                    expression.PositionY = y;
+                                }
+                            }
+                        }
                     }
                     break;
                 case "move":
@@ -203,7 +267,7 @@ namespace BuizApp.Areas.workflow.Controllers
                 };
 
                 mydb.WFNodeHandles.Add(node);
-                return Json(new { success = true ,data= node.ID});
+                return Json(new { success = true, data = node.ID });
             }
             return Json(new { success = false });
         }
@@ -302,8 +366,8 @@ namespace BuizApp.Areas.workflow.Controllers
             {
                 MyDB mydb = Session[templateId] as MyDB;
                 WFNode node = mydb.WFNodes.Find(nodeID);
-                mydb.WFNodes.Remove(node); 
-                return Json(new { success = true});
+                mydb.WFNodes.Remove(node);
+                return Json(new { success = true });
             }
             return Json(new { success = false });
         }
@@ -332,12 +396,12 @@ namespace BuizApp.Areas.workflow.Controllers
                     return Json(new { success = true });
                 }
 
-                WFNodeXORSplit split = mydb.WFNodeXORSplits.Find(LineID);
-                if (split != null)
-                {
-                    split.Next = null;
-                    return Json(new { success = true });
-                }
+                //WFNodeXORSplit split = mydb.WFNodeXORSplits.Find(LineID);
+                //if (split != null)
+                //{
+                //    split.Next = null;
+                //    return Json(new { success = true });
+                //}
 
                 return Json(new { success = false });
             }

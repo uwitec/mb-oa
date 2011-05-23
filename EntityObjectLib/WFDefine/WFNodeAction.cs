@@ -47,6 +47,16 @@ namespace EntityObjectLib.WF
         /// </summary>
         public virtual WFNode NextNode { get; set; }
 
+        /// <summary>
+        /// 中间点X坐标
+        /// </summary>
+        public int? PositionX { get; set; }
+
+        /// <summary>
+        /// 中点间Y坐标
+        /// </summary>
+        public int? PositionY { get; set; }
+
         public WFNodeAction()
         {
             this.ID = Guid.NewGuid().ToString();
