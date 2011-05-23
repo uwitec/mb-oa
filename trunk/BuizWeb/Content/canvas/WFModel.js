@@ -69,9 +69,17 @@ function WFGraph(config) {
         this.ctx.setTransform(1, 0, 0, -1, transXY.x, this.height - transXY.y);
         this.ctx.clearRect(-transXY.x, -transXY.y, this.width, this.height);
 
+        var oldStrokeStyle = this.ctx.strokeStyle;
+        this.ctx.strokeStyle = '#999';
+        var oldLineWidth = this.ctx.lineWidth;
+        this.ctx.lineWidth = 1;
+        var oldfillStyle = this.ctx.fillStyle;
+        this.ctx.fillStyle = '#999';
         this.ctx.drawLineWithArrow({ x: -10, y: 0 }, { x: 45, y: 0 });
         this.ctx.drawLineWithArrow({ x: 0, y: -10 }, { x: 0, y: 45 });
-
+        this.ctx.fillStyle = oldfillStyle;
+        this.ctx.lineWidth = oldLineWidth;
+        this.ctx.strokeStyle = oldStrokeStyle;
         /*
         var n;
         for (n in this.data.lines) {
@@ -80,7 +88,7 @@ function WFGraph(config) {
         /*
         var i, length;
         for (i = 0, length = this.data.lines.length; i < length; i++) {
-            this.drawLine(this.data.lines[i]);
+        this.drawLine(this.data.lines[i]);
         }*/
 
         Ext.Array.forEach(this.data.lines, function (line) { this.drawLine(line) }, this);
@@ -91,7 +99,7 @@ function WFGraph(config) {
         }*/
         /*
         for (i = 0, length = this.data.nodes.length; i < length; i++) {
-            this.drawNode(this.data.nodes[i]);
+        this.drawNode(this.data.nodes[i]);
         }*/
         Ext.Array.forEach(this.data.nodes, function (node) { this.drawNode(node) }, this);
 
@@ -136,6 +144,8 @@ function WFGraph(config) {
         var l = this.getLine(line);
         var old = this.ctx.strokeStyle;
         this.ctx.strokeStyle = '#666';
+        var oldfillStyle = this.ctx.fillStyle;
+        this.ctx.fillStyle = '#666';
         // 因为节点图片本身点据一定空间,连线要让开这部分空间,因此需要重新测算起点和终点,具体大小应该根据图片自动设置,以后改进
         this.ctx.drawLineWithArrow(l.begin, l.end, l.middlePoint); // 画一条折线,middlePoint为中间经过的点
         if (l.middlePoint) {
@@ -144,7 +154,7 @@ function WFGraph(config) {
         else {
             this.drawText(line.name, (4 * l.begin.x + l.end.x) / 5, (4 * l.begin.y + l.end.y) / 5);
         }
-
+        this.ctx.fillStyle = oldfillStyle;
         this.ctx.strokeStyle = old;
     }
 
@@ -153,7 +163,10 @@ function WFGraph(config) {
         this.ctx.lineWidth = 2;
         var oldStrokeStyle = this.ctx.strokeStyle;
         this.ctx.strokeStyle = '#111';
+        var oldfillStyle = this.ctx.fillStyle;
+        this.ctx.fillStyle = '#111';
         this.drawLine(line);
+        this.ctx.fillStyle = oldfillStyle;
         this.ctx.strokeStyle = oldStrokeStyle;
         this.ctx.lineWidth = oldLineWidth;
     }
@@ -562,12 +575,14 @@ function WFGraph(config) {
                             }
                         }
                         else {
-                            alert('两端的节点必须是不同的!');
+                            this.operateState.params = null;
+                            this.redrawAll();
                         }
                     }
                 }
                 else {
                     this.operateState.params = { preNode: n };
+                    this.drawNodeRec(n);
                 }
             },
             mousemove: null,
@@ -763,7 +778,7 @@ CanvasRenderingContext2D.prototype.drawLineWithArrow = function (start, end, mid
     this.rotate(end.x < start.x ? Math.PI + angle : angle);
 
     // 填充箭头
-    this.fillStyle = "rgba(0, 0, 0, 1)";
+    //this.fillStyle = "rgba(0, 0, 0, 1)";
     this.lineJoin = 'miter'; //'round','bevel','miter'
     this.beginPath();
     this.moveTo(-13, 5);

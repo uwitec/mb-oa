@@ -83,7 +83,7 @@ namespace BuizApp.Areas.workflow.Controllers
                                     name = "",
                                     from = s.ID,
                                     to = s.Next.ID,
-                                    middlePoint = false ? new { x = null as int?, y = null as int? } : null
+                                    middlePoint = false ? new { x = null as int?, y = null as int? } : null //注意int?与int不是同一种类型,上面的是int?,这里必须也是int?
                                 })
                             )
                             .ToArray()
