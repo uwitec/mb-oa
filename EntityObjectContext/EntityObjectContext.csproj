@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MyDB.GenericBuiz.cs" />
     <Compile Include="Dynamic.cs" />
     <Compile Include="MyDB.WFInst.cs" />
     <Compile Include="MyDB.cs" />
@@ -53,13 +54,13 @@
     <Compile Include="MyDB.WFDefine.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ClassLibrary1\ClassLibrary1.csproj">
+      <Project>{F3D71CF6-1C1A-402B-AC30-063FFAEDC0BF}</Project>
+      <Name>ClassLibrary1</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EntityObjectLib\EntityObjectLib.csproj">
       <Project>{FF25DC29-7456-46D4-86F2-22BC2D8C02E8}</Project>
       <Name>EntityObjectLib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RTBuizModel\RTBuizModel.csproj">
-      <Project>{CDFCCD40-FBAD-4258-BB0F-A249636BE686}</Project>
-      <Name>RTBuizModel</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

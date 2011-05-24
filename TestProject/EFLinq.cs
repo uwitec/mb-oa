@@ -172,13 +172,13 @@ namespace TestProject1
         ///// <summary>
         ///// 根据名称创建实体对象
         ///// </summary>
-        //[TestMethod]
-        //public void createES()
-        //{
-        //    MyDB mydb = new MyDB();
-        //    DbSet<ApplyExpense> ApplyExpenses = mydb.Set<ApplyExpense>();
-        //    ApplyExpense s = ApplyExpenses.First();
+        [TestMethod]
+        public void createES()
+        {
+            MyDB mydb = new MyDB();
+            DbSet<ApplyExpense> ApplyExpenses = mydb.Set<ApplyExpense>();
+            ApplyExpense s = ApplyExpenses.First();
 
-        //}
+        }
     }
 }

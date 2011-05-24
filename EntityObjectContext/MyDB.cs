@@ -27,6 +27,7 @@ namespace EntityObjectContext
             this.AddressBookModelCreate(modelBuilder);
             this.WFDefineModelCreate(modelBuilder);
             this.WFInstModelCreate(modelBuilder);
+            this.GenericBuizModelCreate(modelBuilder);
             //this.ApplyExpenseModelCreate(modelBuilder);
         }
     }
