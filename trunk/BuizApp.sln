@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynEntityExt", "DynEntityEx
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfSearchModel", "EfSearchModel\EfSearchModel.csproj", "{787DBFB5-1861-493F-8D8C-35886810445B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RTBuizModel", "RTBuizModel\RTBuizModel.csproj", "{CDFCCD40-FBAD-4258-BB0F-A249636BE686}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{F3D71CF6-1C1A-402B-AC30-063FFAEDC0BF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,10 +63,10 @@ Global
 		{787DBFB5-1861-493F-8D8C-35886810445B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{787DBFB5-1861-493F-8D8C-35886810445B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{787DBFB5-1861-493F-8D8C-35886810445B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CDFCCD40-FBAD-4258-BB0F-A249636BE686}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CDFCCD40-FBAD-4258-BB0F-A249636BE686}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CDFCCD40-FBAD-4258-BB0F-A249636BE686}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CDFCCD40-FBAD-4258-BB0F-A249636BE686}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3D71CF6-1C1A-402B-AC30-063FFAEDC0BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3D71CF6-1C1A-402B-AC30-063FFAEDC0BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3D71CF6-1C1A-402B-AC30-063FFAEDC0BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3D71CF6-1C1A-402B-AC30-063FFAEDC0BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
