@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Web.Script.Serialization;
+using System.Xml;
+using System.Runtime.Serialization.Json;
 
 namespace TestProject1
 {
@@ -25,5 +27,22 @@ namespace TestProject1
 
             return;
         }
+
+        [TestMethod]
+        public void Json2XML()
+        {
+            var a = new { x = 123, y = "asdf", z = DateTime.Now, array = new[] { new { a = 1, b = true }, new { a = 2, b = false } } };
+
+            JavaScriptSerializer jss = new JavaScriptSerializer();
+
+
+
+            XmlDictionaryReader reader = JsonReaderWriterFactory.CreateJsonReader(Encoding.UTF8.GetBytes(jss.Serialize(a)), XmlDictionaryReaderQuotas.Max);
+            XmlDocument xdoc = new XmlDocument();
+            xdoc.Load(reader);
+        }
+
+        //dynamic
+
     }
 }
