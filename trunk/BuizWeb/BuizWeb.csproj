@@ -42,6 +42,7 @@
     <Reference Include="System.Data.SQLite.Linq">
       <HintPath>..\packages\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.WebPages" />
     <Reference Include="System.Web.Helpers" />
@@ -67,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Code\ActionFilters\TimerActionFilter.cs" />
+    <Compile Include="App_Code\CJX.cs" />
     <Compile Include="Areas\data\Controllers\AddressbookController.cs" />
     <Compile Include="Areas\data\Controllers\CarlendarController.cs" />
     <Compile Include="Areas\data\Controllers\InfoController.cs" />
@@ -74,6 +76,12 @@
     <Compile Include="Areas\data\Controllers\RSSController.cs" />
     <Compile Include="Areas\data\Controllers\SubjectController.cs" />
     <Compile Include="Areas\data\dataAreaRegistration.cs" />
+    <Compile Include="Areas\msgService\Controllers\sendMessageController.cs" />
+    <Compile Include="Areas\msgService\Controllers\loginController.cs" />
+    <Compile Include="Areas\msgService\Controllers\getUsersController.cs" />
+    <Compile Include="Areas\msgService\Controllers\getOrgizationsController.cs" />
+    <Compile Include="Areas\msgService\Controllers\getMyMessagesController.cs" />
+    <Compile Include="Areas\msgService\msgServiceAreaRegistration.cs" />
     <Compile Include="Areas\office\Controllers\myOfficeController.cs" />
     <Compile Include="Areas\office\Controllers\myOffice.Event.cs" />
     <Compile Include="Areas\office\Controllers\myOffice.myMemo.cs" />
@@ -1018,6 +1026,8 @@
     <Folder Include="Areas\data\Models\" />
     <Folder Include="Areas\data\Views\Shared\" />
     <Folder Include="Areas\default\Models\" />
+    <Folder Include="Areas\msgService\Models\" />
+    <Folder Include="Areas\msgService\Views\Shared\" />
     <Folder Include="Areas\office\Models\" />
     <Folder Include="Areas\report\Models\" />
     <Folder Include="Areas\resource\Models\" />
@@ -1181,6 +1191,7 @@
     <Content Include="Areas\workflow\Views\Instance\auditForm.cshtml" />
     <Content Include="Areas\test\Views\t1\test2.cshtml" />
     <Content Include="Areas\test\Views\t1\testSwfUpload.cshtml" />
+    <Content Include="Areas\msgService\Views\Web.config" />
     <None Include="Content\ExtJS\resources\sass\config.rb" />
     <None Include="Content\ExtJS\resources\sass\ext-all-access.scss" />
     <None Include="Content\ExtJS\resources\sass\ext-all-scoped.scss" />

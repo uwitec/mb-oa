@@ -68,6 +68,7 @@ namespace BuizApp
             RegisterArea<BuizApp.Areas.resource.resourceAreaRegistration>(RouteTable.Routes, null);
             RegisterArea<BuizApp.Areas.workflow.workflowAreaRegistration>(RouteTable.Routes, null);
             RegisterArea<BuizApp.Areas.report.reportAreaRegistration>(RouteTable.Routes, null);
+            RegisterArea<BuizApp.Areas.msgService.msgServiceAreaRegistration>(RouteTable.Routes, null);
             RegisterArea<defaultAreaRegistration>(RouteTable.Routes, null);
         }
 
