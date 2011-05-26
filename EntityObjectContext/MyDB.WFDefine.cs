@@ -108,7 +108,7 @@ namespace EntityObjectContext
             modelBuilder.Entity<WFNodeStart>().ToTable("WFNodeStarts");
 
             modelBuilder.Entity<WFNodeStart>()
-                .HasRequired(s => s.Next).WithOptional()
+                .HasOptional(s => s.Next).WithMany()
                 //.WithRequiredPrincipal()
                 //.WithRequiredDependent()
                 .Map(m => m.MapKey("Next"));

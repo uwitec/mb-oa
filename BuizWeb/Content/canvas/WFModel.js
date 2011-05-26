@@ -569,6 +569,26 @@ function WFGraph(config) {
                                         ]
                                         }).show();
                                         break;
+                                    case 'WFNodeStart':
+                                        Ext.Ajax.request({
+                                            url: '/workflow/Manage/setStartNodeNext',
+                                            params: {
+                                                templateId: this.data.ID,
+                                                from: this.operateState.params.preNode.ID,
+                                                to: n.ID
+                                            },
+                                            scope: this,
+                                            success: function (response, opts) {
+                                                alert("submitSccess");
+                                                wfg.data.lines.push({ ID: this.operateState.params.preNode.ID, name: '', from: this.operateState.params.preNode.ID, to: n.ID });
+                                                wfg.operateState.params = { preNode: null };
+                                                wfg.redrawAll();
+                                            },
+                                            failure: function (response) {
+                                                alert(response.responseText);
+                                            }
+                                        });
+                                        break;
                                     default:
                                         break;
                                 }

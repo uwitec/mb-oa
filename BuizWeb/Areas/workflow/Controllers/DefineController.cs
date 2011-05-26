@@ -396,14 +396,87 @@ namespace BuizApp.Areas.workflow.Controllers
                     return Json(new { success = true });
                 }
 
-                //WFNodeXORSplit split = mydb.WFNodeXORSplits.Find(LineID);
-                //if (split != null)
-                //{
-                //    split.Next = null;
-                //    return Json(new { success = true });
-                //}
+                WFNodeStart start = mydb.WFNodeStarts.Find(LineID);
+                if (start != null)
+                {
+                    start.Next = null;
+                    return Json(new { success = true });
+                }
 
                 return Json(new { success = false });
+            }
+            return Json(new { success = false });
+        }
+
+        public ActionResult saveWFTemplate()
+        {
+            string id = Request.Form["id"];
+            string Name = Request.Form["Name"];
+            string BuizCode = Request.Form["BuizCode"];
+            string BuizName = Request.Form["BuizName"];
+
+            using (MyDB mydb = new MyDB())
+            {
+                WFNodeFinish finish = new WFNodeFinish
+                                  {
+                                      ID = Guid.NewGuid().ToString(),
+                                      Name = "结束节点",
+                                      PositionX = 200,
+                                      PositionY = 40
+                                  };
+                WFTemplate wft = new WFTemplate
+                {
+                    ID = Guid.NewGuid().ToString(),
+                    Name = Name,
+                    BuizCode = BuizCode,
+                    BuizName = BuizName,
+                    Creator = mydb.Users.Find(this.User.Identity.Name),
+                    CreateTime = DateTime.Now,
+                    Nodes = new WFNode[]
+                      {
+                          new WFNodeStart
+                          {
+                              ID = Guid.NewGuid().ToString(),
+                              PositionX = 100,
+                              PositionY = 40,
+                              Name = "开始节点",
+                              Next = finish
+                          },
+                          finish
+                      }
+                };
+
+                mydb.WFTemplates.Add(wft);
+                mydb.SaveChanges();
+
+                return Json(new { success = true });
+            }
+        }
+
+        public ActionResult deleteTemplate()
+        {
+            string id = Request.Params["id"];
+
+            using (MyDB mydb = new MyDB())
+            {
+
+                return Json(new { success = true });
+            }
+        }
+
+        public ActionResult setStartNodeNext()
+        {
+            string templateId = Request.Params["templateId"];
+            string from = Request.Params["from"];
+            string to = Request.Params["to"];
+
+            if (Session[templateId] != null)
+            {
+                MyDB mydb = Session[templateId] as MyDB;
+                var start = mydb.WFNodeStarts.Find(from);
+                start.Next = mydb.WFNodes.Find(to);
+
+                return Json(new { success = true });
             }
             return Json(new { success = false });
         }

@@ -43,7 +43,7 @@
                         xtype: 'panel',
                         //title: '流程图',
                         bbar: [
-                        { xtype: 'label', id:'graphStatus', text: '', height: 20}
+                        { xtype: 'label', id: 'graphStatus', text: '', height: 20 }
                         ],
                         lbar: [
                                 { xtype: 'button', iconCls: 'iconWFSelect', enableToggle: true, toggleGroup: 'operateState', pressed: true, text: '', tooltip: '新建', tooltipType: 'title', handler: function (source, e) { wfg.setOperateState('select') } },
@@ -68,7 +68,7 @@
                                             alert(response.responseText);
                                         }
                                     });
-                                } 
+                                }
                                 },
                                 { xtype: 'tbfill' },
                                 { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { } }
@@ -77,6 +77,7 @@
                     }, {
                         region: 'west',
                         xtype: 'grid',
+                        id: 'templateList',
                         //title: '流程模板列表',
                         store: new Ext.data.Store({
                             fields: ['ID', 'Name', 'BuizName'],
@@ -108,7 +109,54 @@
                         }],
                         split: true,
                         tbar: [
-                              { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '新建组织', tooltipType: 'title', handler: function (source, e) { } },
+                              { xtype: 'button', iconCls: 'iconNew', text: '', tooltip: '新建模板', tooltipType: 'title',
+                                  handler: function (source, e) {
+                                      new Ext.window.Window({
+                                          title: '流程模板编辑',
+                                          id: 'ffwin',
+                                          modal: true,
+                                          closable: true,
+                                          width: 600,
+                                          layout: 'fit',
+                                          bodyPadding: 0,
+                                          items: [
+                                            new MB.form.WFTemplateEdit({
+                                                id: '',
+                                                close: function () { Ext.getCmp('ffwin').close(); },
+                                                submitSccess: function (form, action) {
+                                                    alert("submitSccess");
+                                                    this.close();
+                                                },
+                                                submitFailure: function (form, action) { alert("submitFailure"); }
+                                            })
+                                        ]
+                                      }).show();
+                                  }
+                              },
+                               { xtype: 'button', iconCls: 'iconDelete', text: '', tooltip: '删除模板', tooltipType: 'title',
+                                   handler: function (source, e) {
+                                       if (confirm("确认删除吗?")) {
+                                           debugger;
+                                           /*
+                                           Ext.Ajax.request({
+                                               url: '/workflow/Manage/deleteTemplate',
+                                               params: {
+                                                   id: Ext.getCmp('templateList').selModel.selected.items[0].data.ID
+                                               },
+                                               scope: this,
+                                               success: function (response, opts) {
+                                                   alert("submitSccess");
+                                               },
+                                               failure: function (response) {
+                                                   alert(response.responseText);
+                                               }
+                                           });*/
+                                       }
+                                       else {
+                                           alert('确认不删除');
+                                       }
+                                   }
+                               },
                               { xtype: 'tbseparator' },
                               { xtype: 'tbfill' },
                               { xtype: 'button', iconCls: 'iconRefresh', text: '', tooltip: '刷新', tooltipType: 'title', handler: function (source, e) { } }
@@ -126,7 +174,6 @@
                                         //alert(response.responseText);
                                         var result = Ext.JSON.decode(response.responseText).data;
                                         wfg = new WFGraph({ id: "myCanvas", data: result });
-                                        //wfg.data = ;
                                         wfg.fullCanvas();
                                     },
                                     failure: function (response) {
