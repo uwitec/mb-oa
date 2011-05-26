@@ -38,6 +38,8 @@ namespace EntityObjectLib
         public WFInst()
         {
             this.ID = Guid.NewGuid().ToString();
+            this.CreateTime = DateTime.Now;
+            this.State = "处理中";
         }
 
         [NotMapped]

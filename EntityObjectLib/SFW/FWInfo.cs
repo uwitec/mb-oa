@@ -7,10 +7,10 @@ namespace EntityObjectLib
     /// <summary>
     /// 发文信息
     /// </summary>
-    public partial class FWInfo
+    public partial class FWInfo : WFInst
     {
-        [Key]
-        public string ID { get; set; }
+        //[Key]
+        //public string ID { get; set; }
 
         /// <summary>
         /// 发文类别

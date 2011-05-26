@@ -41,10 +41,10 @@
     <Compile Include="GenericBuiz\GenericBuiz.cs" />
     <Compile Include="GenericBuiz\GenericView.cs" />
     <Compile Include="GenericBuiz\GenericModel.cs" />
-    <Compile Include="PublicDocument\FWInfoFile.cs" />
-    <Compile Include="PublicDocument\FWInfo.cs" />
-    <Compile Include="PublicDocument\FWTemplate.cs" />
-    <Compile Include="PublicDocument\FWType.cs" />
+    <Compile Include="SFW\FWInfoFile.cs" />
+    <Compile Include="SFW\FWInfo.cs" />
+    <Compile Include="SFW\FWTemplate.cs" />
+    <Compile Include="SFW\FWType.cs" />
     <Compile Include="UserGroup.cs" />
     <Compile Include="Subscription.cs" />
     <Compile Include="InfoInbox.cs" />
