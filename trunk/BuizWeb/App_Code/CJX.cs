@@ -10,7 +10,7 @@ namespace BuizApp.App_Code
 {
     public class CJX
     {
-        public static XmlDocument Json2XML(string JsonString)
+        public static XmlDocument JSON2XML(string JsonString)
         {
             XmlDictionaryReader reader = JsonReaderWriterFactory.CreateJsonReader(Encoding.UTF8.GetBytes(JsonString), XmlDictionaryReaderQuotas.Max);
             XmlDocument xdoc = new XmlDocument();
@@ -18,7 +18,7 @@ namespace BuizApp.App_Code
             return xdoc;
         }
 
-        public static string Object2Json(object obj)
+        public static string Object2JSON(object obj)
         {
             JavaScriptSerializer jss = new JavaScriptSerializer();
             return jss.Serialize(obj);
@@ -26,7 +26,23 @@ namespace BuizApp.App_Code
 
         public static XmlDocument Object2XML(object obj)
         {
-            return Json2XML(Object2Json(obj));
+            return JSON2XML(Object2JSON(obj));
+        }
+
+        public static object JSON2Object(string JSONString)
+        {
+            
+            throw (new NotImplementedException());
+        }
+
+        public static object XML2Object(XmlDocument doc)
+        {
+            throw (new NotImplementedException());
+        }
+
+        public static string XML2JSON(XmlDocument doc)
+        {
+            throw (new NotImplementedException());
         }
     }
 }
