@@ -6,6 +6,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Web.Script.Serialization;
 using System.Xml;
 using System.Runtime.Serialization.Json;
+using System.Json;
+using System.IO;
 
 namespace TestProject1
 {
@@ -20,10 +22,13 @@ namespace TestProject1
             JavaScriptSerializer jss = new JavaScriptSerializer();
             Dictionary<string, object> y = (Dictionary<string, object>)jss.DeserializeObject(jsonString);
 
-            var obj = new { x = 123, t = DateTime.Now, b = true, i = 123, f = 123.33 };
+            var obj = new { x = 123, t = DateTime.Now, b = true, i = 123, f = 123.33, ar = new[] { new { x = 1, y = 3 }, new { x = 2, y = 4 } } };
             string str = jss.Serialize(obj);
 
             Dictionary<string, object> z = (Dictionary<string, object>)jss.DeserializeObject(str);
+
+            //z["x"]
+            //((object[])z["ar"])[0]
 
             return;
         }
@@ -43,6 +48,22 @@ namespace TestProject1
         }
 
         //dynamic
+        [TestMethod]
+        public void TestJsonObject()
+        {
+            string jsonText = "{ xyz: 123, items: [ 10, 100, 1000 ] }";
+            JsonObject jsonObject = (JsonObject)JsonValue.Parse(jsonText);
+
+            JsonArray items = (JsonArray)jsonObject["items"];
+            items[2] = 1001;
+
+            JsonObject bar = new JsonObject();
+            bar["name"] = "c#";
+            jsonObject["bar"] = bar;
+
+            StringWriter sw = new StringWriter();
+            jsonObject.Save(sw);
+        }
 
     }
 }

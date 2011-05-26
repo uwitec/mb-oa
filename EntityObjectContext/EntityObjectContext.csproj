@@ -54,10 +54,6 @@
     <Compile Include="MyDB.WFDefine.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary1\ClassLibrary1.csproj">
-      <Project>{F3D71CF6-1C1A-402B-AC30-063FFAEDC0BF}</Project>
-      <Name>ClassLibrary1</Name>
-    </ProjectReference>
     <ProjectReference Include="..\EntityObjectLib\EntityObjectLib.csproj">
       <Project>{FF25DC29-7456-46D4-86F2-22BC2D8C02E8}</Project>
       <Name>EntityObjectLib</Name>
