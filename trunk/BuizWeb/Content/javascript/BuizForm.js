@@ -1083,3 +1083,47 @@ MB.form.WFNodeExpression = function (config) {
 
     return this.form;
 }
+
+MB.form.WFTemplateEdit = function (config) {
+    this.name = "流程模板编辑";
+    this.form = new Ext.form.FormPanel({
+        params: { sid: config.id, jid: 'ssss' },
+        layout: {
+            type: 'vbox',
+            align: 'stretch'
+        },
+        height: 200,
+        autoHeight: true,
+        width: '100%',
+        stateful: false,
+        fieldDefaults: { labelAlign: 'left', msgTarget: 'none', anchor: '100%', margin: 4, labelWidth: 60 },
+        items: [
+            { xtype: 'hiddenfield', name: 'ID', value: config.id, hidden: true },
+            { xtype: 'textfield', name: 'Name', fieldLabel: '模板名称' },
+            { xtype: 'textfield', name: 'BuizCode', fieldLabel: '业务编码' },
+            { xtype: 'textfield', name: 'BuizName', fieldLabel: '业务名称'}
+        ],
+        buttons: [
+            { text: '保存', handler: function () {
+                this.up('form').getForm().submit({
+                    url: '/workflow/manage/saveWFTemplate',
+                    success: function (form, action) { form.setValues({ ID: action.result.data }); if (config && config.submitSccess) config.submitSccess(form, action) },
+                    failure: function (form, action) { if (config && config.submitFailure) config.submitFailure(form, action) }
+                }
+                );
+            }
+            },
+            { text: '取消', handler: function () { if (config && config.close) config.close() } }
+        ]
+    })
+
+    if (config.id) {
+        this.form.getForm().load({
+            url: '/workflow/manage/WFTemplate',
+            params: { id: config.id }
+        }
+        );
+    }
+
+    return this.form;
+}

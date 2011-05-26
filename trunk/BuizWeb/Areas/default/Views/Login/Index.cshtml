@@ -32,24 +32,24 @@
                     },
                     defaultType: 'textfield',
                     items: [
-                    { name: 'name', fieldLabel: '用户名', value: '@Model.name', allowBlank: false },
-                    { name: 'pwd', inputType: 'password', fieldLabel: ' 口令', value: '@Model.pwd' },
-                    {
-                        xtype: 'fieldcontainer',
-                        //name: 'jym', 
-                        fieldLabel: ' 校验码',
-                        msgTarget: 'under',
-                        layout: 'hbox',
-                        defaults: {
-                            hideLabel: true
-                        },
-                        items: [
-                            { xtype: 'textfield', fieldLabel: 'Phone 1', name: 'phone-1', width: 60 },
-                            { xtype: 'displayfield', html: '<img src=\'@Url.Content("~/Content/images/imagecode.jpg")\' alt="ddd"/>', margin: '0 40 0 4', width: 40 },
-                            { xtype: 'checkboxfield', name: 'phone-1', boxLabel: "两周内自动登录", flex: 1 }
-                        ]
-                    }
-                ],
+                        { name: 'name', fieldLabel: '用户名', value: '@Model.name', allowBlank: false },
+                        { name: 'pwd', inputType: 'password', fieldLabel: ' 口令', value: '@Model.pwd' },
+                        {
+                            xtype: 'fieldcontainer',
+                            //name: 'jym', 
+                            fieldLabel: ' 校验码',
+                            msgTarget: 'under',
+                            layout: 'hbox',
+                            defaults: {
+                                hideLabel: true
+                            },
+                            items: [
+                                { xtype: 'textfield', fieldLabel: 'Phone 1', name: 'phone-1', width: 60 },
+                                { xtype: 'displayfield', html: '<img src=\'@Url.Content("~/Content/images/imagecode.jpg")\' alt="ddd"/>', margin: '0 40 0 4', width: 40 },
+                                { xtype: 'checkboxfield', name: 'phone-1', boxLabel: "两周内自动登录", flex: 1 }
+                            ]
+                        }
+                    ],
                     standardSubmit: true,
                     buttons: [
                     { text: '登录', handler: function () { this.up('form').getForm().submit(); } },
