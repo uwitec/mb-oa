@@ -49,6 +49,8 @@ namespace EntityObjectContext
                 .WithMany(m => m.FWTemplates)
                 .Map(m => { m.MapKey("TemplateFile"); });
 
+            modelBuilder.Entity<FWInfo>().ToTable("FWInfos");
+
             // 发文与发文类型的关系
             modelBuilder.Entity<FWInfo>()
                 .HasRequired(n => n.FWType)

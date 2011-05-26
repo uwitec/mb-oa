@@ -84,7 +84,9 @@ namespace TestProject1
                             UploadDate = DateTime.Now,
                             File = mydb.Files.First()
                         }
-                    }
+                    },
+                    WFTemplate=mydb.WFTemplates.First(), // 参与流程后,创建业务实例一定要有流程模板
+                    Creator = mydb.Users.First()
                 };
 
                 mydb.FWTypes.Add(type1);
