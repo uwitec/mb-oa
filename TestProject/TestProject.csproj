@@ -87,6 +87,7 @@
     <Compile Include="Class1.cs" />
     <Compile Include="EFLinq.cs" />
     <Compile Include="EventTest.cs" />
+    <Compile Include="FWTest.cs" />
     <Compile Include="GenericBuizTest.cs" />
     <Compile Include="InfoTest.cs" />
     <Compile Include="JSONTest.cs" />

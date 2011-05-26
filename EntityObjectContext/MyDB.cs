@@ -28,6 +28,7 @@ namespace EntityObjectContext
             this.WFDefineModelCreate(modelBuilder);
             this.WFInstModelCreate(modelBuilder);
             this.GenericBuizModelCreate(modelBuilder);
+            this.FWModelCreate(modelBuilder);
             //this.ApplyExpenseModelCreate(modelBuilder);
         }
     }
