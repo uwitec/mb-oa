@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MyDB.FW.cs" />
     <Compile Include="MyDB.GenericBuiz.cs" />
     <Compile Include="Dynamic.cs" />
     <Compile Include="MyDB.WFInst.cs" />

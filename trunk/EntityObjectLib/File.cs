@@ -7,7 +7,7 @@ namespace EntityObjectLib
     /// <summary>
     /// 上传文件总表
     /// </summary>
-    public class File
+    public partial class File
     {
         [Key]
         public string ID { get; set; }
